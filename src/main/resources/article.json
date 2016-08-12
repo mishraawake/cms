@@ -1,0 +1,9 @@
+{
+  "title" : "",
+  "syn" : "",
+  "story" : "",
+  "image" :  { "type": "image"},
+  "byline" : { "type": "image"},
+  "cat" : { "type": "date" , "con" : {"range" : {"start" : "", "end" : ""}}},
+  "uat" :  { "type": "date" , "con" : {"range" : {"start" : "", "end" : ""}}}
+}

@@ -1,0 +1,9 @@
+{
+  "title" : { "type": "string", "con" : {"length" : 10}},
+  "syn" : { "type": "string", "con" : {"length" : 100}},
+  "story" : { "type": "string"},
+  "image" :  { "type": "image"},
+  "byline" : { "type": "image"},
+  "cat" : { "type": "date" , "con" : {"range" : {"start" : "", "end" : ""}}},
+  "uat" :  { "type": "date" , "con" : {"range" : {"start" : "", "end" : ""}}}
+}

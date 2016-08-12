@@ -1,0 +1,3 @@
+Packaging of items based on any criteria.
+It can be user generated or automatically build by subscription of package
+on event of creation, deletion, update etc.

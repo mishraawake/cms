@@ -1,0 +1,9 @@
+Dao (B)
+-Data access layer. Should cover rdbms, nosql, rest api, webservices etc.
+TemplateBuilder (F/B)
+-Build template with help of model object.
+Verifier(F/B)
+- Verification of data on front-end as well as on backend. Thing should happen quickly and verification
+process should be pluggable, replaceable.
+FormObject(F)
+- It should provide functionality such as draft, online feedback, show autofill data etc..

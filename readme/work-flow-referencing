@@ -1,0 +1,9 @@
+Here object extending, referencing, overriding etc will be supported.
+
+ To reference the object, we simply put a field and value will be id of referencing object.
+
+Here rules to associate an object with other should be supported.
+
+For example all the articles of one section should also be the member of all the article of following
+sections. Here rules to make the association has to be thought through.
+
