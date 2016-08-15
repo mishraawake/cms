@@ -27,7 +27,6 @@ public class JCRDefinition implements JCRIdentifiable, IDefinition<JCRDefinition
     private String name;
     private String description;
     private List<Field> fields = new ArrayList<Field>();
-    private JCRDefinition parentDefinition;
     private Date createdDate;
     private IUser createdBy;
 
@@ -63,14 +62,6 @@ public class JCRDefinition implements JCRIdentifiable, IDefinition<JCRDefinition
         this.fields = fields;
     }
 
-    public JCRDefinition getParentDefinition() {
-        return parentDefinition;
-    }
-
-    public void setParentDefinition(JCRDefinition parentDefinition) {
-        this.parentDefinition = parentDefinition;
-    }
-
     public static JCRDefinition getDefinitionFromString(String json){
         return null;
     }
@@ -78,7 +69,7 @@ public class JCRDefinition implements JCRIdentifiable, IDefinition<JCRDefinition
     @JsonIgnore
     @Override
     public String getIdentityForPath() {
-        return NameUtils.getJCRSEOLikeString(name);
+        return NameUtils.getJCRLikeName(name);
     }
 
     @Override
@@ -114,7 +105,6 @@ public class JCRDefinition implements JCRIdentifiable, IDefinition<JCRDefinition
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", fields=" + fields +
-                ", parentDefinition=" + parentDefinition +
                 ", createdDate=" + createdDate +
                 ", createdBy=" + createdBy +
                 '}';

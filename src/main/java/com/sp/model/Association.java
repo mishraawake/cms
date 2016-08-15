@@ -1,7 +1,6 @@
 package com.sp.model;
 
 import com.sp.dao.jcr.model.JCRIdentifiable;
-import com.sp.dao.jcr.model.JCRItem;
 import com.sp.utils.NameUtils;
 
 import java.util.ArrayList;
@@ -21,7 +20,7 @@ public class Association<T extends IItem> implements Auditable, JCRIdentifiable 
     private List<AssociationLink<T>> associates = new ArrayList<AssociationLink<T>>();
     private Date createdDate;
     private IUser createdBy;
-    List<FieldValue> properties;
+    List<FieldValue> properties = new ArrayList<FieldValue>();
 
     @Override
     public Date getCreateDate() {
@@ -77,7 +76,7 @@ public class Association<T extends IItem> implements Auditable, JCRIdentifiable 
 
     @Override
     public String getIdentityForPath() {
-        return NameUtils.getJCRSEOLikeString(name);
+        return NameUtils.getJCRLikeName(name);
     }
 
     @Override

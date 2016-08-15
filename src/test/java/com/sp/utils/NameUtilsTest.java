@@ -16,15 +16,15 @@ public class NameUtilsTest {
     @Test
     public void testSEOName(){
         String str = "my name";
-        Assert.assertTrue(NameUtils.getJCRSEOLikeString(str).equals("my-name"));
+        Assert.assertTrue(NameUtils.getJCRLikeName(str).equals("my-name"));
         str = "my    name";
-        Assert.assertTrue(NameUtils.getJCRSEOLikeString(str).equals("my-name"));
+        Assert.assertTrue(NameUtils.getJCRLikeName(str).equals("my-name"));
         str = "    my     name      ";
-        Assert.assertTrue(NameUtils.getJCRSEOLikeString(str).equals("my-name"));
+        Assert.assertTrue(NameUtils.getJCRLikeName(str).equals("my-name"));
         str = "My name";
-        Assert.assertTrue(NameUtils.getJCRSEOLikeString(str).equals("My-name"));
+        Assert.assertTrue(NameUtils.getJCRLikeName(str).equals("My-name"));
         str = "my name is pankaj     mishra             ";
-        Assert.assertTrue(NameUtils.getJCRSEOLikeString(str).equals("my-name-is-pankaj-mishra"));
+        Assert.assertTrue(NameUtils.getJCRLikeName(str).equals("my-name-is-pankaj-mishra"));
     }
 
 }

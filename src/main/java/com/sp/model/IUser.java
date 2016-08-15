@@ -1,5 +1,7 @@
 package com.sp.model;
 
+import java.util.List;
+
 /**
  * Created by pankajmishra on 09/08/16.
  */
@@ -9,8 +11,11 @@ public interface IUser {
 
     void setUserName(String userName);
 
-    String getPassword();
+    CharSequence getPassword();
 
-    void setPassword(String passwd);
+    void setPassword(CharSequence passwd);
 
+    List<FieldValue> getProperties();
+
+    void setProperties(List<FieldValue> fieldValue);
 }

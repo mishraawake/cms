@@ -1,31 +1,88 @@
 package com.sp.utils.dump;
 
 import com.sp.dao.jcr.utils.JCRRepository;
+import org.apache.jackrabbit.api.JackrabbitSession;
+import org.apache.jackrabbit.api.security.user.Authorizable;
+import org.apache.jackrabbit.api.security.user.User;
+import org.apache.jackrabbit.commons.SimpleValueFactory;
+import org.apache.jackrabbit.commons.jackrabbit.authorization.AccessControlUtils;
+import org.apache.jackrabbit.oak.Oak;
+import org.apache.jackrabbit.oak.jcr.Jcr;
+import org.apache.jackrabbit.oak.spi.security.principal.EveryonePrincipal;
+import sun.security.acl.PrincipalImpl;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
+import javax.jcr.*;
 import javax.jcr.nodetype.NodeType;
+import javax.jcr.security.*;
+import javax.security.auth.Subject;
 import java.io.Serializable;
+import java.security.Principal;
+import java.security.acl.Group;
+import java.util.NoSuchElementException;
 
 /**
  * Created by pankajmishra on 13/08/16.
  *
- * A general purpose class.. Do all dirty stuff in this class.. correctness of this class ha not nor any bearing.
+ * A general purpose class.. Do all dirty stuff in this class.. correctness of this class has not not any bearing.
  */
 public class JCRDump {
 
     public static void main(String[] args) throws RepositoryException {
-        Session session = JCRRepository.getSession();
-        Node tempNode =  session.getRootNode().addNode("temp");
+        Repository repository = new Jcr(new Oak()).createRepository();
+        Session session = repository.login(new SimpleCredentials("admin", "admin".toCharArray()));
+      //  Session session = repository.login();
+
+        //session.getRootNode().addNode("pankaj");
+        JackrabbitSession jackrabbitSession = (JackrabbitSession)session;
+
+        Principal principal = new Principal() {
+            @Override
+            public String getName() {
+                return null;
+            }
+        };
+
+        UserDetail userPrinciple = new UserDetail();
+        userPrinciple.name = "pankaj";
+        userPrinciple.add = "my address";
+        org.apache.jackrabbit.api.security.user.Group user = jackrabbitSession.getUserManager().createGroup("pankaj");
+
+        user.setProperty("address", (new SimpleValueFactory()).createValue("HI this is my address"));
+
+        AccessControlManager aMgr = session.getAccessControlManager();
+
+
+// the policy must be re-set
+       // aMgr.setPolicy("/pankaj", acl);
+
+        session.save();
+        session.logout();
+
+        session = repository.login(new SimpleCredentials("admin", "admin".toCharArray()));
+        try {
+            Authorizable authorizable = ((JackrabbitSession) session).getUserManager().getAuthorizable("pankaj");
+            System.out.println(authorizable.getProperty("address"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        session = repository.login(new SimpleCredentials("pankaj", "pankaj".toCharArray()));
+        aMgr = session.getAccessControlManager();
+
+
+
+        Node tempNode =  session.getNode("/pankaj").addNode("temp");
         tempNode.addMixin(NodeType.MIX_REFERENCEABLE);
+
+        session.save();
 
         Node referee = session.getRootNode().addNode("referee");
         referee.setProperty("tempone", tempNode);
 
         session.save();
 
-        session = JCRRepository.getSession();
+        session = repository.login(new SimpleCredentials("pankaj", "pankaj".toCharArray()));;
 
         referee = session.getNode("/referee");
 
@@ -34,5 +91,44 @@ public class JCRDump {
         System.out.println(referee.getProperties("tempone").hasNext());
         System.out.println(tempNode.getReferences().hasNext() );
 
+    }
+
+    private static AccessControlList getAccessControlList(User user, AccessControlManager aMgr) throws RepositoryException {
+        // create a privilege set with jcr:all
+        Privilege[] privileges = new Privilege[] { aMgr.privilegeFromName(Privilege.JCR_READ) , aMgr.privilegeFromName(Privilege.JCR_ALL) };
+        AccessControlList acl;
+        try {
+            // get first applicable policy (for nodes w/o a policy)
+            acl = (AccessControlList)aMgr.getApplicablePolicies("/pankaj").nextAccessControlPolicy();
+        } catch (NoSuchElementException e) {
+            // else node already has a policy, get that one
+            acl = (AccessControlList)aMgr.getPolicies("/pankaj")[0];
+        }
+// remove all existing entries
+        for (AccessControlEntry e : acl.getAccessControlEntries()) {
+            acl.removeAccessControlEntry(e);
+        }
+// add a new one for the special "everyone" principal
+        acl.addAccessControlEntry(user.getPrincipal(), privileges);
+        return acl;
+    }
+
+    private static class UserDetail implements Principal {
+        String name;
+
+        String add;
+
+        @Override
+        public String getName() {
+            return name;
+        }
+
+        @Override
+        public String toString() {
+            return "UserDetail{" +
+                    "name='" + name + '\'' +
+                    ", add='" + add + '\'' +
+                    '}';
+        }
     }
 }

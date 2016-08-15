@@ -1,5 +1,7 @@
 package com.sp.utils;
 
+import org.apache.jackrabbit.util.Text;
+
 /**
  * Created by pankajmishra on 09/08/16.
  */
@@ -12,7 +14,7 @@ public class NameUtils {
      * @param str
      * @return
      */
-    public static String getJCRSEOLikeString(String str){
-        return str.trim().replaceAll("\\s[\\s]*", "-");
+    public static String getJCRLikeName(String str){
+        return Text.escapeIllegalJcrChars(str.trim().replaceAll("\\s[\\s]*", "-"));
     }
 }

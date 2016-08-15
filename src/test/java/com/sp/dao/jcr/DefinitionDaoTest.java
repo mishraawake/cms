@@ -48,13 +48,10 @@ public class DefinitionDaoTest implements ApplicationContextAware {
 
             IDefinition definitionChild = DefUtils.getDummyDefition(pojoFactory);
 
-            definitionChild.setParentDefinition(definition);
 
             definitionChild = definitionDao.create(definitionChild);
 
             definitionChild = DefUtils.getDummyDefition(pojoFactory);
-
-            definitionChild.setParentDefinition(definition);
 
             definitionChild = definitionDao.create(definitionChild);
 

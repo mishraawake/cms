@@ -1,9 +1,8 @@
-Fix name space standarization and internal node hierarchy arrangement.
+--- finished .. please see file named *modeling..Fix name space standarization and internal node hierarchy arrangement.
+Should we loging with session for every operation?
 ACL implementation.
 Versioning.
 Defence against abusing root name space by accident.
-
-
 Test and implement order of child.
 A real case implementation of system like toi uses.
 Indexing.

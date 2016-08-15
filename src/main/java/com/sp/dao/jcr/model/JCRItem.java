@@ -89,7 +89,7 @@ public class JCRItem implements JCRIdentifiable, IItem<JCRItem, JCRDefinition> {
     @JsonIgnore
     @Override
     public String getIdentityForPath() {
-        return NameUtils.getJCRSEOLikeString(name);
+        return NameUtils.getJCRLikeName(name);
     }
 
     @Override

@@ -72,17 +72,16 @@ public class JCRDefinitionDao implements DefinitionDao<JCRDefinition> {
         try {
 
             session = JCRRepository.getSession();
-            if (element.getParentDefinition() != null) {
-                Node parentNode = session.getNode(element.getParentDefinition().get__id());
-                Node childNode = JcrDaoUtils.getCreatingChild(parentNode, idGenerator.getNextId(element));
-                element.set__id(childNode.getPath());
-                copyDefToNode(element, childNode);
+            Node definitionNode = null;
+            String defJcrName = JcrDaoUtils.getPrefixedName(JCRNodePropertyName.DEF_LINK_NAME);
+            if(session.getRootNode().hasNode(defJcrName)) {
+                definitionNode = session.getRootNode().getNode(defJcrName);
             } else {
-                // we need to create a domain
-                Node childNode = JcrDaoUtils.getCreatingChild(session.getRootNode(), idGenerator.getNextId( element));
-                element.set__id(childNode.getPath());
-                copyDefToNode(element, childNode);
+                definitionNode = session.getRootNode().addNode(defJcrName);
             }
+            Node childNode = definitionNode.addNode(element.getIdentityForPath());
+            element.set__id(childNode.getPath());
+            copyDefToNode(element, childNode);
             session.save();
             return element;
 
@@ -128,8 +127,6 @@ public class JCRDefinitionDao implements DefinitionDao<JCRDefinition> {
         try {
             JCRDefinition definition = new JCRDefinition();
             session = JCRRepository.getSession();
-
-
             copyNodeToDef(session.getNode((String)id) , definition);
             session.save();
             return definition;

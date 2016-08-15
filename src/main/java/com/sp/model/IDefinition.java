@@ -20,9 +20,4 @@ public interface IDefinition<T extends IDefinition> extends Auditable, Identity 
     public List<Field> getFields();
 
     public void setFields( List<Field> fields);
-
-    public T getParentDefinition();
-
-    public void setParentDefinition(T definition);
-
 }

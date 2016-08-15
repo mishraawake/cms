@@ -1,0 +1,81 @@
+1 Definition
+  Each item in cms must have a definition object associated. It dictates what are the possible values properties in the
+  item being created. Definition is not hierarchical for the time being because i am not finding any compelling reason
+  for this. Modeling of definition is done as below.
+
+  (R)---[sp:def]--->(constant def node)====[UDN of definition]===>(Definition Object)--[fields]-->(field node)
+
+2 Item
+
+   Item in cms represents actual item present. Each item must have a definition attached to it. We need to evaluate how
+   much pain the rule (must have definition for item) imparts on user. For the time being i have decided to have this as
+   must.
+   Item have several perspective and hence it has different model for different perspective. Before we go to define item
+   data model, let us define a data model for values that an item can take.
+
+2.1  Below is datamodeling for values that an item can contain. Basically item node will have one one with the name
+   fields and that field node will have several properties with different kind (numerical, strign, binary, and array of
+   each such type etc..) and it may have another node that will be again of similar structure as field node. Hence it
+   can contain any type of data and value can go into arbitrary depth. This allows item to have very flexible data set.
+
+
+
+       (I)--[fields]--->(field node)------[fields]--->(field node)[R*]
+
+
+2.2  Hierarchy of item . Item is hierarchical. And Item must be hierarchical. Root of jackrabbit will contain a fixed
+ node with name [sp:item](call it item root node) and every root level item will be attached with this through their
+ user defined node. Typically, There will be one item attached with item root node as defined earlier and then it can
+ contain as many child as it pleases(need to handle performance part here). And similarly each child item can contain
+ their own children nodes. Pictorially it is as follows.
+
+       (R)----[sp:item]--->(item root node)====[UDN]===>(Item Node)---[fields]--->(field node)
+                                                             ||
+                                                             ||
+                                                           [child]
+                                                             ||
+                                                             ||
+                                          (Item node)[R*] <==
+
+
+
+
+
+ 2.3 Associations of items. Each item can also contains associations of items. Association is collection of items from
+ anywhere. There may be more than one associations attached with an item and each association may contains more than one
+ item. Association can be referenced or not is for future development. Each association can also contain field node
+ as defined above and more over each link node can contain field node. Item containing assoc will contain one node for
+ association (call it association node), then association node will point to possibly more than one item and for each
+ item there will be a link node created. Then link node will point to actual item node. As stated, association node and
+ link node may contain fields node as properties.
+
+ Pictorially association looks as below.
+
+
+        (I)=====[pkg:UDN of assoc]===>(association node)---[fields]------------->(field node)
+                                               ||                                     ^
+                                               ||                                     |
+                                               ||                                   [fields]
+                                               ||                                     |
+                                                => [pkg:UDN of item in assoc]--->(link node)---[sp:UDN of item in assoc]
+                                                                                                        |
+                                                                                                        V
+                                                                                                    (item node)
+
+
+
+
+
+
+
+
+
+
+
+
+
+    Acronyms:
+           UDN= user defined name
+           (R) = jackrabbit root node
+           [R*] = it is recursive.
+
