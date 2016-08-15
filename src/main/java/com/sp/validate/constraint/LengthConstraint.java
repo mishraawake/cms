@@ -1,8 +1,5 @@
 package com.sp.validate.constraint;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import sun.security.util.Length;
-
 /**
  * Created by pankajmishra on 06/08/16.
  *

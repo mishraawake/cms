@@ -47,7 +47,7 @@ public class TestSerialization {
             String str = IOUtils.toString(new FileInputStream("output/def.json"));
             JCRDefinition definition = serialization.deserialize(str, JCRDefinition.class);
 
-            System.out.println(definition);
+          //  System.out.println(definition);
         } catch (IOException e) {
             e.printStackTrace();
         }

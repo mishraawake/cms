@@ -83,11 +83,17 @@ public class JCRDefinition implements JCRIdentifiable, IDefinition<JCRDefinition
 
     @Override
     public Date getCreateDate() {
+        if(createdDate == null){
+            return null;
+        }
         return (Date)createdDate.clone();
     }
 
     @Override
     public void setCreateDate(Date createdDate) {
+        if(createdDate == null){
+            return;
+        }
         this.createdDate = (Date)createdDate.clone();
     }
 
