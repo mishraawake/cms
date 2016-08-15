@@ -23,17 +23,9 @@ import java.io.Serializable;
 @org.springframework.stereotype.Repository(value = "definitionDao")
 public class JCRDefinitionDao implements DefinitionDao<JCRDefinition> {
 
-
     @Autowired
     StringSerialization serialization;
 
-    @Autowired
-    JCRIdGenerator idGenerator;
-
-
-    public JCRDefinitionDao(){
-
-    }
 
     private String getPrefixedName(String name){
         return JcrDaoUtils.getPrefixedName(name);

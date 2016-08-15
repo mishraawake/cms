@@ -6,5 +6,6 @@ package com.sp.model;
 public interface PojoFactory {
     IDefinition getNewDefinition();
     IItem getNewItem();
+    IUser getNewUser();
 
 }

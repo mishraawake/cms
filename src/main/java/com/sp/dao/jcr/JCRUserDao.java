@@ -7,18 +7,19 @@ import com.sp.dao.jcr.utils.JCRNodePropertyName;
 import com.sp.dao.jcr.utils.JCRRepository;
 import com.sp.dao.jcr.utils.JcrDaoUtils;
 import com.sp.model.FieldValue;
-import com.sp.model.IUser;
 import com.sp.service.StringSerialization;
 import com.sp.utils.NameUtils;
 import org.apache.jackrabbit.api.JackrabbitSession;
-import org.apache.jackrabbit.api.security.user.Authorizable;
-import org.apache.jackrabbit.api.security.user.Group;
+import org.apache.jackrabbit.api.security.user.*;
 import org.apache.jackrabbit.commons.SimpleValueFactory;
+import org.apache.jackrabbit.oak.jcr.query.QueryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import javax.jcr.Node;
 import javax.jcr.Session;
 import javax.jcr.Value;
+import javax.jcr.query.QueryManager;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -27,6 +28,7 @@ import java.util.List;
 /**
  * Created by pankajmishra on 15/08/16.
  */
+@Repository(value = "userDao")
 public class JCRUserDao implements UserDao<JCRUser> {
 
     @Autowired
@@ -122,7 +124,12 @@ public class JCRUserDao implements UserDao<JCRUser> {
         JackrabbitSession session = null;
         try {
             session = (JackrabbitSession)JCRRepository.getSession();
-            final Iterator<Authorizable> authorizableIterable = session.getUserManager().findAuthorizables("","");
+            final Iterator<Authorizable> authorizableIterable = session.getUserManager().findAuthorizables(new Query() {
+                public <T> void build(QueryBuilder<T> builder) {
+                    builder.setSelector(User.class);
+                    builder.setCondition(builder.exists(JCRNodePropertyName.FIELDS_LINK_NAME));
+                }
+            });
 
             Iterator<JCRUser> iterator =  new Iterator<JCRUser>() {
                 @Override
@@ -138,7 +145,7 @@ public class JCRUserDao implements UserDao<JCRUser> {
                         return getUserFromAuthorizable(authorizableIterable.next(), innerSession);
                     } catch (Exception e) {
                         throw  new RuntimeException(String.format("problem in converting authority object into user " +
-                                "object. "));
+                                "object. "), e);
                     } finally {
                         if(innerSession != null)
                             innerSession.logout();
@@ -155,9 +162,9 @@ public class JCRUserDao implements UserDao<JCRUser> {
         } catch (Exception e) {
             throw new DatabaseException(e);
         } finally {
-            if(session != null){
+           /* if(session != null){
                 session.logout();
-            }
+            } */
         }
     }
 
@@ -173,6 +180,7 @@ public class JCRUserDao implements UserDao<JCRUser> {
             session = (JackrabbitSession)JCRRepository.getSession();
             Authorizable user = session.getUserManager().getAuthorizable((String)id);
             user.remove();
+            session.save();
         } catch (Exception e) {
             throw new DatabaseException(e);
         } finally {
@@ -184,7 +192,18 @@ public class JCRUserDao implements UserDao<JCRUser> {
 
     @Override
     public boolean exists(Serializable id) throws DatabaseException {
-        return false;
+        JackrabbitSession session = null;
+        try {
+            session = (JackrabbitSession)JCRRepository.getSession();
+            Authorizable user = session.getUserManager().getAuthorizable((String)id);
+            return user != null;
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        } finally {
+            if(session != null){
+                session.logout();
+            }
+        }
     }
 
     @Override
@@ -204,11 +223,28 @@ public class JCRUserDao implements UserDao<JCRUser> {
     }
 
     @Override
+    public boolean groupExists(String groupName) throws DatabaseException {
+        JackrabbitSession session = null;
+        try {
+            session = (JackrabbitSession)JCRRepository.getSession();
+            Group group = (Group)session.getUserManager().getAuthorizable(groupName);
+            session.save();
+            return group != null;
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        } finally {
+            if(session != null){
+                session.logout();
+            }
+        }
+    }
+
+    @Override
     public void removeGroup(String groupName) throws DatabaseException {
         JackrabbitSession session = null;
         try {
             session = (JackrabbitSession)JCRRepository.getSession();
-            Authorizable group = session.getUserManager().createGroup(NameUtils.getJCRLikeName(groupName));
+            Authorizable group = session.getUserManager().getAuthorizable(NameUtils.getJCRLikeName(groupName));
             group.remove();
             session.save();
         } catch (Exception e) {
@@ -253,9 +289,9 @@ public class JCRUserDao implements UserDao<JCRUser> {
         } catch (Exception e) {
             throw new DatabaseException(e);
         } finally {
-            if(session != null){
+          /*  if(session != null){
                 session.logout();
-            }
+            } */
         }
     }
 

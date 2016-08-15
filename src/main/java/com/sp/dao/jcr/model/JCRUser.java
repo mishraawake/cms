@@ -20,12 +20,12 @@ public class JCRUser implements IUser, JCRIdentifiable {
 
     @Override
     public String getUserName() {
-        return null;
+        return userName;
     }
 
     @Override
     public void setUserName(String userName) {
-
+        this.userName = userName;
     }
 
     @Override
@@ -51,5 +51,13 @@ public class JCRUser implements IUser, JCRIdentifiable {
     @Override
     public String getIdentityForPath() {
         return NameUtils.getJCRLikeName(userName);
+    }
+
+    @Override
+    public String toString() {
+        return "JCRUser{" +
+                "userName='" + userName + '\'' +
+                ", properties=" + properties +
+                '}';
     }
 }

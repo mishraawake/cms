@@ -35,16 +35,7 @@ public class JCRDump {
         //session.getRootNode().addNode("pankaj");
         JackrabbitSession jackrabbitSession = (JackrabbitSession)session;
 
-        Principal principal = new Principal() {
-            @Override
-            public String getName() {
-                return null;
-            }
-        };
 
-        UserDetail userPrinciple = new UserDetail();
-        userPrinciple.name = "pankaj";
-        userPrinciple.add = "my address";
         org.apache.jackrabbit.api.security.user.Group user = jackrabbitSession.getUserManager().createGroup("pankaj");
 
         user.setProperty("address", (new SimpleValueFactory()).createValue("HI this is my address"));
@@ -68,9 +59,6 @@ public class JCRDump {
 
 
         session = repository.login(new SimpleCredentials("pankaj", "pankaj".toCharArray()));
-        aMgr = session.getAccessControlManager();
-
-
 
         Node tempNode =  session.getNode("/pankaj").addNode("temp");
         tempNode.addMixin(NodeType.MIX_REFERENCEABLE);

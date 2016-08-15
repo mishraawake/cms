@@ -1,4 +1,4 @@
-package com.sp.utils;
+package com.sp.helper;
 
 import com.sp.model.*;
 import org.apache.commons.lang.RandomStringUtils;
@@ -6,9 +6,7 @@ import org.apache.commons.lang.RandomStringUtils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.Date;
-import java.util.List;
 import java.util.Random;
 
 /**
@@ -126,7 +124,7 @@ public class DummyValueType {
                 }
                 return "mishraawake@gmail.com";
             case ValueType.TYPE_GENERIC_TYPE:
-                FieldValue[] fieldValueList = ItemUtils.getDummyFieldValueList(depth - 1 ).toArray(new FieldValue[0]);
+                FieldValue[] fieldValueList = ItemUtils.getDummyFieldValueList(depth - 1).toArray(new FieldValue[0]);
                 return fieldValueList;
         }
 

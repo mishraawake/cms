@@ -4,7 +4,7 @@ import com.sp.dao.jcr.model.JCRDefinition;
 import com.sp.model.IDefinition;
 import com.sp.model.PojoFactory;
 import com.sp.service.StringSerialization;
-import com.sp.utils.DefUtils;
+import com.sp.helper.DefUtils;
 import com.sp.utils.SpringInitializer;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;

@@ -3,10 +3,10 @@ package com.sp.dao.jcr;
 import com.sp.dao.api.DatabaseException;
 import com.sp.dao.api.DefinitionDao;
 import com.sp.dao.api.ItemDao;
-import com.sp.dao.jcr.model.JCRItem;
 import com.sp.model.*;
-import com.sp.utils.DefUtils;
-import com.sp.utils.ItemUtils;
+import com.sp.helper.DefUtils;
+import com.sp.helper.ItemUtils;
+import com.sp.utils.FieldUtils;
 import com.sp.utils.SpringInitializer;
 import org.junit.Assert;
 import org.junit.Test;
@@ -19,9 +19,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.Serializable;
-import java.lang.reflect.Array;
 import java.util.*;
 
 /**
@@ -58,7 +56,7 @@ public class ItemDaoTest implements ApplicationContextAware {
     private void verifyItems(IItem<IItem, IDefinition> sourceItem, IItem<IItem, IDefinition> targetItem){
         Assert.assertTrue(String.format("item name should be same %s, %s", sourceItem, targetItem), sourceItem.getName().equals(targetItem.getName()));
         Assert.assertTrue(String.format("item definition should be same %s, %s", sourceItem.getDefinition(), targetItem.getDefinition()), sourceItem.getDefinition().get__id().equals(targetItem.getDefinition().get__id()));
-        verifyFieldLists(sourceItem.getFieldValues().toArray(new FieldValue[0]), targetItem.getFieldValues().toArray(new FieldValue[0]), 1);
+        FieldUtils.verifyFieldLists(sourceItem.getFieldValues().toArray(new FieldValue[0]), targetItem.getFieldValues().toArray(new FieldValue[0]));
     }
 
     @Test
@@ -149,72 +147,16 @@ public class ItemDaoTest implements ApplicationContextAware {
         Assert.assertTrue(String.format("association name should match %s, %s",association,  databaseAssociation), association.getName().equals(databaseAssociation.getName()));
         Assert.assertTrue(String.format("association date should match %s, %s", association,  databaseAssociation), association.getCreateDate().equals(databaseAssociation.getCreateDate()));
 
-        verifyFieldLists(association.getProperties().toArray(new FieldValue[0]), databaseAssociation.getProperties().toArray(new FieldValue[0]), 1);
+        FieldUtils.verifyFieldLists(association.getProperties().toArray(new FieldValue[0]), databaseAssociation.getProperties().toArray(new FieldValue[0]));
 
         for(int link=0; link < association.getAssociates().size(); ++link){
             AssociationLink<IItem> associationLink = association.getAssociates().get(link);
             AssociationLink<IItem> databaseAssociationLink = databaseAssociation.getAssociates().get(link);
-            verifyFieldLists(associationLink.getProperties().toArray(new FieldValue[0]), databaseAssociationLink.getProperties().toArray(new FieldValue[0]), 1);
+            FieldUtils.verifyFieldLists(associationLink.getProperties().toArray(new FieldValue[0]), databaseAssociationLink.getProperties().toArray(new FieldValue[0]));
             verifyItems(associationLink.getLinked(), databaseAssociationLink.getLinked() );
         }
     }
 
-
-    private void verifyFieldLists(FieldValue[] one, FieldValue[] second, int level) {
-
-        for (FieldValue fieldValue : one) {
-
-            //System.out.println(fieldValue.getField().getName());
-
-            if (fieldValue.getValue() instanceof int[]) {
-                FieldValue targetFieldValue = getFieldValue(second, fieldValue.getField());
-                Assert.assertTrue(getFieldDetail(fieldValue, getFieldValue(second, fieldValue.getField())), fieldValue.getField().equals(targetFieldValue.getField()) && Arrays.equals((int[]) fieldValue.getValue(), (int[]) targetFieldValue.getValue()));
-            } else if (fieldValue.getValue() instanceof boolean[]) {
-                FieldValue targetFieldValue = getFieldValue(second, fieldValue.getField());
-                Assert.assertTrue(getFieldDetail(fieldValue, getFieldValue(second, fieldValue.getField())),(fieldValue.getField().equals(targetFieldValue.getField()) && Arrays.equals((boolean[]) fieldValue.getValue(), (boolean[]) targetFieldValue.getValue())));
-            } else if (fieldValue.getValue() instanceof byte[]) {
-                FieldValue targetFieldValue = getFieldValue(second, fieldValue.getField());
-                Assert.assertTrue(getFieldDetail(fieldValue, getFieldValue(second, fieldValue.getField())),(fieldValue.getField().equals(targetFieldValue.getField()) && Arrays.equals((byte[]) fieldValue.getValue(), (byte[]) targetFieldValue.getValue())));
-            } else if (fieldValue.getValue() instanceof char[]) {
-                FieldValue targetFieldValue = getFieldValue(second, fieldValue.getField());
-                Assert.assertTrue(getFieldDetail(fieldValue, getFieldValue(second, fieldValue.getField())),(fieldValue.getField().equals(targetFieldValue.getField()) && Arrays.equals((char[]) fieldValue.getValue(), (char[]) targetFieldValue.getValue())));
-            } else if (fieldValue.getValue() instanceof short[]) {
-                FieldValue targetFieldValue = getFieldValue(second, fieldValue.getField());
-                Assert.assertTrue(getFieldDetail(fieldValue, getFieldValue(second, fieldValue.getField())),(fieldValue.getField().equals(targetFieldValue.getField()) && Arrays.equals((short[]) fieldValue.getValue(), (short[]) targetFieldValue.getValue())));
-            } else if (fieldValue.getValue() instanceof int[]) {
-                FieldValue targetFieldValue = getFieldValue(second, fieldValue.getField());
-                Assert.assertTrue(getFieldDetail(fieldValue, getFieldValue(second, fieldValue.getField())),(fieldValue.getField().equals(targetFieldValue.getField()) && Arrays.equals((int[]) fieldValue.getValue(), (int[]) targetFieldValue.getValue())));
-            } else if (fieldValue.getValue() instanceof long[]) {
-                FieldValue targetFieldValue = getFieldValue(second, fieldValue.getField());
-                Assert.assertTrue(getFieldDetail(fieldValue, getFieldValue(second, fieldValue.getField())),(fieldValue.getField().equals(targetFieldValue.getField()) && Arrays.equals((long[]) fieldValue.getValue(), (long[]) targetFieldValue.getValue())));
-            } else if (fieldValue.getValue() instanceof float[]) {
-                FieldValue targetFieldValue = getFieldValue(second, fieldValue.getField());
-                Assert.assertTrue(getFieldDetail(fieldValue, getFieldValue(second, fieldValue.getField())),(fieldValue.getField().equals(targetFieldValue.getField()) && Arrays.equals((float[]) fieldValue.getValue(), (float[]) targetFieldValue.getValue())));
-            } else if (fieldValue.getValue() instanceof double[]) {
-                FieldValue targetFieldValue = getFieldValue(second, fieldValue.getField());
-                Assert.assertTrue(getFieldDetail(fieldValue, getFieldValue(second, fieldValue.getField())),(fieldValue.getField().equals(targetFieldValue.getField()) && Arrays.equals((double[]) fieldValue.getValue(), (double[]) targetFieldValue.getValue())));
-            } else if (fieldValue.getValue() instanceof FieldValue[]) {
-                FieldValue targetFieldValue = getFieldValue(second, fieldValue.getField());
-                verifyFieldLists((FieldValue[]) fieldValue.getValue(), (FieldValue[]) targetFieldValue.getValue(), level + 1);
-                // System.out.println(fieldValue.equals(getFieldValue(second, fieldValue.getField())));
-            }else if(fieldValue.getValue() instanceof BinaryData || fieldValue.getValue() instanceof BinaryData[]){
-                /// do nothing
-            } else if(fieldValue.getValue() instanceof Object[]) {
-                FieldValue targetFieldValue = getFieldValue(second, fieldValue.getField());
-                Assert.assertTrue(getFieldDetail(fieldValue, getFieldValue(second, fieldValue.getField())), (Arrays.equals((Object[]) fieldValue.getValue(), (Object[]) targetFieldValue.getValue())));
-                // fieldValue.equals(getFieldValue(second, fieldValue.getField())));
-            } else {
-                Assert.assertTrue(getFieldDetail(fieldValue, getFieldValue(second, fieldValue.getField())), (fieldValue.equals(getFieldValue(second, fieldValue.getField()))));
-            }
-
-
-            //generateBibaries(fieldValue);
-        }
-    }
-
-    private String getFieldDetail(FieldValue first, FieldValue second){
-        return String.format("do not match, first value is ( %s ) and second value is ( %s )", first, second);
-    }
 
     private void generateBibaries(FieldValue fieldValue) {
         if (fieldValue.getField().getValueType().equals(ValueType.ArrayOfImage) || fieldValue.getField().getValueType().equals(ValueType.Image)) {
@@ -254,14 +196,7 @@ public class ItemDaoTest implements ApplicationContextAware {
         }
     }
 
-    private FieldValue getFieldValue(FieldValue[] fromList, Field field) {
-        for (FieldValue fieldValue : fromList) {
-            if (fieldValue.getField().equals(field)) {
-                return fieldValue;
-            }
-        }
-        return null;
-    }
+
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
