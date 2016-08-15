@@ -4,7 +4,6 @@ import com.sp.model.*;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.NodeType;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,8 +18,7 @@ public class JcrDaoUtils {
 
 
     /**
-     * This logic is common to create a child node inside a node. This will copy two properties from parent node
-     * and gene
+     *
      * @param parentNode
      * @return
      * @throws RepositoryException
@@ -69,7 +67,7 @@ public class JcrDaoUtils {
      * @return
      * @throws RepositoryException
      */
-    public static <T extends BinaryData> T[] getBinariesFromNode(Node node, List<BinaryData> binaryArrays , BinaryFacory objectgen ) throws RepositoryException {
+    public static <T extends BinaryData> T[] getBinariesFromNode(Node node, List<BinaryData> binaryArrays , BinaryFactory objectgen ) throws RepositoryException {
         NodeIterator nodeIterator = node.getNodes("value*");
         while (nodeIterator.hasNext()){
             BinaryData holder = objectgen.getObject();

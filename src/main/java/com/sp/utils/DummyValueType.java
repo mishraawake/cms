@@ -1,15 +1,14 @@
 package com.sp.utils;
 
-import com.sp.model.ValueType;
-import com.sp.model.FileObject;
-import com.sp.model.Image;
-import com.sp.model.Video;
+import com.sp.model.*;
 import org.apache.commons.lang.RandomStringUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -17,122 +16,118 @@ import java.util.Random;
  */
 public class DummyValueType {
 
-    public static Object getDummyType(ValueType type){
+
+    public static Object getDummyType(ValueType type, int depth){
 
         Random random = new Random();
         switch (type.value()){
-            case "boolean":
+            case ValueType.TYPE_BOOLEAN:
                 if(type.array()){
-                    return  new Boolean[]{true, false};
+                    return  new boolean[]{true, false};
                 }
                 return true;
-            case "byte":
+            case ValueType.TYPE_BYTE:
                 if(type.array()){
-                    return  new Byte[]{Byte.valueOf("10"), Byte.valueOf("11")};
+                    return  new byte[]{ (byte)10, (byte)11};
                 }
-                return  Byte.valueOf("10");
+                return  (byte)10;
 
-            case "char":
+            case ValueType.TYPE_CHAR:
                 if(type.array()){
-                    return  new Character[]{'1', '2'};
+                    return  new char[]{'1', '2'};
                 }
                 return 'a';
-            case "short":
+            case ValueType.TYPE_SHORT:
                 if(type.array()){
-                    return new Short[]{Short.valueOf("10"), Short.valueOf("11")};
+                    return  new short[]{ (short)10, (short)11};
                 }
-                return Short.valueOf("10");
-            case "integer":
+                return  (short)10;
+            case ValueType.TYPE_INTEGER:
                 if(type.array()){
-                    return new Integer[]{11, 12};
+                    return new int[]{11, 12};
                 }
                 return random.nextInt();
-            case "long":
+            case ValueType.TYPE_LONG:
                 if(type.array()){
-                    return  new Long[]{19l, 30l};
+                    return  new long[]{19l, 30l};
                 }
                 return random.nextLong();
-            case "double":
+            case ValueType.TYPE_DOUBLE:
                 if(type.array()){
-                    return  new Double[]{random.nextDouble(), random.nextDouble()};
+                    return  new double[]{random.nextDouble(), random.nextDouble()};
                 }
                 return random.nextDouble();
-            case "float":
+            case ValueType.TYPE_FLOAT:
                 if(type.array()){
-                    return  new Float[]{random.nextFloat(), random.nextFloat()};
+                    return  new float[]{random.nextFloat(), random.nextFloat()};
                 }
                 return random.nextFloat();
-            case "date":
+            case ValueType.TYPE_DATE:
                 if(type.array()){
                     return  new Date[]{new Date(), new Date()};
                 }
                 return new Date();
-            case "string":
+            case ValueType.TYPE_STRING:
                 if(type.array()){
                     return  new String[]{RandomStringUtils.randomAlphabetic(50), RandomStringUtils.randomAlphabetic(50)};
                 }
                 return RandomStringUtils.randomAlphabetic(50);
-            case "bigstring":
+            case ValueType.TYPE_BIG_STRING:
                 if(type.array()){
                     return   new String[]{RandomStringUtils.randomAlphabetic(500), RandomStringUtils.randomAlphabetic(500)};
                 }
                 return RandomStringUtils.randomAlphabetic(500);
-            case "richtext":
+            case ValueType.TYPE_RICH_TEXT:
                 if(type.array()){
                     return   new String[]{RandomStringUtils.randomAlphabetic(500), RandomStringUtils.randomAlphabetic(500)};
                 }
 
                 return RandomStringUtils.randomAlphabetic(500);
-            case "richmediatext":
+            case ValueType.TYPE_RICH_MEDIA_TEXT:
                 if(type.array()){
                     return   new String[]{RandomStringUtils.randomAlphabetic(500), RandomStringUtils.randomAlphabetic(500)};
                 }
                 return RandomStringUtils.randomAlphabetic(500);
-            case "image":
+            case ValueType.TYPE_IMAGE:
                 if(type.array()){
                     return  new Image[]{ getRandomImage(),  getRandomImage()};
                 }
                 return getRandomImage();
-            case "video":
+            case ValueType.TYPE_VIDEO:
                 if(type.array()){
                     return  new Video[]{ getRandomVideo(),  getRandomVideo()};
                 }
                return getRandomVideo();
-            case "file":
+            case ValueType.TYPE_FILE:
                 if(type.array()){
                     return  new FileObject[]{ getRandomFile(),  getRandomFile()};
                 }
                 return getRandomFile();
-            case "time":
+            case ValueType.TYPE_TIME:
                 if(type.array()){
-                    return  new Double[]{ random.nextDouble(),  random.nextDouble()};
+                    return  new double[]{ random.nextDouble(),  random.nextDouble()};
                 }
                 return random.nextDouble();
-            case "enum":
+            case ValueType.TYPE_ENUM:
                 if(type.array()){
                     return  new String[]{ "still to test",  "still to test"};
                 }
                 return "still to test";
-            case "ref":
-                if(type.array()){
-                    return  new Object[]{ null,  null};
-                }
+            case ValueType.TYPE_REF:
                 return null;
-            case "phone":
+            case ValueType.TYPE_PHONE:
                 if(type.array()){
                     return  new String[]{ "9711391354",  "9711391355"};
                 }
                 return "9711391354";
-            case "email":
+            case ValueType.TYPE_EMAIL:
                 if(type.array()){
                     return  new String[]{ "mishraawake@gmail.com",  "mishraawake@gmail1.com"};
                 }
                 return "mishraawake@gmail.com";
-            case "usergenerated":
-                if(type.array()){
-                    return  new String[]{ "still to test",  "still to test"};
-                }
-                return "still to test";
+            case ValueType.TYPE_GENERIC_TYPE:
+                FieldValue[] fieldValueList = ItemUtils.getDummyFieldValueList(depth - 1 ).toArray(new FieldValue[0]);
+                return fieldValueList;
         }
 
         return null;

@@ -78,17 +78,17 @@ public class JCRDefinition implements JCRIdentifiable, IDefinition<JCRDefinition
     @JsonIgnore
     @Override
     public String getIdentityForPath() {
-        return NameUtils.getSEOLikeString(name);
+        return NameUtils.getJCRSEOLikeString(name);
     }
 
     @Override
     public Date getCreateDate() {
-        return createdDate;
+        return (Date)createdDate.clone();
     }
 
     @Override
     public void setCreateDate(Date createdDate) {
-        this.createdDate = createdDate;
+        this.createdDate = (Date)createdDate.clone();
     }
 
     @Override
@@ -101,4 +101,16 @@ public class JCRDefinition implements JCRIdentifiable, IDefinition<JCRDefinition
         this.createdBy = createdBy;
     }
 
+    @Override
+    public String toString() {
+        return "JCRDefinition{" +
+                "__id='" + __id + '\'' +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", fields=" + fields +
+                ", parentDefinition=" + parentDefinition +
+                ", createdDate=" + createdDate +
+                ", createdBy=" + createdBy +
+                '}';
+    }
 }

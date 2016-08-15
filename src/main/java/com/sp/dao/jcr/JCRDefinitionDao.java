@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sp.dao.api.DatabaseException;
 import com.sp.dao.api.DefinitionDao;
 import com.sp.dao.jcr.model.JCRDefinition;
+import com.sp.dao.jcr.utils.JCRNodePropertyName;
 import com.sp.model.Field;
 import com.sp.service.StringSerialization;
 import com.sp.service.impl.JCRIdGenerator;
@@ -42,9 +43,9 @@ public class JCRDefinitionDao implements DefinitionDao<JCRDefinition> {
 
     private void copyDefToNode(JCRDefinition definition, Node node) throws RepositoryException, JsonProcessingException {
 
-        node.setProperty(getPrefixedName("name"), definition.getName());
-        node.setProperty(getPrefixedName("description"), definition.getDescription());
-        Node fieldNode = node.addNode("fields");
+        node.setProperty(getPrefixedName(JCRNodePropertyName.NAME_LINK_NAME), definition.getName());
+        node.setProperty(getPrefixedName(JCRNodePropertyName.DESC_LINK_NAME), definition.getDescription());
+        Node fieldNode = node.addNode(JCRNodePropertyName.FIELDS_LINK_NAME);
 
         for(Field field : definition.getFields()){
             fieldNode.setProperty(getPrefixedName(field.getName()), serialization.serialize(field));
@@ -53,9 +54,9 @@ public class JCRDefinitionDao implements DefinitionDao<JCRDefinition> {
 
     private void copyNodeToDef(Node node, JCRDefinition definition) throws RepositoryException, IOException {
         definition.set__id(node.getPath());
-        definition.setDescription(node.getProperty(getPrefixedName("description")).getString());
-        definition.setName(node.getProperty(getPrefixedName("name")).getString());
-        Node fieldNode = node.getNode("fields");
+        definition.setDescription(node.getProperty(getPrefixedName(JCRNodePropertyName.DESC_LINK_NAME)).getString());
+        definition.setName(node.getProperty(getPrefixedName(JCRNodePropertyName.NAME_LINK_NAME)).getString());
+        Node fieldNode = node.getNode(JCRNodePropertyName.FIELDS_LINK_NAME);
         PropertyIterator propertyIterator = fieldNode.getProperties(JCRRepository.MY_NAME_SPACE_PREFIX + ":*");
         while(propertyIterator.hasNext()){
             Property  prop = propertyIterator.nextProperty();

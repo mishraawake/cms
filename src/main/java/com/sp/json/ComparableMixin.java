@@ -2,10 +2,6 @@ package com.sp.json;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.sp.validate.constraint.GreaterThanConstraint;
-import com.sp.validate.constraint.LengthConstraint;
-import com.sp.validate.constraint.LessThanContraint;
-import com.sp.validate.constraint.RangeConstraint;
 
 import java.util.Date;
 

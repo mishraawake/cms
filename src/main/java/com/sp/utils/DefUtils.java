@@ -26,11 +26,11 @@ public class DefUtils {
             field.setName("field"+i);
             GreaterThanConstraint greaterThanConstraint = new GreaterThanConstraint(5, true);
             field.getConstraints().add(greaterThanConstraint);
-            LessThanContraint lessThanConstraint = new LessThanContraint(new Date(), true);
+            LessThanConstraint lessThanConstraint = new LessThanConstraint(new Date(), true);
             field.getConstraints().add(lessThanConstraint);
-            RangeConstraint rangeThanConstraint = new RangeConstraint(new Long(2), true, 50.4, false);
+            RangeConstraint rangeThanConstraint = new RangeConstraint(2l, true, 50.4, false);
             field.getConstraints().add(rangeThanConstraint);
-            LengthConstraint lengthThanConstraint = new LengthConstraint(new Integer(100));
+            LengthConstraint lengthThanConstraint = new LengthConstraint(100);
             field.getConstraints().add(lengthThanConstraint);
 
             field.setSearchable(true);

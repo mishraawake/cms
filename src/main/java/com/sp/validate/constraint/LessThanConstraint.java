@@ -1,22 +1,20 @@
 package com.sp.validate.constraint;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-
 /**
  * Created by pankajmishra on 06/08/16.
  */
-public class LessThanContraint implements Constraint<Comparable> {
+public class LessThanConstraint implements Constraint<Comparable> {
 
     Comparable from;
 
     boolean eq;
 
-    public LessThanContraint(){
+    public LessThanConstraint(){
 
     }
 
 
-    public LessThanContraint(Comparable from, boolean eq){
+    public LessThanConstraint(Comparable from, boolean eq){
         this.from = from;
         this.eq = eq;
     }
@@ -48,7 +46,7 @@ public class LessThanContraint implements Constraint<Comparable> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        LessThanContraint that = (LessThanContraint) o;
+        LessThanConstraint that = (LessThanConstraint) o;
 
         if (eq != that.eq) return false;
         if (from != null ? !from.equals(that.from) : that.from != null) return false;

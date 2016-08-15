@@ -1,0 +1,11 @@
+Fix name space standarization and internal node hierarchy arrangement.
+ACL implementation.
+Versioning.
+Defence against abusing root name space by accident.
+
+
+Test and implement order of child.
+A real case implementation of system like toi uses.
+Indexing.
+Querying.
+Analytics.

@@ -5,8 +5,14 @@ package com.sp.utils;
  */
 public class NameUtils {
 
-    // trim the string, replace each multi space with one space and then replace every space with hyphen.
-    public static String getSEOLikeString(String str){
+    /**
+     * Trim the string, replace each multi space with one space and then replace every space with hyphen.
+     * We need also to ensure that it should not have some character which will create problem in jcr name.
+     * So jcr name special character should be filtered out here.
+     * @param str
+     * @return
+     */
+    public static String getJCRSEOLikeString(String str){
         return str.trim().replaceAll("\\s[\\s]*", "-");
     }
 }

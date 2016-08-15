@@ -1,6 +1,5 @@
 package com.sp.model;
 
-import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
@@ -26,16 +25,14 @@ public class Image  implements BinaryData {
     }
 
     @Override
-    public byte[] getBytes() {
-        byte[] bytes = null;
-        ByteOutputStream byteOutputStream = new ByteOutputStream();
+    public byte[] getBytes(){
+
         try {
-            IOUtils.copy(is, byteOutputStream);
+            return IOUtils.toByteArray(is);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        bytes = byteOutputStream.getBytes();
-        return bytes;
+        return null;
     }
 
 

@@ -5,6 +5,8 @@ package com.sp.dao.api;
  */
 public class DatabaseException extends Exception {
 
+
+
     public DatabaseException(Exception e){
         super(e);
     }

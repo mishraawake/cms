@@ -34,7 +34,7 @@ public class TestSerialization {
     public void testSerialization(){
         IDefinition<IDefinition> definition = DefUtils.getDummyDefition(pojoFactory);
         try {
-            IOUtils.write(serialization.serialize(definition) , new FileOutputStream("def.json"));
+            IOUtils.write(serialization.serialize(definition) , new FileOutputStream("output/def.json"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -44,7 +44,7 @@ public class TestSerialization {
     @Test
     public void testDeserialize(){
         try {
-            String str = IOUtils.toString(new FileInputStream("def.json"));
+            String str = IOUtils.toString(new FileInputStream("output/def.json"));
             JCRDefinition definition = serialization.deserialize(str, JCRDefinition.class);
 
             System.out.println(definition);

@@ -20,7 +20,7 @@ public class JCRItem implements JCRIdentifiable, IItem<JCRItem, JCRDefinition> {
     private String name;
     private JCRDefinition definition;
     private List<FieldValue> fieldValues = new ArrayList<FieldValue>();
-    private List<Association> associations = new ArrayList<Association>();
+    private List<Association<JCRItem>> associations = new ArrayList<Association<JCRItem>>();
     private Date createdDate;
     private IUser createdBy;
 
@@ -69,11 +69,11 @@ public class JCRItem implements JCRIdentifiable, IItem<JCRItem, JCRDefinition> {
         this.fieldValues = fieldValues;
     }
 
-    public List<Association> getAssociations() {
+    public List<Association<JCRItem>> getAssociations() {
         return associations;
     }
 
-    public void setAssociations(List<Association> associations) {
+    public void setAssociations(List<Association<JCRItem>> associations) {
         this.associations = associations;
     }
 
@@ -89,17 +89,18 @@ public class JCRItem implements JCRIdentifiable, IItem<JCRItem, JCRDefinition> {
     @JsonIgnore
     @Override
     public String getIdentityForPath() {
-        return NameUtils.getSEOLikeString(name);
+        return NameUtils.getJCRSEOLikeString(name);
     }
 
     @Override
     public Date getCreateDate() {
-        return createdDate;
+        // defensive copying
+        return (Date)createdDate.clone();
     }
 
     @Override
     public void setCreateDate(Date createdDate) {
-        this.createdDate = createdDate;
+        this.createdDate = (Date)createdDate.clone();
     }
 
     @Override
@@ -112,4 +113,16 @@ public class JCRItem implements JCRIdentifiable, IItem<JCRItem, JCRDefinition> {
         this.createdBy = createdBy;
     }
 
+    @Override
+    public String toString() {
+        return "JCRItem{" +
+                ", __id='" + __id + '\'' +
+                ", name='" + name + '\'' +
+                ", definition=" + definition +
+                ", fieldValues=" + fieldValues +
+                ", associations=" + associations +
+                ", createdDate=" + createdDate +
+                ", createdBy=" + createdBy +
+                '}';
+    }
 }
