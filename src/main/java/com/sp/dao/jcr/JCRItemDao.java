@@ -7,10 +7,8 @@ import com.sp.dao.jcr.model.JCRItem;
 import com.sp.dao.jcr.utils.JCRNodePropertyName;
 import com.sp.model.*;
 import com.sp.service.StringSerialization;
-import com.sp.dao.jcr.utils.JCRRepository;
+import com.sp.dao.api.JCRIRepository;
 import com.sp.dao.jcr.utils.JcrDaoUtils;
-import com.sp.service.impl.JCRIdGenerator;
-import org.apache.jackrabbit.commons.SimpleValueFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.jcr.*;
@@ -29,6 +27,10 @@ public class JCRItemDao implements ItemDao<JCRItem> {
 
     @Autowired
     JCRDefinitionDao jcrDefinitionDao;
+
+
+    @Autowired
+    JCRIRepository JCRIRepository;
 
     @Override
     public JCRItem create(JCRItem element) throws DatabaseException {
@@ -53,7 +55,7 @@ public class JCRItemDao implements ItemDao<JCRItem> {
         Session session = null;
         try {
 
-            session = JCRRepository.getSession();
+            session = JCRIRepository.getSession();
             Node node = session.getNode(element.get__id());
             node.setProperty(JCRNodePropertyName.NAME_LINK_NAME, element.getName());
             JcrDaoUtils.populateNodeFromItem(element.getFieldValues(), node.getNode(JCRNodePropertyName.FIELDS_LINK_NAME), session, serialization);
@@ -73,7 +75,7 @@ public class JCRItemDao implements ItemDao<JCRItem> {
     public JCRItem get(Serializable id) throws DatabaseException {
         Session session = null;
         try {
-            session = JCRRepository.getSession();
+            session = JCRIRepository.getSession();
             Node itemNode = session.getNode((String) id);
             JCRItem item = getJcrItemFromNode(itemNode);
             return item;
@@ -110,7 +112,7 @@ public class JCRItemDao implements ItemDao<JCRItem> {
     public void delete(Serializable id) throws DatabaseException {
         Session session = null;
         try {
-            session = JCRRepository.getSession();
+            session = JCRIRepository.getSession();
             session.removeItem((String) id);
             session.save();
         } catch (RepositoryException e) {
@@ -126,7 +128,7 @@ public class JCRItemDao implements ItemDao<JCRItem> {
     public boolean exists(Serializable id) throws DatabaseException {
         Session session = null;
         try {
-            session = JCRRepository.getSession();
+            session = JCRIRepository.getSession();
             return session.nodeExists((String) id);
         } catch (RepositoryException e) {
             throw new DatabaseException(e);
@@ -154,10 +156,10 @@ public class JCRItemDao implements ItemDao<JCRItem> {
     public JCRItem getItemWithAssociations(Serializable id, String name) throws DatabaseException {
         Session session = null;
         try {
-            session = JCRRepository.getSession();
+            session = JCRIRepository.getSession();
             JCRItem item = get((String) id);
             Node itemNode = session.getNode((String) id);
-            NodeIterator nodeIterator =  itemNode.getNodes(JCRRepository.PACKAGE_NAME_SPACE_PREFIX + ":"+name);
+            NodeIterator nodeIterator =  itemNode.getNodes(JCRIRepository.PACKAGE_NAME_SPACE_PREFIX + ":"+name);
 
             while(nodeIterator.hasNext()){
                 Association association = new Association();
@@ -167,7 +169,7 @@ public class JCRItemDao implements ItemDao<JCRItem> {
                 List<FieldValue> assocFieldValueList = JcrDaoUtils.getFieldsFromNode(associationFieldNode, serialization);
                 association.setProperties(assocFieldValueList);
                 association.setName(associationNode.getProperty(JCRNodePropertyName.NAME_LINK_NAME).getString());
-                NodeIterator associatedLinkNodes = associationNode.getNodes(JCRRepository.PACKAGE_NAME_SPACE_PREFIX + ":*");
+                NodeIterator associatedLinkNodes = associationNode.getNodes(JCRIRepository.PACKAGE_NAME_SPACE_PREFIX + ":*");
 
                 while (associatedLinkNodes.hasNext()){
                     AssociationLink associationLink = new AssociationLink();
@@ -175,7 +177,7 @@ public class JCRItemDao implements ItemDao<JCRItem> {
                     Node assocLinkFieldNode = associatedLinkNode.getNode(JCRNodePropertyName.FIELDS_LINK_NAME);
                     List<FieldValue> assocLinkFieldValueList = JcrDaoUtils.getFieldsFromNode(assocLinkFieldNode, serialization);
                     associationLink.setProperties(assocLinkFieldValueList);
-                    PropertyIterator assocLinkPropIterator =  associatedLinkNode.getProperties(JCRRepository.MY_NAME_SPACE_PREFIX + ":*");
+                    PropertyIterator assocLinkPropIterator =  associatedLinkNode.getProperties(JCRIRepository.MY_NAME_SPACE_PREFIX + ":*");
                     Node linkedItemNode = assocLinkPropIterator.nextProperty().getNode();
                     JCRItem linkedItem = getJcrItemFromNode(linkedItemNode);
                     associationLink.setLinked(linkedItem);
@@ -200,7 +202,7 @@ public class JCRItemDao implements ItemDao<JCRItem> {
         Session session = null;
         try {
 
-            session = JCRRepository.getSession();
+            session = JCRIRepository.getSession();
             Node itemNode = session.getNode((String) id);
             NodeIterator nodeIterator =  itemNode.getNode(JCRNodePropertyName.CHILD_LINK_VALUE).getNodes();
             List<JCRItem> items = new ArrayList<JCRItem>();
@@ -259,7 +261,7 @@ public class JCRItemDao implements ItemDao<JCRItem> {
         Session session = null;
 
         try {
-            session = JCRRepository.getSession();
+            session = JCRIRepository.getSession();
             toBeCreated = createChildInSession(toBeCreated, alreadyCreated, session);
             session.save();
             return toBeCreated;
@@ -335,11 +337,11 @@ public class JCRItemDao implements ItemDao<JCRItem> {
     }
 
     private String getPkgPrefixedName(String name) {
-        return JCRRepository.PACKAGE_NAME_SPACE_PREFIX + ":" + name;
+        return JCRIRepository.PACKAGE_NAME_SPACE_PREFIX + ":" + name;
     }
 
     private String getGlobalPrefixedName(String name) {
-        return JCRRepository.MY_NAME_SPACE_PREFIX + ":" + name;
+        return JCRIRepository.MY_NAME_SPACE_PREFIX + ":" + name;
     }
 
 

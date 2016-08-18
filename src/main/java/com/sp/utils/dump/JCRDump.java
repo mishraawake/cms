@@ -1,23 +1,17 @@
 package com.sp.utils.dump;
 
-import com.sp.dao.jcr.utils.JCRRepository;
 import org.apache.jackrabbit.api.JackrabbitSession;
+import org.apache.jackrabbit.api.security.JackrabbitAccessControlList;
 import org.apache.jackrabbit.api.security.user.Authorizable;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.commons.SimpleValueFactory;
-import org.apache.jackrabbit.commons.jackrabbit.authorization.AccessControlUtils;
 import org.apache.jackrabbit.oak.Oak;
 import org.apache.jackrabbit.oak.jcr.Jcr;
-import org.apache.jackrabbit.oak.spi.security.principal.EveryonePrincipal;
-import sun.security.acl.PrincipalImpl;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.security.*;
-import javax.security.auth.Subject;
-import java.io.Serializable;
 import java.security.Principal;
-import java.security.acl.Group;
 import java.util.NoSuchElementException;
 
 /**
@@ -36,12 +30,13 @@ public class JCRDump {
         JackrabbitSession jackrabbitSession = (JackrabbitSession)session;
 
 
-        org.apache.jackrabbit.api.security.user.Group user = jackrabbitSession.getUserManager().createGroup("pankaj");
+        org.apache.jackrabbit.api.security.user.User user = jackrabbitSession.getUserManager().createUser("pankaj", "pankaj");
 
         user.setProperty("address", (new SimpleValueFactory()).createValue("HI this is my address"));
 
         AccessControlManager aMgr = session.getAccessControlManager();
 
+        getAccessControlList(user, aMgr);
 
 // the policy must be re-set
        // aMgr.setPolicy("/pankaj", acl);
@@ -84,19 +79,23 @@ public class JCRDump {
     private static AccessControlList getAccessControlList(User user, AccessControlManager aMgr) throws RepositoryException {
         // create a privilege set with jcr:all
         Privilege[] privileges = new Privilege[] { aMgr.privilegeFromName(Privilege.JCR_READ) , aMgr.privilegeFromName(Privilege.JCR_ALL) };
-        AccessControlList acl;
+        JackrabbitAccessControlList acl;
         try {
             // get first applicable policy (for nodes w/o a policy)
-            acl = (AccessControlList)aMgr.getApplicablePolicies("/pankaj").nextAccessControlPolicy();
+            acl = (JackrabbitAccessControlList)aMgr.getApplicablePolicies("/").nextAccessControlPolicy();
         } catch (NoSuchElementException e) {
             // else node already has a policy, get that one
-            acl = (AccessControlList)aMgr.getPolicies("/pankaj")[0];
+            acl = (JackrabbitAccessControlList)aMgr.getPolicies("/")[0];
         }
 // remove all existing entries
         for (AccessControlEntry e : acl.getAccessControlEntries()) {
             acl.removeAccessControlEntry(e);
         }
 // add a new one for the special "everyone" principal
+
+       for(String str : acl.getRestrictionNames()){
+           System.out.println(acl.getRestrictionType(str));
+       }
         acl.addAccessControlEntry(user.getPrincipal(), privileges);
         return acl;
     }

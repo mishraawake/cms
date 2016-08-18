@@ -1,6 +1,7 @@
 package com.sp.dao.jcr.utils;
 
 import com.sp.dao.api.DatabaseException;
+import com.sp.dao.api.JCRIRepository;
 import com.sp.model.*;
 import com.sp.service.StringSerialization;
 import org.apache.jackrabbit.commons.SimpleValueFactory;
@@ -20,7 +21,7 @@ public class JcrDaoUtils {
 
 
     public static String getPrefixedName(String name){
-        return JCRRepository.MY_NAME_SPACE_PREFIX + ":" + name;
+        return JCRIRepository.MY_NAME_SPACE_PREFIX + ":" + name;
     }
 
 
@@ -83,112 +84,123 @@ public class JcrDaoUtils {
             propertyNode.setProperty(JCRNodePropertyName.FIELD_LINK_NAME, serialization.serialize(fieldValue.getField()));
 
             // TODO: can we have little elegant way to do below task ?
-            switch (fieldValue.getField().getValueType().value()) {
+            switch (fieldValue.getField().getValueType()) {
 
-                case ValueType.TYPE_BOOLEAN:
-                    if (fieldValue.getValue() instanceof boolean[]) {
-                        boolean[] array = (boolean[]) fieldValue.getValue();
-                        Value[] values = new Value[array.length];
+                case ArrayOfBoolean:
+                {
+                    boolean[] array = (boolean[]) fieldValue.getValue();
+                    Value[] values = new Value[array.length];
 
-                        int count = 0;
-                        for (boolean eachBool : array) {
-                            values[count++] = simpleValueFactory.createValue(eachBool);
-                        }
-                        propertyNode.setProperty(JCRNodePropertyName.VALUE_LINK_NAME, values);
-                    } else {
-                        propertyNode.setProperty(JCRNodePropertyName.VALUE_LINK_NAME, (boolean) fieldValue.getValue());
+                    int count = 0;
+                    for (boolean eachBool : array) {
+                        values[count++] = simpleValueFactory.createValue(eachBool);
                     }
+                    propertyNode.setProperty(JCRNodePropertyName.VALUE_LINK_NAME, values);
+                }
                     break;
-                case ValueType.TYPE_BYTE:
-                    if (fieldValue.getValue() instanceof byte[]) {
-                        byte[] array = (byte[]) fieldValue.getValue();
-                        Value[] values = new Value[array.length];
-
-                        int count = 0;
-                        for (byte each : array) {
-                            values[count++] = simpleValueFactory.createValue(each);
-                        }
-                        propertyNode.setProperty(JCRNodePropertyName.VALUE_LINK_NAME, values);
-                    } else {
-                        propertyNode.setProperty(JCRNodePropertyName.VALUE_LINK_NAME, (byte) fieldValue.getValue());
-                    }
+                case Boolean:
+                    propertyNode.setProperty(JCRNodePropertyName.VALUE_LINK_NAME, (boolean) fieldValue.getValue());
                     break;
-                case ValueType.TYPE_CHAR:
+                case ArrayOfByte:
+                {
+                    byte[] array = (byte[]) fieldValue.getValue();
+                    Value[] values = new Value[array.length];
 
-                    if (fieldValue.getValue() instanceof char[]) {
-                        char[] array = (char[]) fieldValue.getValue();
-                        Value[] values = new Value[array.length];
-
-                        int count = 0;
-                        for (char each : array) {
-                            values[count++] = simpleValueFactory.createValue(each);
-                        }
-                        propertyNode.setProperty(JCRNodePropertyName.VALUE_LINK_NAME, values);
-                    } else {
-                        propertyNode.setProperty(JCRNodePropertyName.VALUE_LINK_NAME, (char) fieldValue.getValue());
+                    int count = 0;
+                    for (byte each : array) {
+                        values[count++] = simpleValueFactory.createValue(each);
                     }
-
+                    propertyNode.setProperty(JCRNodePropertyName.VALUE_LINK_NAME, values);
+                }
                     break;
-                case ValueType.TYPE_SHORT:
-                    if (fieldValue.getValue() instanceof short[]) {
-                        short[] array = (short[]) fieldValue.getValue();
-                        Value[] values = new Value[array.length];
 
-                        int count = 0;
-                        for (short each : array) {
-                            values[count++] = simpleValueFactory.createValue(each);
-                        }
-                        propertyNode.setProperty(JCRNodePropertyName.VALUE_LINK_NAME, values);
-                    } else {
-                        propertyNode.setProperty(JCRNodePropertyName.VALUE_LINK_NAME, (short) fieldValue.getValue());
+                case Byte:
+                    propertyNode.setProperty(JCRNodePropertyName.VALUE_LINK_NAME, (byte) fieldValue.getValue());
+                    break;
+                case ArrayOfChar: {
+
+                    char[] array = (char[]) fieldValue.getValue();
+                    Value[] values = new Value[array.length];
+
+                    int count = 0;
+                    for (char each : array) {
+                        values[count++] = simpleValueFactory.createValue(each);
                     }
+                    propertyNode.setProperty(JCRNodePropertyName.VALUE_LINK_NAME, values);
 
                     break;
-                case ValueType.TYPE_INTEGER:
-                    if (fieldValue.getValue() instanceof int[]) {
-                        int[] array = (int[]) fieldValue.getValue();
-                        Value[] values = new Value[array.length];
+                }
+                case Char:
 
-                        int count = 0;
-                        for (int each : array) {
-                            values[count++] = simpleValueFactory.createValue(each);
-                        }
-                        propertyNode.setProperty(JCRNodePropertyName.VALUE_LINK_NAME, values);
-                    } else {
+                    propertyNode.setProperty(JCRNodePropertyName.VALUE_LINK_NAME, (char) fieldValue.getValue());
+                    break;
+                case ArrayOfShort: {
+                    short[] array = (short[]) fieldValue.getValue();
+                    Value[] values = new Value[array.length];
+
+                    int count = 0;
+                    for (short each : array) {
+                        values[count++] = simpleValueFactory.createValue(each);
+                    }
+                    propertyNode.setProperty(JCRNodePropertyName.VALUE_LINK_NAME, values);
+                    break;
+                }
+                case Short:
+
+
+                    propertyNode.setProperty(JCRNodePropertyName.VALUE_LINK_NAME, (short) fieldValue.getValue());
+
+                    break;
+                case ArrayOfInteger: {
+                    int[] array = (int[]) fieldValue.getValue();
+                    Value[] values = new Value[array.length];
+
+                    int count = 0;
+                    for (int each : array) {
+                        values[count++] = simpleValueFactory.createValue(each);
+                    }
+                    propertyNode.setProperty(JCRNodePropertyName.VALUE_LINK_NAME, values);
+                    break;
+                }
+
+                case Integer:
+
                         propertyNode.setProperty(JCRNodePropertyName.VALUE_LINK_NAME, (int) fieldValue.getValue());
-                    }
+
 
                     break;
-                case ValueType.TYPE_LONG:
-                    if (fieldValue.getValue() instanceof long[]) {
-                        long[] array = (long[]) fieldValue.getValue();
-                        Value[] values = new Value[array.length];
+                case ArrayOfLong: {
+                    long[] array = (long[]) fieldValue.getValue();
+                    Value[] values = new Value[array.length];
 
-                        int count = 0;
-                        for (long each : array) {
-                            values[count++] = simpleValueFactory.createValue(each);
-                        }
-                        propertyNode.setProperty(JCRNodePropertyName.VALUE_LINK_NAME, values);
-                    } else {
-                        propertyNode.setProperty(JCRNodePropertyName.VALUE_LINK_NAME, (long) fieldValue.getValue());
+                    int count = 0;
+                    for (long each : array) {
+                        values[count++] = simpleValueFactory.createValue(each);
                     }
-                    break;
-                case ValueType.TYPE_DOUBLE:
-                    if (fieldValue.getValue() instanceof double[]) {
-                        double[] array = (double[]) fieldValue.getValue();
-                        Value[] values = new Value[array.length];
+                    propertyNode.setProperty(JCRNodePropertyName.VALUE_LINK_NAME, values);
 
-                        int count = 0;
-                        for (Double each : array) {
-                            values[count++] = simpleValueFactory.createValue(each);
-                        }
-                        propertyNode.setProperty(JCRNodePropertyName.VALUE_LINK_NAME, values);
-                    } else {
-                        propertyNode.setProperty(JCRNodePropertyName.VALUE_LINK_NAME, (double) fieldValue.getValue());
-                    }
                     break;
-                case ValueType.TYPE_FLOAT:
-                    if (fieldValue.getValue() instanceof float[]) {
+                }
+                case Long:
+
+                    propertyNode.setProperty(JCRNodePropertyName.VALUE_LINK_NAME, (long) fieldValue.getValue());
+
+                    break;
+                case ArrayOfDouble: {
+                    double[] array = (double[]) fieldValue.getValue();
+                    Value[] values = new Value[array.length];
+
+                    int count = 0;
+                    for (Double each : array) {
+                        values[count++] = simpleValueFactory.createValue(each);
+                    }
+                    propertyNode.setProperty(JCRNodePropertyName.VALUE_LINK_NAME, values);
+                    break;
+                }
+                case Double:
+                    propertyNode.setProperty(JCRNodePropertyName.VALUE_LINK_NAME, (double) fieldValue.getValue());
+                    break;
+                case ArrayOfFloat: {
                         float[] array = (float[]) fieldValue.getValue();
                         Value[] values = new Value[array.length];
 
@@ -197,94 +209,95 @@ public class JcrDaoUtils {
                             values[count++] = simpleValueFactory.createValue(each);
                         }
                         propertyNode.setProperty(JCRNodePropertyName.VALUE_LINK_NAME, values);
-                    } else {
-                        propertyNode.setProperty(JCRNodePropertyName.VALUE_LINK_NAME, (float) fieldValue.getValue());
+                        break;
                     }
+                case Float:
+                    propertyNode.setProperty(JCRNodePropertyName.VALUE_LINK_NAME, (float) fieldValue.getValue());
                     break;
-                case ValueType.TYPE_DATE:
+                case ArrayOfDate:
+                {
+                    Date[] array = (Date[]) fieldValue.getValue();
+                    Value[] values = new Value[array.length];
 
-
-                    if (fieldValue.getValue() instanceof Date[]) {
-                        Date[] array = (Date[]) fieldValue.getValue();
-                        Value[] values = new Value[array.length];
-
-                        int count = 0;
-                        for (Date each : array) {
-                            values[count++] = simpleValueFactory.createValue(createCalender(each));
-                        }
-                        propertyNode.setProperty(JCRNodePropertyName.VALUE_LINK_NAME, values);
-                    } else {
-                        propertyNode.setProperty(JCRNodePropertyName.VALUE_LINK_NAME, createCalender((Date) fieldValue.getValue()));
+                    int count = 0;
+                    for (Date each : array) {
+                        values[count++] = simpleValueFactory.createValue(createCalender(each));
                     }
+                    propertyNode.setProperty(JCRNodePropertyName.VALUE_LINK_NAME, values);
+                    break;
+                }
+                case Date:
+                    propertyNode.setProperty(JCRNodePropertyName.VALUE_LINK_NAME, createCalender((Date) fieldValue.getValue()));
+                    break;
 
-                    break;
-                case ValueType.TYPE_STRING:
+                case String:
+                case ArrayOfString:
+                case BigString:
+                case ArrayOfBigString:
+                case RichText:
+                case ArrayOfRichText:
+                case RichMediaText:
+                case ArrayOfRichMediaText:
+                case ArrayOfEnum:
+                case Enum:
+                case ArrayOfPhone:
+                case Phone:
+                case ArrayOfEmail:
+                case Email:
                     setStringProp(simpleValueFactory, fieldValue, propertyNode);
                     break;
-                case ValueType.TYPE_BIG_STRING:
-                    setStringProp(simpleValueFactory, fieldValue, propertyNode);
-                    break;
-                case ValueType.TYPE_RICH_TEXT:
-                    setStringProp(simpleValueFactory, fieldValue, propertyNode);
-                    break;
-                case ValueType.TYPE_RICH_MEDIA_TEXT:
-                    setStringProp(simpleValueFactory, fieldValue, propertyNode);
-                    break;
-                case ValueType.TYPE_IMAGE:
-
+                case ArrayOfImage: {
                     Node fileImages = propertyNode.addNode(JCRNodePropertyName.BINARIES_LINK_NAME);
-                    if (fieldValue.getValue() instanceof Image[]) {
-                        addBinarysToNode(fileImages, (Image[]) fieldValue.getValue(), session.getValueFactory());
-                    } else {
-                        addBinaryToNode(fileImages, (Image) fieldValue.getValue(), session.getValueFactory(), JCRNodePropertyName.VALUE_LINK_NAME);
-                    }
-
+                    addBinarysToNode(fileImages, (Image[]) fieldValue.getValue(), session.getValueFactory());
                     break;
-                case ValueType.TYPE_VIDEO:
-
+                }
+                case Image: {
+                    Node fileImages = propertyNode.addNode(JCRNodePropertyName.BINARIES_LINK_NAME);
+                    addBinaryToNode(fileImages, (Image) fieldValue.getValue(), session.getValueFactory(), JCRNodePropertyName.VALUE_LINK_NAME);
+                    break;
+                }
+                case ArrayOfVideo:{
                     Node fileVideos = propertyNode.addNode(JCRNodePropertyName.BINARIES_LINK_NAME);
-                    if (fieldValue.getValue() instanceof Video[]) {
-                        addBinarysToNode(fileVideos, (Video[]) fieldValue.getValue(), session.getValueFactory());
-                    } else {
-                        addBinaryToNode(fileVideos, (Video) fieldValue.getValue(), session.getValueFactory(), JCRNodePropertyName.VALUE_LINK_NAME);
-                    }
+                    addBinarysToNode(fileVideos, (Video[]) fieldValue.getValue(), session.getValueFactory());
                     break;
-                case ValueType.TYPE_FILE:
+                }
+                case Video: {
+                    Node fileVideos = propertyNode.addNode(JCRNodePropertyName.BINARIES_LINK_NAME);
+                    addBinaryToNode(fileVideos, (Video) fieldValue.getValue(), session.getValueFactory(), JCRNodePropertyName.VALUE_LINK_NAME);
+                    break;
+                }
+                case ArrayOfFile:{
                     Node fileObjects = propertyNode.addNode(JCRNodePropertyName.BINARIES_LINK_NAME);
-                    if (fieldValue.getValue() instanceof FileObject[]) {
-                        addBinarysToNode(fileObjects, (FileObject[]) fieldValue.getValue(), session.getValueFactory());
-                    } else {
-                        addBinaryToNode(fileObjects, (FileObject) fieldValue.getValue(), session.getValueFactory(), JCRNodePropertyName.VALUE_LINK_NAME);
-                    }
+                    addBinarysToNode(fileObjects, (FileObject[]) fieldValue.getValue(), session.getValueFactory());
                     break;
-                case ValueType.TYPE_TIME:
-                    if (fieldValue.getValue() instanceof double[]) {
-                        double[] array = (double[]) fieldValue.getValue();
-                        Value[] values = new Value[array.length];
+                }
 
-                        int count = 0;
-                        for (Double each : array) {
-                            values[count++] = simpleValueFactory.createValue(each);
-                        }
-                        propertyNode.setProperty(JCRNodePropertyName.VALUE_LINK_NAME, values);
-                    } else {
-                        propertyNode.setProperty(JCRNodePropertyName.VALUE_LINK_NAME, (double) fieldValue.getValue());
+                case File:{
+                    Node fileObjects = propertyNode.addNode(JCRNodePropertyName.BINARIES_LINK_NAME);
+                    addBinaryToNode(fileObjects, (FileObject) fieldValue.getValue(), session.getValueFactory(), JCRNodePropertyName.VALUE_LINK_NAME);
+                    break;
+                }
+                case ArrayOfTime:{
+                    double[] array = (double[]) fieldValue.getValue();
+                    Value[] values = new Value[array.length];
+
+                    int count = 0;
+                    for (Double each : array) {
+                        values[count++] = simpleValueFactory.createValue(each);
                     }
+                    propertyNode.setProperty(JCRNodePropertyName.VALUE_LINK_NAME, values);
                     break;
-                case ValueType.TYPE_ENUM:
-                    setStringProp(simpleValueFactory, fieldValue, propertyNode);
+                }
+                case Time:
+                    propertyNode.setProperty(JCRNodePropertyName.VALUE_LINK_NAME, (double) fieldValue.getValue());
                     break;
-                case ValueType.TYPE_REF:
+                case Ref:
+                case ArrayOfRef:
                     //TODO : will have to handle.
                     // propertyNode.setProperty(JCRNodePropertyName.VALUE_LINK_NAME, (Node) fieldValue.getValue());
                     break;
-                case ValueType.TYPE_PHONE:
-                    setStringProp(simpleValueFactory, fieldValue, propertyNode);
-                    break;
-                case ValueType.TYPE_EMAIL:
-                    setStringProp(simpleValueFactory, fieldValue, propertyNode);
-                    break;
-                case ValueType.TYPE_GENERIC_TYPE:
+
+                case GENERIC_TYPE:
                     if (fieldValue.getValue() instanceof FieldValue[]) {
                         FieldValue[] fieldValues = (FieldValue[]) fieldValue.getValue();
                         List<FieldValue> fieldValueListChild = new ArrayList<FieldValue>();
@@ -295,7 +308,7 @@ public class JcrDaoUtils {
                     }
                     break;
                 default:
-                    throw new DatabaseException(new Exception("An unknown value type present in fieldlist"));
+                    throw new DatabaseException(new Exception("An unknown value type present in fieldList "+fieldValue.getField().getValueType()));
             }
         }
     }
@@ -371,7 +384,7 @@ public class JcrDaoUtils {
     public static List<FieldValue> getFieldsFromNode(Node itemNode, StringSerialization serialization) throws Exception {
         List<FieldValue> fieldValueList = new ArrayList<FieldValue>();
 
-        NodeIterator nodeIterator = itemNode.getNodes(JCRRepository.MY_NAME_SPACE_PREFIX + ":*");
+        NodeIterator nodeIterator = itemNode.getNodes(JCRIRepository.MY_NAME_SPACE_PREFIX + ":*");
 
         while (nodeIterator.hasNext()) {
             Node propNode = nodeIterator.nextNode();
@@ -380,183 +393,197 @@ public class JcrDaoUtils {
 
             Field field = serialization.deserialize(fieldStr, Field.class);
 
-            if (propNode.hasNode(JCRNodePropertyName.BINARIES_LINK_NAME)) {
-
-                Node binaryContainingNode = (Node) propNode.getNode(JCRNodePropertyName.BINARIES_LINK_NAME);
-
-                if (field.getValueType().equals(ValueType.Image)) {
-                    fieldValueList.add(FieldValue.getFieldValue(field, JcrDaoUtils.getBinaryFromNode(binaryContainingNode, BinaryFactory.IMAGE_FACTORY.getObject())));
-                } else if (field.getValueType().equals(ValueType.ArrayOfImage)) {
-                    fieldValueList.add(FieldValue.getFieldValue(field, JcrDaoUtils.getBinariesFromNode(binaryContainingNode, new ArrayList<BinaryData>(), BinaryFactory.IMAGE_FACTORY)));
-                } else if (field.getValueType().equals(ValueType.Video)) {
-                    fieldValueList.add(FieldValue.getFieldValue(field, JcrDaoUtils.getBinaryFromNode(binaryContainingNode, BinaryFactory.VIDEO_FACTORY.getObject())));
-                } else if (field.getValueType().equals(ValueType.ArrayOfVideo)) {
-                    fieldValueList.add(FieldValue.getFieldValue(field, JcrDaoUtils.getBinariesFromNode(binaryContainingNode, new ArrayList<BinaryData>(), BinaryFactory.VIDEO_FACTORY)));
-                } else if (field.getValueType().equals(ValueType.File)) {
-                    fieldValueList.add(FieldValue.getFieldValue(field, JcrDaoUtils.getBinaryFromNode(binaryContainingNode, BinaryFactory.FILE_FACTORY.getObject())));
-                } else if (field.getValueType().equals(ValueType.ArrayOfFile)) {
-                    fieldValueList.add(FieldValue.getFieldValue(field, JcrDaoUtils.getBinariesFromNode(binaryContainingNode, new ArrayList<BinaryData>(), BinaryFactory.FILE_FACTORY)));
-                }
-            }
-
-            if (propNode.hasProperty(JCRNodePropertyName.VALUE_LINK_NAME)) {
-
-
                 // TODO: can we have little elegant way to do below task ?
-                switch (field.getValueType().value()) {
+                switch (field.getValueType()) {
 
-                    case ValueType.TYPE_BOOLEAN:
-                        if (field.getValueType().array()) {
 
-                            Value[] values = propNode.getProperty(JCRNodePropertyName.VALUE_LINK_NAME).getValues();
-                            boolean[] array = new boolean[values.length];
-                            int count = 0;
-                            for (Value eachValue : values) {
-                                array[count++] = eachValue.getBoolean();
-                            }
-                            fieldValueList.add(FieldValue.getFieldValue(field, array));
-                        } else {
-                            fieldValueList.add(FieldValue.getFieldValue(field, propNode.getProperty(JCRNodePropertyName.VALUE_LINK_NAME).getBoolean()));
-                        }
-                        break;
-                    case ValueType.TYPE_BYTE:
-                        if (field.getValueType().array()) {
-                            Value[] values = propNode.getProperty(JCRNodePropertyName.VALUE_LINK_NAME).getValues();
-                            byte[] array = new byte[values.length];
-                            int count = 0;
-                            for (Value eachValue : values) {
-                                array[count++] = (byte) eachValue.getLong();
-                            }
-                            fieldValueList.add(FieldValue.getFieldValue(field, array));
-                        } else {
-                            fieldValueList.add(FieldValue.getFieldValue(field, Byte.valueOf(propNode.getProperty(JCRNodePropertyName.VALUE_LINK_NAME).getLong() + "")));
-                        }
-                        break;
-                    case ValueType.TYPE_CHAR:
+                    case ArrayOfBoolean: {
 
-                        if (field.getValueType().array()) {
-                            Value[] values = propNode.getProperty(JCRNodePropertyName.VALUE_LINK_NAME).getValues();
-                            char[] array = new char[values.length];
-                            int count = 0;
-                            for (Value eachValue : values) {
-                                array[count++] = (char) eachValue.getLong();
-                            }
-                            fieldValueList.add(FieldValue.getFieldValue(field, array));
-                        } else {
-                            fieldValueList.add(FieldValue.getFieldValue(field, (char) propNode.getProperty(JCRNodePropertyName.VALUE_LINK_NAME).getLong()));
+                        Value[] values = propNode.getProperty(JCRNodePropertyName.VALUE_LINK_NAME).getValues();
+                        boolean[] array = new boolean[values.length];
+                        int count = 0;
+                        for (Value eachValue : values) {
+                            array[count++] = eachValue.getBoolean();
                         }
+                        fieldValueList.add(FieldValue.getFieldValue(field, array));
                         break;
-                    case ValueType.TYPE_SHORT:
-                        if (field.getValueType().array()) {
-                            Value[] values = propNode.getProperty(JCRNodePropertyName.VALUE_LINK_NAME).getValues();
-                            short[] array = new short[values.length];
-                            int count = 0;
-                            for (Value eachValue : values) {
-                                array[count++] = (short) eachValue.getLong();
-                            }
-                            fieldValueList.add(FieldValue.getFieldValue(field, array));
-                        } else {
-                            fieldValueList.add(FieldValue.getFieldValue(field, (short) propNode.getProperty(JCRNodePropertyName.VALUE_LINK_NAME).getLong()));
+                    }
+
+                    case Boolean:
+                        fieldValueList.add(FieldValue.getFieldValue(field, propNode.getProperty(JCRNodePropertyName.VALUE_LINK_NAME).getBoolean()));
+                        break;
+                    case ArrayOfByte: {
+                        Value[] values = propNode.getProperty(JCRNodePropertyName.VALUE_LINK_NAME).getValues();
+                        byte[] array = new byte[values.length];
+                        int count = 0;
+                        for (Value eachValue : values) {
+                            array[count++] = (byte) eachValue.getLong();
                         }
+                        fieldValueList.add(FieldValue.getFieldValue(field, array));
+                        break;
+                    }
+
+                    case Byte:
+                        fieldValueList.add(FieldValue.getFieldValue(field, Byte.valueOf(propNode.getProperty(JCRNodePropertyName.VALUE_LINK_NAME).getLong() + "")));
+                        break;
+                    case ArrayOfChar: {
+
+                        Value[] values = propNode.getProperty(JCRNodePropertyName.VALUE_LINK_NAME).getValues();
+                        char[] array = new char[values.length];
+                        int count = 0;
+                        for (Value eachValue : values) {
+                            array[count++] = (char) eachValue.getLong();
+                        }
+                        fieldValueList.add(FieldValue.getFieldValue(field, array));
 
                         break;
-                    case ValueType.TYPE_INTEGER:
-                        if (field.getValueType().array()) {
-                            Value[] values = propNode.getProperty(JCRNodePropertyName.VALUE_LINK_NAME).getValues();
-                            int[] array = new int[values.length];
-                            int count = 0;
-                            for (Value eachValue : values) {
-                                array[count++] = (int) eachValue.getLong();
-                            }
-                            fieldValueList.add(FieldValue.getFieldValue(field, array));
-                        } else {
-                            fieldValueList.add(FieldValue.getFieldValue(field, (int) propNode.getProperty(JCRNodePropertyName.VALUE_LINK_NAME).getLong()));
+                    }
+                    case Char:
+                        fieldValueList.add(FieldValue.getFieldValue(field, (char) propNode.getProperty(JCRNodePropertyName.VALUE_LINK_NAME).getLong()));
+                        break;
+                    case ArrayOfShort: {
+                        Value[] values = propNode.getProperty(JCRNodePropertyName.VALUE_LINK_NAME).getValues();
+                        short[] array = new short[values.length];
+                        int count = 0;
+                        for (Value eachValue : values) {
+                            array[count++] = (short) eachValue.getLong();
                         }
+                        fieldValueList.add(FieldValue.getFieldValue(field, array));
+                        break;
+                    }
+                    case Short:
+                        fieldValueList.add(FieldValue.getFieldValue(field, (short) propNode.getProperty(JCRNodePropertyName.VALUE_LINK_NAME).getLong()));
 
                         break;
-                    case ValueType.TYPE_LONG:
-                        if (field.getValueType().array()) {
-                            Value[] values = propNode.getProperty(JCRNodePropertyName.VALUE_LINK_NAME).getValues();
-                            long[] array = new long[values.length];
-                            int count = 0;
-                            for (Value eachValue : values) {
-                                array[count++] = eachValue.getLong();
-                            }
-                            fieldValueList.add(FieldValue.getFieldValue(field, array));
-                        } else {
-                            fieldValueList.add(FieldValue.getFieldValue(field, propNode.getProperty(JCRNodePropertyName.VALUE_LINK_NAME).getLong()));
+                    case ArrayOfInteger: {
+                        Value[] values = propNode.getProperty(JCRNodePropertyName.VALUE_LINK_NAME).getValues();
+                        int[] array = new int[values.length];
+                        int count = 0;
+                        for (Value eachValue : values) {
+                            array[count++] = (int) eachValue.getLong();
                         }
+                        fieldValueList.add(FieldValue.getFieldValue(field, array));
                         break;
-                    case ValueType.TYPE_DOUBLE:
+                    }
+
+                    case Integer:
+                        fieldValueList.add(FieldValue.getFieldValue(field, (int) propNode.getProperty(JCRNodePropertyName.VALUE_LINK_NAME).getLong()));
+                        break;
+                    case ArrayOfLong: {
+                        Value[] values = propNode.getProperty(JCRNodePropertyName.VALUE_LINK_NAME).getValues();
+                        long[] array = new long[values.length];
+                        int count = 0;
+                        for (Value eachValue : values) {
+                            array[count++] = eachValue.getLong();
+                        }
+                        fieldValueList.add(FieldValue.getFieldValue(field, array));
+                        break;
+                    }
+                    case Long:
+
+                        fieldValueList.add(FieldValue.getFieldValue(field, propNode.getProperty(JCRNodePropertyName.VALUE_LINK_NAME).getLong()));
+
+                        break;
+                    case ArrayOfDouble:
+                    case Double:
                         getDoubleFromNode(fieldValueList, propNode, field);
                         break;
-                    case ValueType.TYPE_FLOAT:
-                        if (field.getValueType().array()) {
-                            Value[] values = propNode.getProperty(JCRNodePropertyName.VALUE_LINK_NAME).getValues();
-                            float[] array = new float[values.length];
-                            int count = 0;
-                            for (Value eachValue : values) {
-                                array[count++] = eachValue.getDecimal().floatValue();
-                            }
-                            fieldValueList.add(FieldValue.getFieldValue(field, array));
-                        } else {
-                            fieldValueList.add(FieldValue.getFieldValue(field, propNode.getProperty(JCRNodePropertyName.VALUE_LINK_NAME).getDecimal().floatValue()));
+                    case ArrayOfFloat: {
+                        Value[] values = propNode.getProperty(JCRNodePropertyName.VALUE_LINK_NAME).getValues();
+                        float[] array = new float[values.length];
+                        int count = 0;
+                        for (Value eachValue : values) {
+                            array[count++] = eachValue.getDecimal().floatValue();
                         }
+                        fieldValueList.add(FieldValue.getFieldValue(field, array));
                         break;
-                    case ValueType.TYPE_DATE:
-
-                        if (field.getValueType().array()) {
-                            Value[] values = propNode.getProperty(JCRNodePropertyName.VALUE_LINK_NAME).getValues();
-                            Date[] array = new Date[values.length];
-                            int count = 0;
-                            for (Value eachValue : values) {
-                                array[count++] = eachValue.getDate().getTime();
-                            }
-                            fieldValueList.add(FieldValue.getFieldValue(field, array));
-                        } else {
-                            fieldValueList.add(FieldValue.getFieldValue(field, propNode.getProperty(JCRNodePropertyName.VALUE_LINK_NAME).getDate().getTime()));
+                    }
+                    case Float:
+                        fieldValueList.add(FieldValue.getFieldValue(field, propNode.getProperty(JCRNodePropertyName.VALUE_LINK_NAME).getDecimal().floatValue()));
+                        break;
+                    case ArrayOfDate: {
+                        Value[] values = propNode.getProperty(JCRNodePropertyName.VALUE_LINK_NAME).getValues();
+                        Date[] array = new Date[values.length];
+                        int count = 0;
+                        for (Value eachValue : values) {
+                            array[count++] = eachValue.getDate().getTime();
                         }
+                        fieldValueList.add(FieldValue.getFieldValue(field, array));
+                        break;
+                    }
+                    case Date:
+                        fieldValueList.add(FieldValue.getFieldValue(field, propNode.getProperty(JCRNodePropertyName.VALUE_LINK_NAME).getDate().getTime()));
+                        break;
 
-                        break;
-                    case ValueType.TYPE_STRING:
+                    case String:
+                    case ArrayOfString:
+                    case BigString:
+                    case ArrayOfBigString:
+                    case RichText:
+                    case ArrayOfRichText:
+                    case RichMediaText:
+                    case ArrayOfRichMediaText:
+                    case ArrayOfEnum:
+                    case Enum:
+                    case ArrayOfPhone:
+                    case Phone:
+                    case ArrayOfEmail:
+                    case Email:
                         getStringFromNode(fieldValueList, propNode, field);
                         break;
-                    case ValueType.TYPE_BIG_STRING:
-                        getStringFromNode(fieldValueList, propNode, field);
-                        break;
-                    case ValueType.TYPE_RICH_TEXT:
-                        getStringFromNode(fieldValueList, propNode, field);
-                        break;
-                    case ValueType.TYPE_RICH_MEDIA_TEXT:
-                        getStringFromNode(fieldValueList, propNode, field);
-                        break;
-                    case ValueType.TYPE_TIME:
+
+                    case ArrayOfTime:
+                    case Time:
                         getDoubleFromNode(fieldValueList, propNode, field);
                         break;
-                    case ValueType.TYPE_ENUM:
-                        getStringFromNode(fieldValueList, propNode, field);
-                        break;
-                    case ValueType.TYPE_REF:
+                    case Ref:
+                    case ArrayOfRef:
                         //TODO : will have to handle.
                         // propertyNode.setProperty(JCRNodePropertyName.VALUE_LINK_NAME, (Node) fieldValue.getValue());
                         break;
-                    case ValueType.TYPE_PHONE:
-                        getStringFromNode(fieldValueList, propNode, field);
+                    case Image: {
+                        Node binaryContainingNode = (Node) propNode.getNode(JCRNodePropertyName.BINARIES_LINK_NAME);
+                        fieldValueList.add(FieldValue.getFieldValue(field, JcrDaoUtils.getBinaryFromNode(binaryContainingNode, BinaryFactory.IMAGE_FACTORY.getObject())));
                         break;
-                    case ValueType.TYPE_EMAIL:
-                        getStringFromNode(fieldValueList, propNode, field);
+                    }
+                    case ArrayOfImage: {
+                        Node binaryContainingNode = (Node) propNode.getNode(JCRNodePropertyName.BINARIES_LINK_NAME);
+                        fieldValueList.add(FieldValue.getFieldValue(field, JcrDaoUtils.getBinariesFromNode(binaryContainingNode, new ArrayList<BinaryData>(), BinaryFactory.IMAGE_FACTORY)));
+                        break;
+                    }
+                    case Video: {
+                        Node binaryContainingNode = (Node) propNode.getNode(JCRNodePropertyName.BINARIES_LINK_NAME);
+                        fieldValueList.add(FieldValue.getFieldValue(field, JcrDaoUtils.getBinaryFromNode(binaryContainingNode, BinaryFactory.VIDEO_FACTORY.getObject())));
+                        break;
+                    }
+                    case ArrayOfVideo: {
+                        Node binaryContainingNode = (Node) propNode.getNode(JCRNodePropertyName.BINARIES_LINK_NAME);
+                        fieldValueList.add(FieldValue.getFieldValue(field, JcrDaoUtils.getBinariesFromNode(binaryContainingNode, new ArrayList<BinaryData>(), BinaryFactory.VIDEO_FACTORY)));
+                        break;
+                    }
+                    case File: {
+                        Node binaryContainingNode = (Node) propNode.getNode(JCRNodePropertyName.BINARIES_LINK_NAME);
+                        fieldValueList.add(FieldValue.getFieldValue(field, JcrDaoUtils.getBinaryFromNode(binaryContainingNode, BinaryFactory.FILE_FACTORY.getObject())));
+                        break;
+                    }
+                    case ArrayOfFile: {
+                        Node binaryContainingNode = (Node) propNode.getNode(JCRNodePropertyName.BINARIES_LINK_NAME);
+                        fieldValueList.add(FieldValue.getFieldValue(field, JcrDaoUtils.getBinariesFromNode(binaryContainingNode, new ArrayList<BinaryData>(), BinaryFactory.FILE_FACTORY)));
+                        break;
+                    }
+                    case GENERIC_TYPE:
+                        if (propNode.hasNode(JCRNodePropertyName.VALUE_LINK_NAME) ) {
+                            // it must be nested property.
+                            Node valueNode = propNode.getNode(JCRNodePropertyName.VALUE_LINK_NAME);
+                            List<FieldValue> fieldValueListChild = getFieldsFromNode(valueNode, serialization);
+                            fieldValueList.add(FieldValue.getFieldValue(field, fieldValueListChild.toArray(new FieldValue[0])));
+                        } else if(field.getValueType().equals(ValueType.GENERIC_TYPE)) {
+                            fieldValueList.add(FieldValue.getFieldValue(field, new FieldValue[0]));
+                        }
                         break;
                     default:
-                        throw new DatabaseException(new Exception("An unknown value type present in node"));
+                        throw new DatabaseException(new Exception("An unknown value type present in fieldList " + field.getValueType()));
                 }
-            }
-
-            if (propNode.hasNode(JCRNodePropertyName.VALUE_LINK_NAME)) {
-                // it must be nested property.
-                Node valueNode = propNode.getNode(JCRNodePropertyName.VALUE_LINK_NAME);
-                List<FieldValue> fieldValueListChild = getFieldsFromNode(valueNode, serialization);
-                fieldValueList.add(FieldValue.getFieldValue(field, fieldValueListChild.toArray(new FieldValue[0])));
-            }
         }
         return fieldValueList;
     }

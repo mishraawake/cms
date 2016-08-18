@@ -27,9 +27,8 @@ import java.util.*;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = SpringInitializer.class)
-public class ItemDaoTest implements ApplicationContextAware {
+public class ItemDaoTest extends BaseDaoTest {
 
-    ApplicationContext applicationContext;
 
     ItemDao<IItem> itemDao;
 
@@ -196,10 +195,8 @@ public class ItemDaoTest implements ApplicationContextAware {
         }
     }
 
-
-
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
+    protected void specificBeforeSetup() throws DatabaseException {
+
     }
 }

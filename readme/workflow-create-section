@@ -8,7 +8,7 @@ One front-end template that will display the fields used to get information for 
 
  -- For definition we need DefDao -- get definition
 
- -- A server end point that will receive definition-identity of section and generate view information
+ -- A server end point that will receive definition-target of section and generate view information
  according to the configuration.
 
  One javascript component that will generate form according to the definition object that it receives.

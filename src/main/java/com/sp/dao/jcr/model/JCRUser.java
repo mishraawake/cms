@@ -5,6 +5,7 @@ import com.sp.model.IUser;
 import com.sp.utils.NameUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -14,7 +15,7 @@ public class JCRUser implements IUser, JCRIdentifiable {
 
     String userName;
 
-    CharSequence passwd;
+    char[] passwd;
 
     List<FieldValue> properties = new ArrayList<FieldValue>();
 
@@ -29,13 +30,19 @@ public class JCRUser implements IUser, JCRIdentifiable {
     }
 
     @Override
-    public CharSequence getPassword() {
-        return passwd;
+    public char[] getPassword() {
+        if(passwd == null){
+            return null;
+        }
+        return Arrays.copyOf(passwd, passwd.length) ;
     }
 
     @Override
-    public void setPassword(CharSequence passwd) {
-        this.passwd = passwd;
+    public void setPassword(char[] passwd) {
+        if(passwd == null){
+            return;
+        }
+        this.passwd = Arrays.copyOf(passwd, passwd.length) ;
     }
 
     @Override

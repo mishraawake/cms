@@ -16,4 +16,5 @@ public class JCRNodePropertyName {
     public static final java.lang.String USER_LINK_VALUE = "user" ;
     public static final java.lang.String CREATED_AT_LINK_VALUE = "createdAt" ;
     public static final java.lang.String CREATED_BY_LINK_VALUE = "createdBy" ;
+    public static final java.lang.String ROLE_LINK_NAME = "role";
 }

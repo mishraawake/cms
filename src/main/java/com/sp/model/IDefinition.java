@@ -7,7 +7,7 @@ import java.util.List;
  *
  * It defines the type of data that will be created.
  */
-public interface IDefinition<T extends IDefinition> extends Auditable, Identity {
+public interface IDefinition extends Auditable, Identity {
 
     public  String getName();
 

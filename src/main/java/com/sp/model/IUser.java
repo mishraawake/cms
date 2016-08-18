@@ -11,9 +11,9 @@ public interface IUser {
 
     void setUserName(String userName);
 
-    CharSequence getPassword();
+    char[] getPassword();
 
-    void setPassword(CharSequence passwd);
+    void setPassword(char[] passwd);
 
     List<FieldValue> getProperties();
 

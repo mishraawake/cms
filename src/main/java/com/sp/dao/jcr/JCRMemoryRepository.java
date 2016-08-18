@@ -1,30 +1,40 @@
-package com.sp.dao.jcr.utils;
+package com.sp.dao.jcr;
 
+import com.sp.dao.api.JCRIRepository;
+import com.sp.model.IUser;
+import com.sp.service.SubjectProvider;
 import org.apache.jackrabbit.commons.NamespaceHelper;
 import org.apache.jackrabbit.oak.Oak;
 import org.apache.jackrabbit.oak.jcr.Jcr;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.jcr.*;
+import javax.jcr.Repository;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import javax.jcr.SimpleCredentials;
 
 /**
  * Created by pankajmishra on 07/08/16.
  */
-public class JCRRepository {
+@org.springframework.stereotype.Repository
+public class JCRMemoryRepository implements JCRIRepository {
 
-    public static final String MY_NAME_SPACE_PREFIX = "sp";
-    public static final String PACKAGE_NAME_SPACE_PREFIX = "pkg";
-    public static final String MY_NAME_SPACE_URL = "sp.com";
+    @Autowired
+    SubjectProvider subjectProvider;
 
-    public static final String PACKAGE_NAME_SPACE_URL = "sp.com/pkg";
 
     private static Repository repository = null;
 
-    public static Session getSession() throws RepositoryException {
+    public Session getSession() throws RepositoryException {
         if(repository == null){
             repository = new Jcr(new Oak()).createRepository();
             initializeRepo();
         }
-        return repository.login(new SimpleCredentials("admin", "admin".toCharArray())) ;
+        IUser user = subjectProvider.getCurrentSubject();
+        if(user == null){
+            throw new RuntimeException("Database is being accessed by anonymous user");
+        }
+        return repository.login(new SimpleCredentials(user.getUserName(), user.getPassword())) ;
     }
 
 
@@ -32,7 +42,7 @@ public class JCRRepository {
      * Register the name space, node type etc if it already not present.
      * @throws RepositoryException
      */
-    private static void initializeRepo() throws RepositoryException {
+    private void initializeRepo() throws RepositoryException {
         Session session = repository.login(new SimpleCredentials("admin", "admin".toCharArray())) ;
 
         try {

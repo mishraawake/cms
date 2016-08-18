@@ -32,7 +32,7 @@ public class TestSerialization {
 
     @Test
     public void testSerialization(){
-        IDefinition<IDefinition> definition = DefUtils.getDummyDefition(pojoFactory);
+        IDefinition definition = DefUtils.getDummyDefition(pojoFactory);
         try {
             IOUtils.write(serialization.serialize(definition) , new FileOutputStream("output/def.json"));
         } catch (IOException e) {

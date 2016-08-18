@@ -20,7 +20,7 @@ public class DefUtils {
 
         definition.setName(RandomStringUtils.randomAlphabetic(20));
         definition.setDescription(RandomStringUtils.randomAlphabetic(100));
-
+        definition.setCreateDate(new Date());
         for(int i=0; i<10; ++i){
             Field field = new Field();
             field.setName("field"+i);

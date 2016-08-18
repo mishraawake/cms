@@ -21,11 +21,9 @@ import java.io.Serializable;
 /**
  * Created by pankajmishra on 07/08/16.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = SpringInitializer.class)
-public class DefinitionDaoTest implements ApplicationContextAware {
-
-    ApplicationContext applicationContext;
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(classes = SpringInitializer.class)
+public class DefinitionDaoTest extends BaseDaoTest {
 
 
     DefinitionDao<IDefinition> definitionDao;
@@ -67,7 +65,8 @@ public class DefinitionDaoTest implements ApplicationContextAware {
 
 
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
+    protected void specificBeforeSetup() throws DatabaseException {
+
     }
+
 }

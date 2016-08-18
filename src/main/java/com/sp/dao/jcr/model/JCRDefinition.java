@@ -21,7 +21,7 @@ import java.util.List;
  * This definition object will be used to verify poll object that will be generated in cms and
  * also it will be used to generate form for the poll.
  */
-public class JCRDefinition implements JCRIdentifiable, IDefinition<JCRDefinition> {
+public class JCRDefinition implements JCRIdentifiable, IDefinition {
 
     private String __id;
     private String name;

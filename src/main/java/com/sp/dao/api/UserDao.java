@@ -2,6 +2,7 @@ package com.sp.dao.api;
 
 import com.sp.model.IUser;
 
+import javax.xml.crypto.Data;
 import java.util.Iterator;
 import java.util.List;
 
@@ -53,4 +54,12 @@ public interface UserDao<T extends IUser> extends IDao<T> {
      * @throws DatabaseException
      */
     void addUserToGroup(T user, String groupName) throws DatabaseException;
+
+    /**
+     * All group present in database.
+     * @return
+     * @throws DatabaseException
+     */
+    List<String> getAllGroup() throws DatabaseException;
+
 }

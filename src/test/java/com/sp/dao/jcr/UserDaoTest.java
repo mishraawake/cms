@@ -29,11 +29,7 @@ import java.util.List;
 /**
  * Created by pankajmishra on 15/08/16.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = SpringInitializer.class)
-public class UserDaoTest implements ApplicationContextAware {
-
-    ApplicationContext applicationContext;
+public class UserDaoTest extends BaseDaoTest {
 
     UserDao<IUser> userDao;
 
@@ -156,9 +152,8 @@ public class UserDaoTest implements ApplicationContextAware {
         Assert.assertTrue(String.format("list size should be 2 instead it is %d", lists.size()), lists.size() >= 2);
     }
 
-
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
+    protected void specificBeforeSetup() throws DatabaseException {
+
     }
 }

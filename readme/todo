@@ -1,4 +1,9 @@
 --- finished .. please see file named *modeling..Fix name space standarization and internal node hierarchy arrangement.
+-- We have a problem when enabling permission. Some user can have permission for the hierachy of items but he/she
+may not have permission for definition and hence he can not create item because for item creation , one must have
+access to definition. Either we have to club our permission in such a way that these things will be enabled together
+for the user ... solution required....
+
 Should we loging with session for every operation?
 ACL implementation.
 Versioning.

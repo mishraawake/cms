@@ -7,11 +7,9 @@ import com.sp.dao.jcr.model.JCRDefinition;
 import com.sp.dao.jcr.utils.JCRNodePropertyName;
 import com.sp.model.Field;
 import com.sp.service.StringSerialization;
-import com.sp.service.impl.JCRIdGenerator;
-import com.sp.dao.jcr.utils.JCRRepository;
+import com.sp.dao.api.JCRIRepository;
 import com.sp.dao.jcr.utils.JcrDaoUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 
 import javax.jcr.*;
 import java.io.IOException;
@@ -26,6 +24,9 @@ public class JCRDefinitionDao implements DefinitionDao<JCRDefinition> {
     @Autowired
     StringSerialization serialization;
 
+
+    @Autowired
+    JCRIRepository JCRIRepository;
 
     private String getPrefixedName(String name){
         return JcrDaoUtils.getPrefixedName(name);
@@ -49,7 +50,7 @@ public class JCRDefinitionDao implements DefinitionDao<JCRDefinition> {
         definition.setDescription(node.getProperty(getPrefixedName(JCRNodePropertyName.DESC_LINK_NAME)).getString());
         definition.setName(node.getProperty(getPrefixedName(JCRNodePropertyName.NAME_LINK_NAME)).getString());
         Node fieldNode = node.getNode(JCRNodePropertyName.FIELDS_LINK_NAME);
-        PropertyIterator propertyIterator = fieldNode.getProperties(JCRRepository.MY_NAME_SPACE_PREFIX + ":*");
+        PropertyIterator propertyIterator = fieldNode.getProperties(JCRIRepository.MY_NAME_SPACE_PREFIX + ":*");
         while(propertyIterator.hasNext()){
             Property  prop = propertyIterator.nextProperty();
             //System.out.println(prop.getName());
@@ -63,7 +64,7 @@ public class JCRDefinitionDao implements DefinitionDao<JCRDefinition> {
         Session session = null;
         try {
 
-            session = JCRRepository.getSession();
+            session = JCRIRepository.getSession();
             Node definitionNode = null;
             String defJcrName = JcrDaoUtils.getPrefixedName(JCRNodePropertyName.DEF_LINK_NAME);
             if(session.getRootNode().hasNode(defJcrName)) {
@@ -100,7 +101,7 @@ public class JCRDefinitionDao implements DefinitionDao<JCRDefinition> {
         Session session = null;
         try {
 
-            session = JCRRepository.getSession();
+            session = JCRIRepository.getSession();
             copyDefToNode(element, session.getNode( element.get__id()));
             session.save();
             return element;
@@ -118,7 +119,7 @@ public class JCRDefinitionDao implements DefinitionDao<JCRDefinition> {
         Session session = null;
         try {
             JCRDefinition definition = new JCRDefinition();
-            session = JCRRepository.getSession();
+            session = JCRIRepository.getSession();
             copyNodeToDef(session.getNode((String)id) , definition);
             session.save();
             return definition;
@@ -145,7 +146,7 @@ public class JCRDefinitionDao implements DefinitionDao<JCRDefinition> {
     public void delete(Serializable id) throws DatabaseException {
         Session session = null;
         try {
-            session = JCRRepository.getSession();
+            session = JCRIRepository.getSession();
             session.removeItem((String) id);
             session.save();
         } catch (RepositoryException e) {
@@ -161,7 +162,7 @@ public class JCRDefinitionDao implements DefinitionDao<JCRDefinition> {
     public boolean exists(Serializable id) throws DatabaseException {
         Session session = null;
         try {
-            session = JCRRepository.getSession();
+            session = JCRIRepository.getSession();
             return session.nodeExists((String)id);
         } catch (RepositoryException e) {
             throw new DatabaseException(e);

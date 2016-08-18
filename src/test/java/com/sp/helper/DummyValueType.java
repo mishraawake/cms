@@ -15,115 +15,96 @@ import java.util.Random;
 public class DummyValueType {
 
 
-    public static Object getDummyType(ValueType type, int depth){
+    public static Object getDummyType(ValueType type, int depth) {
 
         Random random = new Random();
-        switch (type.value()){
-            case ValueType.TYPE_BOOLEAN:
-                if(type.array()){
-                    return  new boolean[]{true, false};
-                }
+        switch (type) {
+            case ArrayOfBoolean:
+                return new boolean[]{true, false};
+            case Boolean:
                 return true;
-            case ValueType.TYPE_BYTE:
-                if(type.array()){
-                    return  new byte[]{ (byte)10, (byte)11};
-                }
-                return  (byte)10;
+            case ArrayOfByte:
+                return new byte[]{(byte) 10, (byte) 11};
 
-            case ValueType.TYPE_CHAR:
-                if(type.array()){
-                    return  new char[]{'1', '2'};
-                }
+            case Byte:
+                return (byte) 10;
+
+            case ArrayOfChar:
+                return new char[]{'1', '2'};
+            case Char:
                 return 'a';
-            case ValueType.TYPE_SHORT:
-                if(type.array()){
-                    return  new short[]{ (short)10, (short)11};
-                }
-                return  (short)10;
-            case ValueType.TYPE_INTEGER:
-                if(type.array()){
-                    return new int[]{11, 12};
-                }
+            case ArrayOfShort:
+                return new short[]{(short) 10, (short) 11};
+            case Short:
+                return (short) 10;
+            case ArrayOfInteger:
+                return new int[]{11, 12};
+            case Integer:
                 return random.nextInt();
-            case ValueType.TYPE_LONG:
-                if(type.array()){
-                    return  new long[]{19l, 30l};
-                }
+            case ArrayOfLong:
+                return new long[]{19l, 30l};
+            case Long:
                 return random.nextLong();
-            case ValueType.TYPE_DOUBLE:
-                if(type.array()){
-                    return  new double[]{random.nextDouble(), random.nextDouble()};
-                }
+            case ArrayOfDouble:
+                return new double[]{random.nextDouble(), random.nextDouble()};
+            case Double:
                 return random.nextDouble();
-            case ValueType.TYPE_FLOAT:
-                if(type.array()){
-                    return  new float[]{random.nextFloat(), random.nextFloat()};
-                }
+            case ArrayOfFloat:
+                return new float[]{random.nextFloat(), random.nextFloat()};
+            case Float:
                 return random.nextFloat();
-            case ValueType.TYPE_DATE:
-                if(type.array()){
-                    return  new Date[]{new Date(), new Date()};
-                }
+            case ArrayOfDate:
+                return new Date[]{new Date(), new Date()};
+            case Date:
                 return new Date();
-            case ValueType.TYPE_STRING:
-                if(type.array()){
-                    return  new String[]{RandomStringUtils.randomAlphabetic(50), RandomStringUtils.randomAlphabetic(50)};
-                }
+            case ArrayOfString:
+                return new String[]{RandomStringUtils.randomAlphabetic(50), RandomStringUtils.randomAlphabetic(50)};
+            case String:
                 return RandomStringUtils.randomAlphabetic(50);
-            case ValueType.TYPE_BIG_STRING:
-                if(type.array()){
-                    return   new String[]{RandomStringUtils.randomAlphabetic(500), RandomStringUtils.randomAlphabetic(500)};
-                }
+            case ArrayOfBigString:
+                return new String[]{RandomStringUtils.randomAlphabetic(500), RandomStringUtils.randomAlphabetic(500)};
+            case BigString:
                 return RandomStringUtils.randomAlphabetic(500);
-            case ValueType.TYPE_RICH_TEXT:
-                if(type.array()){
-                    return   new String[]{RandomStringUtils.randomAlphabetic(500), RandomStringUtils.randomAlphabetic(500)};
-                }
+            case ArrayOfRichText:
+                return new String[]{RandomStringUtils.randomAlphabetic(500), RandomStringUtils.randomAlphabetic(500)};
 
+            case RichText:
                 return RandomStringUtils.randomAlphabetic(500);
-            case ValueType.TYPE_RICH_MEDIA_TEXT:
-                if(type.array()){
-                    return   new String[]{RandomStringUtils.randomAlphabetic(500), RandomStringUtils.randomAlphabetic(500)};
-                }
+            case ArrayOfRichMediaText:
+                return new String[]{RandomStringUtils.randomAlphabetic(500), RandomStringUtils.randomAlphabetic(500)};
+            case RichMediaText:
                 return RandomStringUtils.randomAlphabetic(500);
-            case ValueType.TYPE_IMAGE:
-                if(type.array()){
-                    return  new Image[]{ getRandomImage(),  getRandomImage()};
-                }
+            case ArrayOfImage:
+                return new Image[]{getRandomImage(), getRandomImage()};
+            case Image:
                 return getRandomImage();
-            case ValueType.TYPE_VIDEO:
-                if(type.array()){
-                    return  new Video[]{ getRandomVideo(),  getRandomVideo()};
-                }
-               return getRandomVideo();
-            case ValueType.TYPE_FILE:
-                if(type.array()){
-                    return  new FileObject[]{ getRandomFile(),  getRandomFile()};
-                }
+            case ArrayOfVideo:
+                return new Video[]{getRandomVideo(), getRandomVideo()};
+            case Video:
+                return getRandomVideo();
+            case ArrayOfFile:
+                return new FileObject[]{getRandomFile(), getRandomFile()};
+            case File:
                 return getRandomFile();
-            case ValueType.TYPE_TIME:
-                if(type.array()){
-                    return  new double[]{ random.nextDouble(),  random.nextDouble()};
-                }
+            case ArrayOfTime:
+                return new double[]{random.nextDouble(), random.nextDouble()};
+            case Time:
                 return random.nextDouble();
-            case ValueType.TYPE_ENUM:
-                if(type.array()){
-                    return  new String[]{ "still to test",  "still to test"};
-                }
+            case ArrayOfEnum:
+                return new String[]{"still to test", "still to test"};
+            case Enum:
                 return "still to test";
-            case ValueType.TYPE_REF:
+            case ArrayOfRef:
                 return null;
-            case ValueType.TYPE_PHONE:
-                if(type.array()){
-                    return  new String[]{ "9711391354",  "9711391355"};
-                }
+            case ArrayOfPhone:
+                return new String[]{"9711391354", "9711391355"};
+            case Phone:
                 return "9711391354";
-            case ValueType.TYPE_EMAIL:
-                if(type.array()){
-                    return  new String[]{ "mishraawake@gmail.com",  "mishraawake@gmail1.com"};
-                }
+            case ArrayOfEmail:
+                return new String[]{"mishraawake@gmail.com", "mishraawake@gmail1.com"};
+            case Email:
                 return "mishraawake@gmail.com";
-            case ValueType.TYPE_GENERIC_TYPE:
+            case GENERIC_TYPE:
                 FieldValue[] fieldValueList = ItemUtils.getDummyFieldValueList(depth - 1).toArray(new FieldValue[0]);
                 return fieldValueList;
         }
@@ -132,40 +113,40 @@ public class DummyValueType {
     }
 
 
-    public static Image getRandomImage(){
+    public static Image getRandomImage() {
         File file = new File("dummy-data/image.jpg");
         Image image = new Image();
 
         try {
             image.inputStream(new FileInputStream(file));
             image.mimeType("image/jpg");
-        } catch (FileNotFoundException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return image;
     }
 
-    public static Video getRandomVideo(){
+    public static Video getRandomVideo() {
         File file = new File("dummy-data/video.mp4");
 
         Video video = new Video();
         video.mimeType("video/mp4");
         try {
             video.inputStream(new FileInputStream(file));
-        } catch (FileNotFoundException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return video;
     }
 
-    public static FileObject getRandomFile(){
+    public static FileObject getRandomFile() {
         File file = new File("dummy-data/file.pdf");
 
         FileObject fileObject = new FileObject();
         fileObject.mimeType("file/pdf");
         try {
             fileObject.inputStream(new FileInputStream(file));
-        } catch (FileNotFoundException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return fileObject;

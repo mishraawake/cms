@@ -25,6 +25,10 @@ public interface IItem<T extends IItem, D extends IDefinition> extends Auditable
 
     public List<Association<T>> getAssociations();
 
+    public List<T> getChildren();
+
+    public void setChildren(List<T> children);
+
     public void setAssociations(List<Association<T>> associations);
 
     public FieldValue getFieldValue(Field field);

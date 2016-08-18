@@ -21,6 +21,7 @@ public class JCRItem implements JCRIdentifiable, IItem<JCRItem, JCRDefinition> {
     private JCRDefinition definition;
     private List<FieldValue> fieldValues = new ArrayList<FieldValue>();
     private List<Association<JCRItem>> associations = new ArrayList<Association<JCRItem>>();
+    List<JCRItem> children = new ArrayList<>();
     private Date createdDate;
     private IUser createdBy;
 
@@ -73,6 +74,16 @@ public class JCRItem implements JCRIdentifiable, IItem<JCRItem, JCRDefinition> {
         return associations;
     }
 
+    @Override
+    public List<JCRItem> getChildren() {
+        return this.children;
+    }
+
+    @Override
+    public void setChildren(List<JCRItem> children) {
+        this.children = children;
+    }
+
     public void setAssociations(List<Association<JCRItem>> associations) {
         this.associations = associations;
     }
@@ -95,11 +106,17 @@ public class JCRItem implements JCRIdentifiable, IItem<JCRItem, JCRDefinition> {
     @Override
     public Date getCreateDate() {
         // defensive copying
+        if(createdDate == null){
+            return null;
+        }
         return (Date)createdDate.clone();
     }
 
     @Override
     public void setCreateDate(Date createdDate) {
+        if(createdDate == null){
+            return;
+        }
         this.createdDate = (Date)createdDate.clone();
     }
 
@@ -118,11 +135,12 @@ public class JCRItem implements JCRIdentifiable, IItem<JCRItem, JCRDefinition> {
         return "JCRItem{" +
                 ", __id='" + __id + '\'' +
                 ", name='" + name + '\'' +
-                ", definition=" + definition +
-                ", fieldValues=" + fieldValues +
-                ", associations=" + associations +
                 ", createdDate=" + createdDate +
                 ", createdBy=" + createdBy +
+                ",  definition=" + definition +
+              //  ", \n fieldValues=" + fieldValues +
+                ", \n associations=" + associations +
+                ", \n children=" + children +
                 '}';
     }
 }
