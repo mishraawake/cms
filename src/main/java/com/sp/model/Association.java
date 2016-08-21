@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  * Created by pankajmishra on 06/08/16.
- *
+ * <p>
  * An association object is owned by some entity which is represented in me field. It will have a number
  * of associated items.
  */
@@ -24,12 +24,12 @@ public class Association<T extends IItem> implements Auditable, JCRIdentifiable 
 
     @Override
     public Date getCreateDate() {
-        return (Date)createdDate.clone();
+        return (Date) createdDate.clone();
     }
 
     @Override
     public void setCreateDate(Date createdDate) {
-        this.createdDate = (Date)createdDate.clone();
+        this.createdDate = (Date) createdDate.clone();
     }
 
     @Override

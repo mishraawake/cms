@@ -2,7 +2,7 @@ package com.sp.validate.constraint;
 
 /**
  * Created by pankajmishra on 06/08/16.
- *
+ * <p>
  * Return true for the string which has length as mentioned in constraint.
  * If string in null then length must be 0 for constraint to pass.
  * Note: String is  trimmed for the length purpose.
@@ -11,17 +11,17 @@ public class LengthConstraint implements Constraint<String> {
 
     private int length;
 
-    public LengthConstraint(){
+    public LengthConstraint() {
 
     }
 
-    public LengthConstraint(int length){
+    public LengthConstraint(int length) {
         this.length = length;
     }
 
     @Override
     public boolean pass(String val) {
-        if(val == null){
+        if (val == null) {
             return length == 0;
         }
         return val.trim().length() == length;

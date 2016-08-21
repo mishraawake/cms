@@ -7,5 +7,5 @@ import com.sp.model.Identifiable;
  * An id generator for the cms.
  */
 public interface IdGenerator<T, S extends Identifiable> {
-     T getNextId(S ephemeral);
+    T getNextId(S ephemeral);
 }

@@ -4,6 +4,13 @@ may not have permission for definition and hence he can not create item because 
 access to definition. Either we have to club our permission in such a way that these things will be enabled together
 for the user ... solution required....
 
+--- Please take care of threading while implementing runtimecontext where user is kept. We need to find
+better mechanism.
+
+--- Need to handle cases where hierarchical definition required. For example in case of a poll , we need to create
+definition for the question and answer.
+
+
 Should we loging with session for every operation?
 ACL implementation.
 Versioning.

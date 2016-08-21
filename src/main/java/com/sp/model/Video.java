@@ -8,12 +8,11 @@ import java.io.InputStream;
 /**
  * Created by pankajmishra on 07/08/16.
  */
-public class Video  implements BinaryData {
+public class Video implements BinaryData {
 
     private InputStream is;
 
     private String mimeType;
-
 
 
     @Override
@@ -37,7 +36,7 @@ public class Video  implements BinaryData {
         return mimeType;
     }
 
-    public void inputStream(InputStream stream){
+    public void inputStream(InputStream stream) {
         is = stream;
     }
 

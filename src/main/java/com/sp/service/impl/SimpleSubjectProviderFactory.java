@@ -10,7 +10,7 @@ public class SimpleSubjectProviderFactory implements SubjectProviderFactory {
 
     private IUser currentUser;
 
-    public SimpleSubjectProviderFactory(IUser currentUser){
+    public SimpleSubjectProviderFactory(IUser currentUser) {
         this.currentUser = currentUser;
     }
 

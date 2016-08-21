@@ -5,5 +5,6 @@ package com.sp.service;
  */
 public interface RunTimeContext<T> {
     public void setValue(String key, T value);
+
     public T getValue(String key);
 }

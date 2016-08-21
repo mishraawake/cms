@@ -3,24 +3,22 @@ package com.sp.dao.jcr;
 import com.sp.dao.api.DatabaseException;
 import com.sp.dao.api.DefinitionDao;
 import com.sp.dao.api.ItemDao;
-import com.sp.model.*;
 import com.sp.helper.DefUtils;
 import com.sp.helper.ItemUtils;
+import com.sp.model.*;
 import com.sp.utils.FieldUtils;
 import com.sp.utils.SpringInitializer;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.FileOutputStream;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by pankajmishra on 08/08/16.
@@ -30,18 +28,11 @@ import java.util.*;
 public class ItemDaoTest extends BaseDaoTest {
 
 
-    ItemDao<IItem> itemDao;
-
-    DefinitionDao<IDefinition> definitionDao;
-
-    @Autowired
-    PojoFactory pojoFactory;
-
     @Test
     public void testCreationAndRetrieval() throws DatabaseException {
         itemDao = applicationContext.getBean("itemDao", ItemDao.class);
         definitionDao = applicationContext.getBean("definitionDao", DefinitionDao.class);
-        IDefinition definition = DefUtils.getDummyDefition(pojoFactory);
+        IDefinition definition = DefUtils.getDummyDefinition(pojoFactory);
         definition = definitionDao.create(definition);
         IItem<IItem, IDefinition> item = ItemUtils.getDummyItem(pojoFactory);
         item.setDefinition(definition);
@@ -52,10 +43,14 @@ public class ItemDaoTest extends BaseDaoTest {
         verifyItems(item, dataBaseItem);
     }
 
-    private void verifyItems(IItem<IItem, IDefinition> sourceItem, IItem<IItem, IDefinition> targetItem){
-        Assert.assertTrue(String.format("item name should be same %s, %s", sourceItem, targetItem), sourceItem.getName().equals(targetItem.getName()));
-        Assert.assertTrue(String.format("item definition should be same %s, %s", sourceItem.getDefinition(), targetItem.getDefinition()), sourceItem.getDefinition().get__id().equals(targetItem.getDefinition().get__id()));
-        FieldUtils.verifyFieldLists(sourceItem.getFieldValues().toArray(new FieldValue[0]), targetItem.getFieldValues().toArray(new FieldValue[0]));
+    private void verifyItems(IItem<IItem, IDefinition> sourceItem, IItem<IItem, IDefinition> targetItem) {
+        Assert.assertTrue(String.format("item name should be same %s, %s", sourceItem, targetItem), sourceItem
+                .getName().equals(targetItem.getName()));
+        Assert.assertTrue(String.format("item definition should be same %s, %s", sourceItem.getDefinition(),
+                targetItem.getDefinition()), sourceItem.getDefinition().get__id().equals(targetItem.getDefinition()
+                .get__id()));
+        FieldUtils.verifyFieldLists(sourceItem.getFieldValues().toArray(new FieldValue[0]), targetItem.getFieldValues
+                ().toArray(new FieldValue[0]));
     }
 
     @Test
@@ -65,7 +60,7 @@ public class ItemDaoTest extends BaseDaoTest {
         definitionDao = applicationContext.getBean("definitionDao", DefinitionDao.class);
 
 
-        IDefinition definition = DefUtils.getDummyDefition(pojoFactory);
+        IDefinition definition = DefUtils.getDummyDefinition(pojoFactory);
         definition = definitionDao.create(definition);
         IItem<IItem, IDefinition> item = ItemUtils.getDummyItem(pojoFactory);
         item.setDefinition(definition);
@@ -80,7 +75,7 @@ public class ItemDaoTest extends BaseDaoTest {
         dataBaseItem = itemDao.getItemWithAssociations(id);
         verifyItems(item, dataBaseItem);
 
-        for(int associationCount = 0; associationCount < item.getAssociations().size(); ++associationCount){
+        for (int associationCount = 0; associationCount < item.getAssociations().size(); ++associationCount) {
             Association<IItem> association = item.getAssociations().get(associationCount);
             Association<IItem> databaseAssociation = item.getAssociations().get(associationCount);
             verifyAssociation(association, databaseAssociation);
@@ -94,14 +89,14 @@ public class ItemDaoTest extends BaseDaoTest {
         itemDao = applicationContext.getBean("itemDao", ItemDao.class);
         definitionDao = applicationContext.getBean("definitionDao", DefinitionDao.class);
 
-        IDefinition definition = DefUtils.getDummyDefition(pojoFactory);
+        IDefinition definition = DefUtils.getDummyDefinition(pojoFactory);
         definition = definitionDao.create(definition);
         IItem<IItem, IDefinition> parentItem = ItemUtils.getDummyItem(pojoFactory);
         parentItem.setDefinition(definition);
         parentItem = itemDao.create(parentItem);
 
         List<IItem> childItems = new ArrayList<>();
-        for(int childCount = 0; childCount < 10; ++childCount){
+        for (int childCount = 0; childCount < 10; ++childCount) {
             IItem<IItem, IDefinition> childItem = ItemUtils.getDummyItem(pojoFactory);
             childItem.setDefinition(definition);
             childItem.setParentItem(parentItem);
@@ -111,7 +106,7 @@ public class ItemDaoTest extends BaseDaoTest {
 
         List<IItem> dbChildItems = itemDao.getChildItems(parentItem.get__id());
 
-        for(int childCount=0; childCount < childItems.size(); ++childCount){
+        for (int childCount = 0; childCount < childItems.size(); ++childCount) {
             IItem<IItem, IDefinition> savedChild = childItems.get(childCount);
             IItem<IItem, IDefinition> dbChildItem = dbChildItems.get(childCount);
             verifyItems(savedChild, dbChildItem);
@@ -119,16 +114,29 @@ public class ItemDaoTest extends BaseDaoTest {
     }
 
 
+    @Test
+    public void createItemTree() throws DatabaseException {
+        IDefinition iDefinition = DefUtils.getDummyDefinition(pojoFactory);
+        iDefinition = definitionDao.create(iDefinition);
+        IItem<IItem, IDefinition> treeItem = ItemUtils.getItemTree(pojoFactory, iDefinition, 1);
+        treeItem = itemDao.create(treeItem);
+        List<IItem> childrenItems = itemDao.getChildItems(treeItem.get__id());
+
+        for (int childIndex = 0; childIndex < treeItem.getChildren().size(); ++childIndex) {
+            verifyItems(treeItem.getChildren().get(childIndex), childrenItems.get(childIndex));
+        }
+    }
+
 
     private void generateBunchOfAssociations(IDefinition definition, IItem<IItem, IDefinition> item) {
-        for(int associationCount = 0; associationCount < 10; ++associationCount){
+        for (int associationCount = 0; associationCount < 10; ++associationCount) {
             Association<IItem> association = new Association<IItem>();
-            association.setName("priority"+associationCount);
+            association.setName("priority" + associationCount);
             association.setProperties(ItemUtils.getDummyFieldValueList(1));
             association.setCreateDate(new Date());
             item.getAssociations().add(association);
 
-            for(int link=0; link < 10; ++link){
+            for (int link = 0; link < 10; ++link) {
                 IItem<IItem, IDefinition> associatedItem = ItemUtils.getDummyItem(pojoFactory);
                 AssociationLink<IItem> associationLink = new AssociationLink<IItem>();
                 associatedItem.setDefinition(definition);
@@ -143,22 +151,27 @@ public class ItemDaoTest extends BaseDaoTest {
     private void verifyAssociation(Association<IItem> association, Association<IItem> databaseAssociation) {
 
 
-        Assert.assertTrue(String.format("association name should match %s, %s",association,  databaseAssociation), association.getName().equals(databaseAssociation.getName()));
-        Assert.assertTrue(String.format("association date should match %s, %s", association,  databaseAssociation), association.getCreateDate().equals(databaseAssociation.getCreateDate()));
+        Assert.assertTrue(String.format("association name should match %s, %s", association, databaseAssociation),
+                association.getName().equals(databaseAssociation.getName()));
+        Assert.assertTrue(String.format("association date should match %s, %s", association, databaseAssociation),
+                association.getCreateDate().equals(databaseAssociation.getCreateDate()));
 
-        FieldUtils.verifyFieldLists(association.getProperties().toArray(new FieldValue[0]), databaseAssociation.getProperties().toArray(new FieldValue[0]));
+        FieldUtils.verifyFieldLists(association.getProperties().toArray(new FieldValue[0]), databaseAssociation
+                .getProperties().toArray(new FieldValue[0]));
 
-        for(int link=0; link < association.getAssociates().size(); ++link){
+        for (int link = 0; link < association.getAssociates().size(); ++link) {
             AssociationLink<IItem> associationLink = association.getAssociates().get(link);
             AssociationLink<IItem> databaseAssociationLink = databaseAssociation.getAssociates().get(link);
-            FieldUtils.verifyFieldLists(associationLink.getProperties().toArray(new FieldValue[0]), databaseAssociationLink.getProperties().toArray(new FieldValue[0]));
-            verifyItems(associationLink.getLinked(), databaseAssociationLink.getLinked() );
+            FieldUtils.verifyFieldLists(associationLink.getProperties().toArray(new FieldValue[0]),
+                    databaseAssociationLink.getProperties().toArray(new FieldValue[0]));
+            verifyItems(associationLink.getLinked(), databaseAssociationLink.getLinked());
         }
     }
 
 
     private void generateBibaries(FieldValue fieldValue) {
-        if (fieldValue.getField().getValueType().equals(ValueType.ArrayOfImage) || fieldValue.getField().getValueType().equals(ValueType.Image)) {
+        if (fieldValue.getField().getValueType().equals(ValueType.ArrayOfImage) || fieldValue.getField().getValueType
+                ().equals(ValueType.Image)) {
             //System.out.println();
             try {
 
@@ -170,7 +183,8 @@ public class ItemDaoTest extends BaseDaoTest {
 
             } catch (Exception e) {
             }
-        } else if (fieldValue.getField().getValueType().equals(ValueType.ArrayOfVideo) || fieldValue.getField().getValueType().equals(ValueType.Video)) {
+        } else if (fieldValue.getField().getValueType().equals(ValueType.ArrayOfVideo) || fieldValue.getField()
+                .getValueType().equals(ValueType.Video)) {
             //System.out.println();
             try {
                 if (fieldValue.getField().getValueType().equals(ValueType.ArrayOfVideo)) {
@@ -180,7 +194,8 @@ public class ItemDaoTest extends BaseDaoTest {
                 }
             } catch (Exception e) {
             }
-        } else if (fieldValue.getField().getValueType().equals(ValueType.ArrayOfFile) || fieldValue.getField().getValueType().equals(ValueType.File)) {
+        } else if (fieldValue.getField().getValueType().equals(ValueType.ArrayOfFile) || fieldValue.getField()
+                .getValueType().equals(ValueType.File)) {
             //System.out.println();
             try {
                 if (fieldValue.getField().getValueType().equals(ValueType.ArrayOfFile)) {

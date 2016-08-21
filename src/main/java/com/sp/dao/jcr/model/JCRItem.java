@@ -41,7 +41,7 @@ public class JCRItem implements JCRIdentifiable, IItem<JCRItem, JCRDefinition> {
 
     @Override
     public void setName(String name) {
-        this.name= name;
+        this.name = name;
     }
 
     public void setParentItem(JCRItem item) {
@@ -88,9 +88,9 @@ public class JCRItem implements JCRIdentifiable, IItem<JCRItem, JCRDefinition> {
         this.associations = associations;
     }
 
-    public FieldValue getFieldValue(Field field){
-        for(FieldValue fieldValue : fieldValues){
-            if(fieldValue.getField() .equals(field)){
+    public FieldValue getFieldValue(Field field) {
+        for (FieldValue fieldValue : fieldValues) {
+            if (fieldValue.getField().equals(field)) {
                 return fieldValue;
             }
         }
@@ -106,18 +106,18 @@ public class JCRItem implements JCRIdentifiable, IItem<JCRItem, JCRDefinition> {
     @Override
     public Date getCreateDate() {
         // defensive copying
-        if(createdDate == null){
+        if (createdDate == null) {
             return null;
         }
-        return (Date)createdDate.clone();
+        return (Date) createdDate.clone();
     }
 
     @Override
     public void setCreateDate(Date createdDate) {
-        if(createdDate == null){
+        if (createdDate == null) {
             return;
         }
-        this.createdDate = (Date)createdDate.clone();
+        this.createdDate = (Date) createdDate.clone();
     }
 
     @Override
@@ -138,7 +138,7 @@ public class JCRItem implements JCRIdentifiable, IItem<JCRItem, JCRDefinition> {
                 ", createdDate=" + createdDate +
                 ", createdBy=" + createdBy +
                 ",  definition=" + definition +
-              //  ", \n fieldValues=" + fieldValues +
+                //  ", \n fieldValues=" + fieldValues +
                 ", \n associations=" + associations +
                 ", \n children=" + children +
                 '}';

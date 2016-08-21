@@ -14,15 +14,15 @@ public class BinaryFactory {
 
     String type;
 
-    private BinaryFactory(String type){
+    private BinaryFactory(String type) {
         this.type = type;
     }
 
-    public BinaryData getObject(){
-        if( type.equals("image") ){
+    public BinaryData getObject() {
+        if (type.equals("image")) {
             return new Image();
         }
-        if(type.equals("video")){
+        if (type.equals("video")) {
             return new Video();
         }
         return new FileObject();

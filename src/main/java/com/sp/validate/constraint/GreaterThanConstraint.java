@@ -1,7 +1,5 @@
 package com.sp.validate.constraint;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-
 /**
  * Created by pankajmishra on 06/08/16.
  */
@@ -12,11 +10,11 @@ public class GreaterThanConstraint implements Constraint<Comparable> {
 
     boolean eq;
 
-    public GreaterThanConstraint(){
+    public GreaterThanConstraint() {
 
     }
 
-    public GreaterThanConstraint(Comparable to, boolean eq){
+    public GreaterThanConstraint(Comparable to, boolean eq) {
         this.to = to;
         this.eq = eq;
     }

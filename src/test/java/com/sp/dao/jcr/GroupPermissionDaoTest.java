@@ -19,8 +19,6 @@ public class GroupPermissionDaoTest extends BaseDaoTest {
     IDefinition articleDefinition;
 
 
-
-
     IItem<IItem, IDefinition> topSection;
 
     IItem<IItem, IDefinition> childSection1;
@@ -36,13 +34,12 @@ public class GroupPermissionDaoTest extends BaseDaoTest {
     IItem<IItem, IDefinition> gchildSection22;
 
 
-
     @Override
     protected void specificBeforeSetup() throws DatabaseException {
         // create few definition
-        sectionDefinition = DefUtils.getDummyDefition(pojoFactory);
-        pollDefinition = DefUtils.getDummyDefition(pojoFactory);
-        articleDefinition = DefUtils.getDummyDefition(pojoFactory);
+        sectionDefinition = DefUtils.getDummyDefinition(pojoFactory);
+        pollDefinition = DefUtils.getDummyDefinition(pojoFactory);
+        articleDefinition = DefUtils.getDummyDefinition(pojoFactory);
         sectionDefinition = definitionDao.create(sectionDefinition);
         pollDefinition = definitionDao.create(pollDefinition);
         articleDefinition = definitionDao.create(articleDefinition);
@@ -64,15 +61,13 @@ public class GroupPermissionDaoTest extends BaseDaoTest {
         gchildSection22.setDefinition(sectionDefinition);
 
 
-
-
     }
 
     @Test
     public void testWriteRolePositive() throws DatabaseException {
 
         // we are doing this as admin.
-        IUser adminitrator  = UserUtils.getDummyUser(pojoFactory);
+        IUser adminitrator = UserUtils.getDummyUser(pojoFactory);
         // add user iadministrator.
         adminitrator = userDao.create(adminitrator);
 
@@ -98,11 +93,10 @@ public class GroupPermissionDaoTest extends BaseDaoTest {
     }
 
 
-
     @Test(expected = DatabaseException.class)
     public void testWriteRoleRevoke() throws DatabaseException {
         // we are doing this as admin.
-        IUser adminitrator  = UserUtils.getDummyUser(pojoFactory);
+        IUser adminitrator = UserUtils.getDummyUser(pojoFactory);
         // add user iadministrator.
         adminitrator = userDao.create(adminitrator);
 
@@ -144,42 +138,41 @@ public class GroupPermissionDaoTest extends BaseDaoTest {
     }
 
 
-   @Test(expected = DatabaseException.class)
+    @Test(expected = DatabaseException.class)
     public void testWriteRoleNegative() throws DatabaseException {
 
-       // we are doing this as admin.
-       IUser adminitrator  = UserUtils.getDummyUser(pojoFactory);
-       // add user iadministrator.
-       adminitrator = userDao.create(adminitrator);
+        // we are doing this as admin.
+        IUser adminitrator = UserUtils.getDummyUser(pojoFactory);
+        // add user iadministrator.
+        adminitrator = userDao.create(adminitrator);
 
-       topSection = itemDao.create(topSection);
+        topSection = itemDao.create(topSection);
 
-       String groupName = RandomStringUtils.randomAlphabetic(20);
-       userDao.createGroup(groupName);
+        String groupName = RandomStringUtils.randomAlphabetic(20);
+        userDao.createGroup(groupName);
 
-       Permission permission = new Permission(topSection, Privilege.Read);
+        Permission permission = new Permission(topSection, Privilege.Read);
 
-       spPermissionDao.grant(permission, groupName);
+        spPermissionDao.grant(permission, groupName);
 
-       // assign user administrator into above group
+        // assign user administrator into above group
 
-       userDao.addUserToGroup(adminitrator, groupName);
+        userDao.addUserToGroup(adminitrator, groupName);
 
-       runTimeContext.setValue(SimpleSubjectProvider.CURRENT_LOGGEDIN_USER, adminitrator);
-       // from now on administrator can add , remove , or do anything on any kind of operations.
+        runTimeContext.setValue(SimpleSubjectProvider.CURRENT_LOGGEDIN_USER, adminitrator);
+        // from now on administrator can add , remove , or do anything on any kind of operations.
 
-       childSection1.setParentItem(topSection);
+        childSection1.setParentItem(topSection);
 
-       itemDao.create(childSection1);
+        itemDao.create(childSection1);
     }
-
 
 
     @Test()
     public void testReadRolPositive() throws DatabaseException {
 
         // we are doing this as admin.
-        IUser user  = UserUtils.getDummyUser(pojoFactory);
+        IUser user = UserUtils.getDummyUser(pojoFactory);
         // add user iadministrator.
         user = userDao.create(user);
 
@@ -212,7 +205,7 @@ public class GroupPermissionDaoTest extends BaseDaoTest {
     public void testReadRolNegative() throws DatabaseException {
 
         // we are doing this as admin.
-        IUser user  = UserUtils.getDummyUser(pojoFactory);
+        IUser user = UserUtils.getDummyUser(pojoFactory);
         // add user iadministrator.
         user = userDao.create(user);
 
@@ -242,11 +235,6 @@ public class GroupPermissionDaoTest extends BaseDaoTest {
         topSection = itemDao.get(topSection.get__id());
 
     }
-
-
-
-
-
 
 
 }

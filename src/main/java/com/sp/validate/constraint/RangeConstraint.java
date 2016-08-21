@@ -1,7 +1,5 @@
 package com.sp.validate.constraint;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-
 /**
  * Created by pankajmishra on 06/08/16.
  */
@@ -15,11 +13,11 @@ public class RangeConstraint implements Constraint<Comparable> {
 
     boolean inen;
 
-    public RangeConstraint(){
+    public RangeConstraint() {
 
     }
 
-    public RangeConstraint( Comparable start, boolean inst, Comparable end, boolean inen){
+    public RangeConstraint(Comparable start, boolean inst, Comparable end, boolean inen) {
         this.start = start;
         this.inst = inst;
         this.end = end;
@@ -33,13 +31,13 @@ public class RangeConstraint implements Constraint<Comparable> {
 
         boolean satisfyend = false;
 
-        satisfystart = inst ? start.compareTo(value)  <= 0 :
-                start.compareTo(value ) < 0;
+        satisfystart = inst ? start.compareTo(value) <= 0 :
+                start.compareTo(value) < 0;
 
-        satisfyend = inen ? value.compareTo(end ) <= 0 :
-                value.compareTo(end ) < 0;
+        satisfyend = inen ? value.compareTo(end) <= 0 :
+                value.compareTo(end) < 0;
 
-        return satisfystart && satisfyend ;
+        return satisfystart && satisfyend;
 
     }
 
@@ -85,8 +83,10 @@ public class RangeConstraint implements Constraint<Comparable> {
 
         if (inen != that.inen) return false;
         if (inst != that.inst) return false;
-        if (end != null ? !end.equals(that.end) : that.end != null) return false;
-        if (start != null ? !start.equals(that.start) : that.start != null) return false;
+        if (end != null ? !end.equals(that.end) : that.end != null)
+            return false;
+        if (start != null ? !start.equals(that.start) : that.start != null)
+            return false;
 
         return true;
     }

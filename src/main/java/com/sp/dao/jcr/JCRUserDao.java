@@ -2,10 +2,10 @@ package com.sp.dao.jcr;
 
 import com.google.common.collect.Lists;
 import com.sp.dao.api.DatabaseException;
+import com.sp.dao.api.JCRIRepository;
 import com.sp.dao.api.UserDao;
 import com.sp.dao.jcr.model.JCRUser;
 import com.sp.dao.jcr.utils.JCRNodePropertyName;
-import com.sp.dao.api.JCRIRepository;
 import com.sp.dao.jcr.utils.JcrDaoUtils;
 import com.sp.model.FieldValue;
 import com.sp.service.StringSerialization;
@@ -39,6 +39,7 @@ public class JCRUserDao implements UserDao<JCRUser> {
 
     /**
      * Because jcr in itself does not provide user management so we need to user jackrabbit API for this.
+     *
      * @param userObj
      * @return
      * @throws DatabaseException
@@ -48,29 +49,31 @@ public class JCRUserDao implements UserDao<JCRUser> {
         JackrabbitSession session = null;
         try {
             session = (JackrabbitSession) JCRIRepository.getSession();
-            Authorizable user = session.getUserManager().createUser(userObj.getUserName(), String.valueOf(userObj.getPassword()));
+            Authorizable user = session.getUserManager().createUser(userObj.getUserName(), String.valueOf(userObj
+                    .getPassword()));
             Node fieldNode = createFieldNodeForUser(userObj.getIdentityForPath(), userObj.getProperties(), session);
             SimpleValueFactory simpleValueFactory = new SimpleValueFactory();
-            Value fieldValue =  simpleValueFactory.createValue(fieldNode.getPath());
+            Value fieldValue = simpleValueFactory.createValue(fieldNode.getPath());
             user.setProperty(JCRNodePropertyName.FIELDS_LINK_NAME, fieldValue);
             session.save();
             return userObj;
         } catch (Exception e) {
             throw new DatabaseException(e);
         } finally {
-            if(session != null){
+            if (session != null) {
                 session.logout();
             }
         }
     }
 
 
-    private Node createFieldNodeForUser(String userName, List<FieldValue> properties, Session session) throws Exception {
+    private Node createFieldNodeForUser(String userName, List<FieldValue> properties, Session session) throws
+            Exception {
         Node userNode = null;
-        if(session.getRootNode().hasNode(JCRNodePropertyName.USER_LINK_VALUE )){
-            userNode =  session.getRootNode().getNode(JCRNodePropertyName.USER_LINK_VALUE );
+        if (session.getRootNode().hasNode(JCRNodePropertyName.USER_LINK_VALUE)) {
+            userNode = session.getRootNode().getNode(JCRNodePropertyName.USER_LINK_VALUE);
         } else {
-            userNode =  session.getRootNode().addNode(JCRNodePropertyName.USER_LINK_VALUE );
+            userNode = session.getRootNode().addNode(JCRNodePropertyName.USER_LINK_VALUE);
         }
         Node fieldNode = userNode.addNode(userName);
         JcrDaoUtils.populateNodeFromItem(properties, fieldNode, session, serialization);
@@ -92,12 +95,12 @@ public class JCRUserDao implements UserDao<JCRUser> {
         JackrabbitSession session = null;
         try {
             session = (JackrabbitSession) JCRIRepository.getSession();
-            Authorizable user = session.getUserManager().getAuthorizable((String)id);
+            Authorizable user = session.getUserManager().getAuthorizable((String) id);
             return getUserFromAuthorizable(user, session);
         } catch (Exception e) {
             throw new DatabaseException(e);
         } finally {
-            if(session != null){
+            if (session != null) {
                 session.logout();
             }
         }
@@ -105,6 +108,7 @@ public class JCRUserDao implements UserDao<JCRUser> {
 
     /**
      * Helper method to get user object from jcr representation of user.
+     *
      * @param user
      * @param session
      * @return
@@ -118,7 +122,7 @@ public class JCRUserDao implements UserDao<JCRUser> {
         String userFieldPath = userFieldValue.getString();
         Node userFieldNode = session.getNode(userFieldPath);
         List<FieldValue> properties = JcrDaoUtils.getFieldsFromNode(userFieldNode, serialization);
-        userObj.setProperties( properties);
+        userObj.setProperties(properties);
         return userObj;
     }
 
@@ -135,7 +139,7 @@ public class JCRUserDao implements UserDao<JCRUser> {
                 }
             });
 
-            Iterator<JCRUser> iterator =  new Iterator<JCRUser>() {
+            Iterator<JCRUser> iterator = new Iterator<JCRUser>() {
                 @Override
                 public boolean hasNext() {
                     return authorizableIterable.hasNext();
@@ -148,10 +152,10 @@ public class JCRUserDao implements UserDao<JCRUser> {
                         innerSession = JCRIRepository.getSession();
                         return getUserFromAuthorizable(authorizableIterable.next(), innerSession);
                     } catch (Exception e) {
-                        throw  new RuntimeException(String.format("problem in converting authority object into user " +
+                        throw new RuntimeException(String.format("problem in converting authority object into user " +
                                 "object. "), e);
                     } finally {
-                        if(innerSession != null)
+                        if (innerSession != null)
                             innerSession.logout();
                     }
                 }
@@ -182,13 +186,13 @@ public class JCRUserDao implements UserDao<JCRUser> {
         JackrabbitSession session = null;
         try {
             session = (JackrabbitSession) JCRIRepository.getSession();
-            Authorizable user = session.getUserManager().getAuthorizable((String)id);
+            Authorizable user = session.getUserManager().getAuthorizable((String) id);
             user.remove();
             session.save();
         } catch (Exception e) {
             throw new DatabaseException(e);
         } finally {
-            if(session != null){
+            if (session != null) {
                 session.logout();
             }
         }
@@ -199,12 +203,12 @@ public class JCRUserDao implements UserDao<JCRUser> {
         JackrabbitSession session = null;
         try {
             session = (JackrabbitSession) JCRIRepository.getSession();
-            Authorizable user = session.getUserManager().getAuthorizable((String)id);
+            Authorizable user = session.getUserManager().getAuthorizable((String) id);
             return user != null;
         } catch (Exception e) {
             throw new DatabaseException(e);
         } finally {
-            if(session != null){
+            if (session != null) {
                 session.logout();
             }
         }
@@ -220,7 +224,7 @@ public class JCRUserDao implements UserDao<JCRUser> {
         } catch (Exception e) {
             throw new DatabaseException(e);
         } finally {
-            if(session != null){
+            if (session != null) {
                 session.logout();
             }
         }
@@ -231,13 +235,13 @@ public class JCRUserDao implements UserDao<JCRUser> {
         JackrabbitSession session = null;
         try {
             session = (JackrabbitSession) JCRIRepository.getSession();
-            Group group = (Group)session.getUserManager().getAuthorizable(groupName);
+            Group group = (Group) session.getUserManager().getAuthorizable(groupName);
             session.save();
             return group != null;
         } catch (Exception e) {
             throw new DatabaseException(e);
         } finally {
-            if(session != null){
+            if (session != null) {
                 session.logout();
             }
         }
@@ -254,7 +258,7 @@ public class JCRUserDao implements UserDao<JCRUser> {
         } catch (Exception e) {
             throw new DatabaseException(e);
         } finally {
-            if(session != null){
+            if (session != null) {
                 session.logout();
             }
         }
@@ -266,7 +270,7 @@ public class JCRUserDao implements UserDao<JCRUser> {
         JackrabbitSession session = null;
         try {
             session = (JackrabbitSession) JCRIRepository.getSession();
-            Group group = (Group)session.getUserManager().getAuthorizable(groupName);
+            Group group = (Group) session.getUserManager().getAuthorizable(groupName);
             final Iterator<Authorizable> authorizableIterable = group.getDeclaredMembers();
 
             return new Iterator<JCRUser>() {
@@ -282,10 +286,10 @@ public class JCRUserDao implements UserDao<JCRUser> {
                         innerSession = JCRIRepository.getSession();
                         return getUserFromAuthorizable(authorizableIterable.next(), innerSession);
                     } catch (Exception e) {
-                       throw  new RuntimeException(String.format("problem in converting authority object into user " +
-                               "object. "));
+                        throw new RuntimeException(String.format("problem in converting authority object into user " +
+                                "object. "));
                     } finally {
-                        if(innerSession != null)
+                        if (innerSession != null)
                             innerSession.logout();
                     }
                 }
@@ -308,7 +312,7 @@ public class JCRUserDao implements UserDao<JCRUser> {
             Authorizable user = session.getUserManager().getAuthorizable(userName);
             List<String> groupNames = new ArrayList<String>();
             Iterator<Group> groups = user.declaredMemberOf();
-            while (groups.hasNext()){
+            while (groups.hasNext()) {
                 groupNames.add(groups.next().getID());
             }
             session.save();
@@ -316,7 +320,7 @@ public class JCRUserDao implements UserDao<JCRUser> {
         } catch (Exception e) {
             throw new DatabaseException(e);
         } finally {
-            if(session != null){
+            if (session != null) {
                 session.logout();
             }
         }
@@ -327,13 +331,13 @@ public class JCRUserDao implements UserDao<JCRUser> {
         JackrabbitSession session = null;
         try {
             session = (JackrabbitSession) JCRIRepository.getSession();
-            Group group = (Group)session.getUserManager().getAuthorizable(groupName);
-            if(group == null){
-                group = (Group)session.getUserManager().createGroup(groupName);
+            Group group = (Group) session.getUserManager().getAuthorizable(groupName);
+            if (group == null) {
+                group = (Group) session.getUserManager().createGroup(groupName);
             }
 
             Authorizable user = session.getUserManager().getAuthorizable(userObj.getUserName());
-            if(user == null){
+            if (user == null) {
                 userObj = create(userObj);
                 user = session.getUserManager().getAuthorizable(userObj.getUserName());
             }
@@ -342,7 +346,7 @@ public class JCRUserDao implements UserDao<JCRUser> {
         } catch (Exception e) {
             throw new DatabaseException(e);
         } finally {
-            if(session != null){
+            if (session != null) {
                 session.logout();
             }
         }
@@ -359,7 +363,7 @@ public class JCRUserDao implements UserDao<JCRUser> {
                 }
             });
 
-            Iterator<String> iterator =  new Iterator<String>() {
+            Iterator<String> iterator = new Iterator<String>() {
                 @Override
                 public boolean hasNext() {
                     return authorizableIterable.hasNext();
@@ -370,7 +374,7 @@ public class JCRUserDao implements UserDao<JCRUser> {
                     try {
                         return authorizableIterable.next().getID();
                     } catch (Exception e) {
-                        throw  new RuntimeException(String.format("problem in converting authority object into user " +
+                        throw new RuntimeException(String.format("problem in converting authority object into user " +
                                 "object. "), e);
                     }
                 }
@@ -381,7 +385,7 @@ public class JCRUserDao implements UserDao<JCRUser> {
         } catch (Exception e) {
             throw new DatabaseException(e);
         } finally {
-           if(session != null){
+            if (session != null) {
                 session.logout();
             }
         }

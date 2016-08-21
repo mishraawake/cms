@@ -14,7 +14,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class NameUtilsTest {
 
     @Test
-    public void testSEOName(){
+    public void testSEOName() {
         String str = "my name";
         Assert.assertTrue(NameUtils.getJCRLikeName(str).equals("my-name"));
         str = "my    name";
@@ -23,7 +23,7 @@ public class NameUtilsTest {
         Assert.assertTrue(NameUtils.getJCRLikeName(str).equals("my-name"));
         str = "My name";
         Assert.assertTrue(NameUtils.getJCRLikeName(str).equals("My-name"));
-        str = "my name is pankaj     mishra             ";
+        str = "my name is pankaj                                             mishra             ";
         Assert.assertTrue(NameUtils.getJCRLikeName(str).equals("my-name-is-pankaj-mishra"));
     }
 

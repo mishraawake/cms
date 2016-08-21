@@ -1,7 +1,5 @@
 package com.sp.model;
 
-import java.util.List;
-
 /**
  * Created by pankajmishra on 17/08/16.
  */
@@ -12,7 +10,7 @@ public enum Privilege {
      * define semantic for the dynamic packaging
      */
     Executive {
-        public Privilege[] implied(){
+        public Privilege[] implied() {
             return Privilege.values();
         }
     },
@@ -22,7 +20,7 @@ public enum Privilege {
      */
     Write {
         public Privilege[] implied() {
-            Privilege[] privileges = { AddChild, RemoveChild , ModifyProperties, RemoveNode };
+            Privilege[] privileges = {AddChild, RemoveChild, ModifyProperties, RemoveNode};
             return privileges;
         }
     },
@@ -31,18 +29,18 @@ public enum Privilege {
      * Only add child permission exists on the target node.
      */
     AddChild {
-        public Privilege[] implied(){
-            Privilege[] privileges = {  };
+        public Privilege[] implied() {
+            Privilege[] privileges = {};
             return privileges;
         }
     },
 
     /**
-     *Only remove
+     * Only remove
      */
     RemoveChild {
-        public Privilege[] implied(){
-            Privilege[] privileges = {  };
+        public Privilege[] implied() {
+            Privilege[] privileges = {};
             return privileges;
         }
     },
@@ -51,8 +49,8 @@ public enum Privilege {
      *
      */
     RemoveNode {
-        public Privilege[] implied(){
-            Privilege[] privileges = { RemoveChild };
+        public Privilege[] implied() {
+            Privilege[] privileges = {RemoveChild};
             return privileges;
         }
     },
@@ -61,8 +59,8 @@ public enum Privilege {
      * Read permission of folder  and recursively of its child.
      */
     Read {
-        public Privilege[] implied(){
-            Privilege[] privileges = { };
+        public Privilege[] implied() {
+            Privilege[] privileges = {};
             return privileges;
         }
     },
@@ -71,8 +69,8 @@ public enum Privilege {
      *
      */
     ModifyProperties {
-        public Privilege[] implied(){
-            Privilege[] privileges = { };
+        public Privilege[] implied() {
+            Privilege[] privileges = {};
             return privileges;
         }
     },
@@ -80,9 +78,9 @@ public enum Privilege {
     /**
      * Adding user and deleting user, adding group and deleting group.
      */
-    UserAndGroupAdd  {
-        public Privilege[] implied(){
-            Privilege[] privileges = { };
+    UserAndGroupAdd {
+        public Privilege[] implied() {
+            Privilege[] privileges = {};
             return privileges;
         }
     };

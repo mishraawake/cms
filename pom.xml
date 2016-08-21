@@ -30,7 +30,8 @@
                 <artifactId>maven-project-info-reports-plugin</artifactId>
                 <version>2.8</version>
                 <configuration>
-                    <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
+                    <dependencyLocationsEnabled>false
+                    </dependencyLocationsEnabled>
                 </configuration>
             </plugin>
         </plugins>
@@ -52,13 +53,13 @@
 
     <dependencyManagement>
         <dependencies>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-framework-bom</artifactId>
-            <version>4.2.4.RELEASE</version>
-            <type>pom</type>
-            <scope>import</scope>
-        </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-framework-bom</artifactId>
+                <version>4.2.4.RELEASE</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -115,6 +116,16 @@
             <version>${apache.common.version}</version>
         </dependency>
 
+
+        <!-- mongo driver -->
+        <!-- https://mvnrepository.com/artifact/org.mongodb/mongo-java-driver -->
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongo-java-driver</artifactId>
+            <version>2.14.0</version>
+        </dependency>
+
+
         <!-- Data generator  Please remove later-->
         <dependency>
             <groupId>org.finra.datagenerator</groupId>
@@ -130,7 +141,6 @@
             <artifactId>nutch</artifactId>
             <version>1.12</version>
         </dependency>
-
 
 
     </dependencies>

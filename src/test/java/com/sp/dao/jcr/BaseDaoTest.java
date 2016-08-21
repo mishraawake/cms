@@ -2,7 +2,10 @@ package com.sp.dao.jcr;
 
 import com.sp.dao.api.*;
 import com.sp.helper.UserUtils;
-import com.sp.model.*;
+import com.sp.model.IDefinition;
+import com.sp.model.IItem;
+import com.sp.model.IUser;
+import com.sp.model.PojoFactory;
 import com.sp.service.RunTimeContext;
 import com.sp.service.impl.SimpleSubjectProvider;
 import com.sp.utils.SpringInitializer;
@@ -65,5 +68,4 @@ public abstract class BaseDaoTest implements ApplicationContextAware {
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
     }
-
 }

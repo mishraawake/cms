@@ -31,18 +31,18 @@ public class JCRUser implements IUser, JCRIdentifiable {
 
     @Override
     public char[] getPassword() {
-        if(passwd == null){
+        if (passwd == null) {
             return null;
         }
-        return Arrays.copyOf(passwd, passwd.length) ;
+        return Arrays.copyOf(passwd, passwd.length);
     }
 
     @Override
     public void setPassword(char[] passwd) {
-        if(passwd == null){
+        if (passwd == null) {
             return;
         }
-        this.passwd = Arrays.copyOf(passwd, passwd.length) ;
+        this.passwd = Arrays.copyOf(passwd, passwd.length);
     }
 
     @Override

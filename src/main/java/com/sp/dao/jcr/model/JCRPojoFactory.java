@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 /**
  * Created by pankajmishra on 10/08/16.
  */
-@Service
+@Service(value = "pojoFactory")
 public class JCRPojoFactory implements PojoFactory {
 
     @Override

@@ -9,12 +9,12 @@ public class LessThanConstraint implements Constraint<Comparable> {
 
     boolean eq;
 
-    public LessThanConstraint(){
+    public LessThanConstraint() {
 
     }
 
 
-    public LessThanConstraint(Comparable from, boolean eq){
+    public LessThanConstraint(Comparable from, boolean eq) {
         this.from = from;
         this.eq = eq;
     }
@@ -22,7 +22,7 @@ public class LessThanConstraint implements Constraint<Comparable> {
 
     @Override
     public boolean pass(Comparable value) {
-        return eq ? from.compareTo(value) <= 0 :  from.compareTo(value) < 0;
+        return eq ? from.compareTo(value) <= 0 : from.compareTo(value) < 0;
     }
 
     public Comparable getFrom() {
@@ -49,7 +49,8 @@ public class LessThanConstraint implements Constraint<Comparable> {
         LessThanConstraint that = (LessThanConstraint) o;
 
         if (eq != that.eq) return false;
-        if (from != null ? !from.equals(that.from) : that.from != null) return false;
+        if (from != null ? !from.equals(that.from) : that.from != null)
+            return false;
 
         return true;
     }

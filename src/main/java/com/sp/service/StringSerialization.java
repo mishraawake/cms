@@ -1,6 +1,5 @@
 package com.sp.service;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import java.io.IOException;

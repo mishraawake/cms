@@ -1,8 +1,9 @@
 package com.sp.dao.api;
 
-import com.sp.model.*;
+import com.sp.model.IUser;
+import com.sp.model.Permission;
+import com.sp.model.Role;
 
-import javax.jcr.RepositoryException;
 import java.util.List;
 
 /**
@@ -12,6 +13,7 @@ public interface PermissionDao<T> {
 
     /**
      * Grant permission to user.
+     *
      * @param permission
      * @param user
      */
@@ -19,6 +21,7 @@ public interface PermissionDao<T> {
 
     /**
      * Revoke permission to user.
+     *
      * @param permission
      * @param user
      */
@@ -26,6 +29,7 @@ public interface PermissionDao<T> {
 
     /**
      * Grant permission to group.
+     *
      * @param permission
      * @param groupName
      */
@@ -33,32 +37,29 @@ public interface PermissionDao<T> {
 
     /**
      * Revoke permission to group.
+     *
      * @param permission
      * @param groupName
      */
     public void revoke(Permission permission, String groupName) throws DatabaseException;
 
     /**
-     *
      * @param role
      */
     public void defineRole(Role role) throws DatabaseException;
 
     /**
-     *
      * @param role
      */
     public void deleteRole(Role role) throws DatabaseException;
 
     /**
-     *
      * @param role
      * @param user
      */
     public void assignRole(Role role, IUser user) throws DatabaseException;
 
     /**
-     *
      * @param role
      */
     public void assignRole(Role role, String group) throws DatabaseException;
@@ -79,11 +80,10 @@ public interface PermissionDao<T> {
     public List<Role> getAllRole() throws DatabaseException;
 
     /**
-     *
      * @param role
      * @return
      * @throws DatabaseException
      */
-    public  void updateRole(Role role) throws DatabaseException;
+    public void updateRole(Role role) throws DatabaseException;
 
 }

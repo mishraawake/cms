@@ -24,7 +24,7 @@ public class FieldValue {
         this.value = value;
     }
 
-    public static FieldValue getFieldValue(Field field, Object value){
+    public static FieldValue getFieldValue(Field field, Object value) {
         FieldValue fieldValue = new FieldValue();
         fieldValue.value = value;
         fieldValue.field = field;
@@ -38,8 +38,10 @@ public class FieldValue {
 
         FieldValue that = (FieldValue) o;
 
-        if (field != null ? !field.equals(that.field) : that.field != null) return false;
-        if (value != null ? !value.equals(that.value) : that.value != null) return false;
+        if (field != null ? !field.equals(that.field) : that.field != null)
+            return false;
+        if (value != null ? !value.equals(that.value) : that.value != null)
+            return false;
 
         return true;
     }

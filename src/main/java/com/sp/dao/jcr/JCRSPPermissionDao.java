@@ -8,7 +8,6 @@ import com.sp.dao.jcr.model.JCRItem;
 import com.sp.dao.jcr.model.JCRUser;
 import com.sp.model.Permission;
 import com.sp.model.Privilege;
-import com.sp.model.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -23,20 +22,20 @@ public class JCRSPPermissionDao implements SPPermissionDao<JCRUser> {
 
     @Override
     public void grant(Permission permission, JCRUser user) throws DatabaseException {
-        JCRItem item = (JCRItem)permission.getTarget();
-        jcrPermissionDao.grant( permission , user);
+        JCRItem item = (JCRItem) permission.getTarget();
+        jcrPermissionDao.grant(permission, user);
         JCRDefinition jcrDefinition = item.getDefinition();
-        Permission  permission1 = new Permission(jcrDefinition, Privilege.Read);
-        jcrPermissionDao.grant( permission1 , user);
+        Permission permission1 = new Permission(jcrDefinition, Privilege.Read);
+        jcrPermissionDao.grant(permission1, user);
     }
 
     @Override
     public void grant(Permission permission, String group) throws DatabaseException {
-        JCRItem item = (JCRItem)permission.getTarget();
-        jcrPermissionDao.grant( permission , group);
+        JCRItem item = (JCRItem) permission.getTarget();
+        jcrPermissionDao.grant(permission, group);
         JCRDefinition jcrDefinition = item.getDefinition();
-        Permission  permission1 = new Permission(jcrDefinition, Privilege.Read);
-        jcrPermissionDao.grant( permission1 , group);
+        Permission permission1 = new Permission(jcrDefinition, Privilege.Read);
+        jcrPermissionDao.grant(permission1, group);
     }
 
 }

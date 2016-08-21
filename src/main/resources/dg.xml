@@ -1,5 +1,4 @@
 <scxml xmlns="http://www.w3.org/2005/07/scxml"
-       xmlns:cs="http://commons.apache.org/scxml"
        xmlns:dg="http://commons.apache.org/dgxml"
        version="1.0"
        initial="start">

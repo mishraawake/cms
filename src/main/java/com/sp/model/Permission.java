@@ -9,7 +9,7 @@ public class Permission {
 
     private Privilege privilege;
 
-    public Permission(Identity identity, Privilege privilege){
+    public Permission(Identity identity, Privilege privilege) {
         this.target = identity;
         this.privilege = privilege;
     }

@@ -1,7 +1,5 @@
 package com.sp.model;
 
-import com.sp.dao.jcr.model.JCRItem;
-
 import java.util.List;
 
 /**

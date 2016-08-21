@@ -1,6 +1,5 @@
 package com.sp.service.impl;
 
-import com.sp.model.IUser;
 import com.sp.service.SubjectProvider;
 
 /**

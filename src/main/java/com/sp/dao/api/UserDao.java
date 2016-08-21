@@ -2,7 +2,6 @@ package com.sp.dao.api;
 
 import com.sp.model.IUser;
 
-import javax.xml.crypto.Data;
 import java.util.Iterator;
 import java.util.List;
 
@@ -12,6 +11,7 @@ import java.util.List;
 public interface UserDao<T extends IUser> extends IDao<T> {
     /**
      * create group of this name.
+     *
      * @param groupName
      * @throws DatabaseException
      */
@@ -19,13 +19,15 @@ public interface UserDao<T extends IUser> extends IDao<T> {
 
     /**
      * create group of this name.
+     *
      * @param groupName
      * @throws DatabaseException
      */
     boolean groupExists(String groupName) throws DatabaseException;
 
     /**
-     *  Remove group.
+     * Remove group.
+     *
      * @param groupName
      * @throws DatabaseException
      */
@@ -33,6 +35,7 @@ public interface UserDao<T extends IUser> extends IDao<T> {
 
     /**
      * Get all member of this group.
+     *
      * @param groupName
      * @return
      * @throws DatabaseException
@@ -41,6 +44,7 @@ public interface UserDao<T extends IUser> extends IDao<T> {
 
     /**
      * Get all groupname of this user.
+     *
      * @param userName
      * @return
      * @throws DatabaseException
@@ -49,6 +53,7 @@ public interface UserDao<T extends IUser> extends IDao<T> {
 
     /**
      * It also create user and group if they are not available.
+     *
      * @param user
      * @param groupName
      * @throws DatabaseException
@@ -57,6 +62,7 @@ public interface UserDao<T extends IUser> extends IDao<T> {
 
     /**
      * All group present in database.
+     *
      * @return
      * @throws DatabaseException
      */

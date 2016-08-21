@@ -1,27 +1,12 @@
 package com.sp.dao.jcr;
 
 import com.sp.dao.api.DatabaseException;
-import com.sp.dao.api.DefinitionDao;
-import com.sp.dao.api.PermissionDao;
 import com.sp.helper.DefUtils;
 import com.sp.helper.ItemUtils;
 import com.sp.helper.UserUtils;
 import com.sp.model.*;
 import com.sp.service.impl.SimpleSubjectProvider;
-import com.sp.utils.SpringInitializer;
-import org.apache.jackrabbit.api.security.user.User;
-import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import java.util.List;
 
 public class UserPermissionDaoTest extends BaseDaoTest {
 
@@ -31,8 +16,6 @@ public class UserPermissionDaoTest extends BaseDaoTest {
     IDefinition pollDefinition;
 
     IDefinition articleDefinition;
-
-
 
 
     IItem<IItem, IDefinition> topSection;
@@ -50,13 +33,12 @@ public class UserPermissionDaoTest extends BaseDaoTest {
     IItem<IItem, IDefinition> gchildSection22;
 
 
-
     @Override
     protected void specificBeforeSetup() throws DatabaseException {
         // create few definition
-        sectionDefinition = DefUtils.getDummyDefition(pojoFactory);
-        pollDefinition = DefUtils.getDummyDefition(pojoFactory);
-        articleDefinition = DefUtils.getDummyDefition(pojoFactory);
+        sectionDefinition = DefUtils.getDummyDefinition(pojoFactory);
+        pollDefinition = DefUtils.getDummyDefinition(pojoFactory);
+        articleDefinition = DefUtils.getDummyDefinition(pojoFactory);
         sectionDefinition = definitionDao.create(sectionDefinition);
         pollDefinition = definitionDao.create(pollDefinition);
         articleDefinition = definitionDao.create(articleDefinition);
@@ -78,15 +60,13 @@ public class UserPermissionDaoTest extends BaseDaoTest {
         gchildSection22.setDefinition(sectionDefinition);
 
 
-
-
     }
 
     @Test
     public void testWriteRolePositive() throws DatabaseException {
 
         // we are doing this as admin.
-        IUser adminitrator  = UserUtils.getDummyUser(pojoFactory);
+        IUser adminitrator = UserUtils.getDummyUser(pojoFactory);
         // add user iadministrator.
         adminitrator = userDao.create(adminitrator);
 
@@ -110,7 +90,7 @@ public class UserPermissionDaoTest extends BaseDaoTest {
     public void testWriteRoleRevoke() throws DatabaseException {
 
         // we are doing this as admin.
-        IUser adminitrator  = UserUtils.getDummyUser(pojoFactory);
+        IUser adminitrator = UserUtils.getDummyUser(pojoFactory);
         // add user iadministrator.
         adminitrator = userDao.create(adminitrator);
 
@@ -143,40 +123,37 @@ public class UserPermissionDaoTest extends BaseDaoTest {
         itemDao.create(childSection2);
 
 
-
     }
 
 
-
-   @Test(expected = DatabaseException.class)
+    @Test(expected = DatabaseException.class)
     public void testWriteRoleNegative() throws DatabaseException {
 
         // we are doing this as admin.
-       IUser  user = UserUtils.getDummyUser(pojoFactory);
+        IUser user = UserUtils.getDummyUser(pojoFactory);
         // add user iadministrator.
-       user = userDao.create(user);
+        user = userDao.create(user);
 
         topSection = itemDao.create(topSection);
 
         Permission permission = new Permission(topSection, Privilege.Read);
 
-       spPermissionDao.grant(permission, user);
+        spPermissionDao.grant(permission, user);
 
         runTimeContext.setValue(SimpleSubjectProvider.CURRENT_LOGGEDIN_USER, user);
 
         childSection1.setParentItem(topSection);
 
 
-         itemDao.create(childSection1);
+        itemDao.create(childSection1);
     }
-
 
 
     @Test()
     public void testReadRolPositive() throws DatabaseException {
 
         // we are doing this as admin.
-        IUser  user = UserUtils.getDummyUser(pojoFactory);
+        IUser user = UserUtils.getDummyUser(pojoFactory);
         // add user iadministrator.
         user = userDao.create(user);
 
@@ -203,7 +180,7 @@ public class UserPermissionDaoTest extends BaseDaoTest {
     public void testReadRolNegative() throws DatabaseException {
 
         // we are doing this as admin.
-        IUser  user = UserUtils.getDummyUser(pojoFactory);
+        IUser user = UserUtils.getDummyUser(pojoFactory);
         // add user iadministrator.
         user = userDao.create(user);
 
@@ -226,11 +203,6 @@ public class UserPermissionDaoTest extends BaseDaoTest {
         topSection = itemDao.get(topSection.get__id());
 
     }
-
-
-
-
-
 
 
 }

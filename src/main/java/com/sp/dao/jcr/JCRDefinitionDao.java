@@ -3,12 +3,12 @@ package com.sp.dao.jcr;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sp.dao.api.DatabaseException;
 import com.sp.dao.api.DefinitionDao;
+import com.sp.dao.api.JCRIRepository;
 import com.sp.dao.jcr.model.JCRDefinition;
 import com.sp.dao.jcr.utils.JCRNodePropertyName;
+import com.sp.dao.jcr.utils.JcrDaoUtils;
 import com.sp.model.Field;
 import com.sp.service.StringSerialization;
-import com.sp.dao.api.JCRIRepository;
-import com.sp.dao.jcr.utils.JcrDaoUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.jcr.*;
@@ -28,19 +28,19 @@ public class JCRDefinitionDao implements DefinitionDao<JCRDefinition> {
     @Autowired
     JCRIRepository JCRIRepository;
 
-    private String getPrefixedName(String name){
+    private String getPrefixedName(String name) {
         return JcrDaoUtils.getPrefixedName(name);
     }
 
 
-
-    private void copyDefToNode(JCRDefinition definition, Node node) throws RepositoryException, JsonProcessingException {
+    private void copyDefToNode(JCRDefinition definition, Node node) throws RepositoryException,
+            JsonProcessingException {
 
         node.setProperty(getPrefixedName(JCRNodePropertyName.NAME_LINK_NAME), definition.getName());
         node.setProperty(getPrefixedName(JCRNodePropertyName.DESC_LINK_NAME), definition.getDescription());
         Node fieldNode = node.addNode(JCRNodePropertyName.FIELDS_LINK_NAME);
 
-        for(Field field : definition.getFields()){
+        for (Field field : definition.getFields()) {
             fieldNode.setProperty(getPrefixedName(field.getName()), serialization.serialize(field));
         }
     }
@@ -51,10 +51,10 @@ public class JCRDefinitionDao implements DefinitionDao<JCRDefinition> {
         definition.setName(node.getProperty(getPrefixedName(JCRNodePropertyName.NAME_LINK_NAME)).getString());
         Node fieldNode = node.getNode(JCRNodePropertyName.FIELDS_LINK_NAME);
         PropertyIterator propertyIterator = fieldNode.getProperties(JCRIRepository.MY_NAME_SPACE_PREFIX + ":*");
-        while(propertyIterator.hasNext()){
-            Property  prop = propertyIterator.nextProperty();
+        while (propertyIterator.hasNext()) {
+            Property prop = propertyIterator.nextProperty();
             //System.out.println(prop.getName());
-           definition.getFields().add(serialization.deserialize(prop.getString(), Field.class));
+            definition.getFields().add(serialization.deserialize(prop.getString(), Field.class));
         }
     }
 
@@ -67,7 +67,7 @@ public class JCRDefinitionDao implements DefinitionDao<JCRDefinition> {
             session = JCRIRepository.getSession();
             Node definitionNode = null;
             String defJcrName = JcrDaoUtils.getPrefixedName(JCRNodePropertyName.DEF_LINK_NAME);
-            if(session.getRootNode().hasNode(defJcrName)) {
+            if (session.getRootNode().hasNode(defJcrName)) {
                 definitionNode = session.getRootNode().getNode(defJcrName);
             } else {
                 definitionNode = session.getRootNode().addNode(defJcrName);
@@ -81,7 +81,7 @@ public class JCRDefinitionDao implements DefinitionDao<JCRDefinition> {
         } catch (Exception e) {
             throw new DatabaseException(e);
         } finally {
-            if(session != null){
+            if (session != null) {
                 session.logout();
             }
         }
@@ -90,7 +90,7 @@ public class JCRDefinitionDao implements DefinitionDao<JCRDefinition> {
 
     @Override
     public JCRDefinition createOrUpdate(JCRDefinition element) throws DatabaseException {
-        if(element.get__id() == null){
+        if (element.get__id() == null) {
             return create(element);
         }
         return update(element);
@@ -102,13 +102,13 @@ public class JCRDefinitionDao implements DefinitionDao<JCRDefinition> {
         try {
 
             session = JCRIRepository.getSession();
-            copyDefToNode(element, session.getNode( element.get__id()));
+            copyDefToNode(element, session.getNode(element.get__id()));
             session.save();
             return element;
         } catch (Exception e) {
             throw new DatabaseException(e);
         } finally {
-            if(session != null){
+            if (session != null) {
                 session.logout();
             }
         }
@@ -120,13 +120,13 @@ public class JCRDefinitionDao implements DefinitionDao<JCRDefinition> {
         try {
             JCRDefinition definition = new JCRDefinition();
             session = JCRIRepository.getSession();
-            copyNodeToDef(session.getNode((String)id) , definition);
+            copyNodeToDef(session.getNode((String) id), definition);
             session.save();
             return definition;
         } catch (Exception e) {
             throw new DatabaseException(e);
         } finally {
-            if(session != null){
+            if (session != null) {
                 session.logout();
             }
         }
@@ -152,7 +152,7 @@ public class JCRDefinitionDao implements DefinitionDao<JCRDefinition> {
         } catch (RepositoryException e) {
             throw new DatabaseException(e);
         } finally {
-            if(session != null){
+            if (session != null) {
                 session.logout();
             }
         }
@@ -163,11 +163,11 @@ public class JCRDefinitionDao implements DefinitionDao<JCRDefinition> {
         Session session = null;
         try {
             session = JCRIRepository.getSession();
-            return session.nodeExists((String)id);
+            return session.nodeExists((String) id);
         } catch (RepositoryException e) {
             throw new DatabaseException(e);
         } finally {
-            if(session != null){
+            if (session != null) {
                 session.logout();
             }
         }

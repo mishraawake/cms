@@ -4,8 +4,8 @@ import com.sp.dao.api.JCRIRepository;
 import com.sp.model.IUser;
 import com.sp.service.SubjectProvider;
 import org.apache.jackrabbit.commons.NamespaceHelper;
-import org.apache.jackrabbit.oak.Oak;
 import org.apache.jackrabbit.oak.jcr.Jcr;
+import org.apache.jackrabbit.oak.plugins.segment.SegmentNodeStore;
 import org.apache.jackrabbit.oak.plugins.segment.file.FileStore;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -32,8 +32,8 @@ public class JCRFileSystemRepository implements JCRIRepository {
     public Session getSession() throws RepositoryException {
         try {
             if (repository == null) {
-                FileStore fs = new FileStore(new File("repository"), MAX_FILE_SIZE);
-                repository = new Jcr(new Oak()).createRepository();
+                FileStore fs = new FileStore(new File("../repository"), MAX_FILE_SIZE);
+                repository = new Jcr(new SegmentNodeStore(fs)).createRepository();
                 initializeRepo();
             }
             IUser user = subjectProvider.getCurrentSubject();
@@ -41,24 +41,30 @@ public class JCRFileSystemRepository implements JCRIRepository {
                 throw new RuntimeException("Database is being accessed by anonymous user");
             }
             return repository.login(new SimpleCredentials(user.getUserName(), user.getPassword()));
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new RepositoryException(e);
         }
+    }
+
+    @Override
+    public void shutDown() {
+
     }
 
 
     /**
      * Register the name space, node type etc if it already not present.
+     *
      * @throws javax.jcr.RepositoryException
      */
     private void initializeRepo() throws RepositoryException {
-        Session session = repository.login(new SimpleCredentials("admin", "admin".toCharArray())) ;
+        Session session = repository.login(new SimpleCredentials("admin", "admin".toCharArray()));
 
         try {
             createNameSpace(session, MY_NAME_SPACE_PREFIX, MY_NAME_SPACE_URL);
             createNameSpace(session, PACKAGE_NAME_SPACE_PREFIX, PACKAGE_NAME_SPACE_URL);
             session.save();
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             session.logout();
@@ -67,13 +73,13 @@ public class JCRFileSystemRepository implements JCRIRepository {
 
     private static void createNameSpace(Session session, String pkgName, String pkgUrl) throws RepositoryException {
         boolean nameSpaceExists = false;
-        for(String pref : session.getNamespacePrefixes())  {
-            if(pref.equals(pkgName)){
+        for (String pref : session.getNamespacePrefixes()) {
+            if (pref.equals(pkgName)) {
                 nameSpaceExists = true;
             }
         }
 
-        if(!nameSpaceExists) {
+        if (!nameSpaceExists) {
             NamespaceHelper namespaceHelper = new NamespaceHelper(session);
             namespaceHelper.registerNamespace(pkgName, pkgUrl);
         }

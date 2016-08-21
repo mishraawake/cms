@@ -2,19 +2,22 @@ package com.sp.dao.jcr;
 
 import com.sp.dao.api.DatabaseException;
 import com.sp.dao.api.ItemDao;
+import com.sp.dao.api.JCRIRepository;
 import com.sp.dao.jcr.model.JCRDefinition;
 import com.sp.dao.jcr.model.JCRItem;
 import com.sp.dao.jcr.utils.JCRNodePropertyName;
-import com.sp.model.*;
-import com.sp.service.StringSerialization;
-import com.sp.dao.api.JCRIRepository;
 import com.sp.dao.jcr.utils.JcrDaoUtils;
+import com.sp.model.Association;
+import com.sp.model.AssociationLink;
+import com.sp.model.FieldValue;
+import com.sp.service.StringSerialization;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.NodeType;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by pankajmishra on 07/08/16.
@@ -43,6 +46,31 @@ public class JCRItemDao implements ItemDao<JCRItem> {
     }
 
     @Override
+    public List<JCRItem> getRootItems() throws DatabaseException {
+        Session session = null;
+        try {
+
+            session = JCRIRepository.getSession();
+            Node rootNode = session.getRootNode();
+            NodeIterator nodeIterator = rootNode.
+                    getNode(JcrDaoUtils.getPrefixedName(JCRNodePropertyName.ITEM_LINK_NAME)).getNodes();
+            List<JCRItem> items = new ArrayList<JCRItem>();
+            while (nodeIterator.hasNext()) {
+                Node childNode = nodeIterator.nextNode();
+                JCRItem newItem = getJcrItemFromNode(childNode);
+                items.add(newItem);
+            }
+            return items;
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        } finally {
+            if (session != null) {
+                session.logout();
+            }
+        }
+    }
+
+    @Override
     public JCRItem createOrUpdate(JCRItem element) throws DatabaseException {
         if (element.get__id() == null) {
             return create(element);
@@ -58,7 +86,8 @@ public class JCRItemDao implements ItemDao<JCRItem> {
             session = JCRIRepository.getSession();
             Node node = session.getNode(element.get__id());
             node.setProperty(JCRNodePropertyName.NAME_LINK_NAME, element.getName());
-            JcrDaoUtils.populateNodeFromItem(element.getFieldValues(), node.getNode(JCRNodePropertyName.FIELDS_LINK_NAME), session, serialization);
+            JcrDaoUtils.populateNodeFromItem(element.getFieldValues(), node.getNode(JCRNodePropertyName
+                    .FIELDS_LINK_NAME), session, serialization);
 
             session.save();
             return element;
@@ -159,25 +188,29 @@ public class JCRItemDao implements ItemDao<JCRItem> {
             session = JCRIRepository.getSession();
             JCRItem item = get((String) id);
             Node itemNode = session.getNode((String) id);
-            NodeIterator nodeIterator =  itemNode.getNodes(JCRIRepository.PACKAGE_NAME_SPACE_PREFIX + ":"+name);
+            NodeIterator nodeIterator = itemNode.getNodes(JCRIRepository.PACKAGE_NAME_SPACE_PREFIX + ":" + name);
 
-            while(nodeIterator.hasNext()){
+            while (nodeIterator.hasNext()) {
                 Association association = new Association();
                 Node associationNode = nodeIterator.nextNode();
                 // get the field node of assocition node.
-                Node associationFieldNode =  associationNode.getNode(JCRNodePropertyName.FIELDS_LINK_NAME);
-                List<FieldValue> assocFieldValueList = JcrDaoUtils.getFieldsFromNode(associationFieldNode, serialization);
+                Node associationFieldNode = associationNode.getNode(JCRNodePropertyName.FIELDS_LINK_NAME);
+                List<FieldValue> assocFieldValueList = JcrDaoUtils.getFieldsFromNode(associationFieldNode,
+                        serialization);
                 association.setProperties(assocFieldValueList);
                 association.setName(associationNode.getProperty(JCRNodePropertyName.NAME_LINK_NAME).getString());
-                NodeIterator associatedLinkNodes = associationNode.getNodes(JCRIRepository.PACKAGE_NAME_SPACE_PREFIX + ":*");
+                NodeIterator associatedLinkNodes = associationNode.getNodes(JCRIRepository.PACKAGE_NAME_SPACE_PREFIX
+                        + ":*");
 
-                while (associatedLinkNodes.hasNext()){
+                while (associatedLinkNodes.hasNext()) {
                     AssociationLink associationLink = new AssociationLink();
                     Node associatedLinkNode = associatedLinkNodes.nextNode();
                     Node assocLinkFieldNode = associatedLinkNode.getNode(JCRNodePropertyName.FIELDS_LINK_NAME);
-                    List<FieldValue> assocLinkFieldValueList = JcrDaoUtils.getFieldsFromNode(assocLinkFieldNode, serialization);
+                    List<FieldValue> assocLinkFieldValueList = JcrDaoUtils.getFieldsFromNode(assocLinkFieldNode,
+                            serialization);
                     associationLink.setProperties(assocLinkFieldValueList);
-                    PropertyIterator assocLinkPropIterator =  associatedLinkNode.getProperties(JCRIRepository.MY_NAME_SPACE_PREFIX + ":*");
+                    PropertyIterator assocLinkPropIterator = associatedLinkNode.getProperties(JCRIRepository
+                            .MY_NAME_SPACE_PREFIX + ":*");
                     Node linkedItemNode = assocLinkPropIterator.nextProperty().getNode();
                     JCRItem linkedItem = getJcrItemFromNode(linkedItemNode);
                     associationLink.setLinked(linkedItem);
@@ -201,15 +234,19 @@ public class JCRItemDao implements ItemDao<JCRItem> {
     public List<JCRItem> getChildItems(Serializable id) throws DatabaseException {
         Session session = null;
         try {
-
+            List<JCRItem> items = new ArrayList<JCRItem>();
             session = JCRIRepository.getSession();
             Node itemNode = session.getNode((String) id);
-            NodeIterator nodeIterator =  itemNode.getNode(JCRNodePropertyName.CHILD_LINK_VALUE).getNodes();
-            List<JCRItem> items = new ArrayList<JCRItem>();
-            while(nodeIterator.hasNext()){
-                Node childNode = nodeIterator.nextNode();
-                JCRItem newItem = getJcrItemFromNode(childNode);
-                items.add(newItem);
+
+            if (itemNode.hasNode(JCRNodePropertyName.CHILD_LINK_VALUE)) {
+                if (itemNode.getNode(JCRNodePropertyName.CHILD_LINK_VALUE).hasNodes()) {
+                    NodeIterator nodeIterator = itemNode.getNode(JCRNodePropertyName.CHILD_LINK_VALUE).getNodes();
+                    while (nodeIterator.hasNext()) {
+                        Node childNode = nodeIterator.nextNode();
+                        JCRItem newItem = getJcrItemFromNode(childNode);
+                        items.add(newItem);
+                    }
+                }
             }
             return items;
         } catch (Exception e) {
@@ -224,8 +261,9 @@ public class JCRItemDao implements ItemDao<JCRItem> {
 
     @Override
     public JCRDefinition getDefinition(JCRItem item) throws DatabaseException {
-        if(item.getDefinition() == null){
-            throw new DatabaseException(new Exception(String.format("Definition of Item with name %s must be set.", item.getName() ) ));
+        if (item.getDefinition() == null) {
+            throw new DatabaseException(new Exception(String.format("Definition of Item with name %s must be set.",
+                    item.getName())));
         }
         return jcrDefinitionDao.get(item.getDefinition().get__id());
     }
@@ -276,13 +314,15 @@ public class JCRItemDao implements ItemDao<JCRItem> {
 
     /**
      * Do not start or save the session.
+     *
      * @param toBeCreated
      * @param alreadyCreated
      * @param session
      * @return
      * @throws Exception
      */
-    private JCRItem createChildInSession(JCRItem toBeCreated, JCRItem alreadyCreated, Session session) throws Exception {
+    private JCRItem createChildInSession(JCRItem toBeCreated, JCRItem alreadyCreated, Session session) throws
+            Exception {
 
         // node that is going to created
         Node createdNodeItem = null;
@@ -299,19 +339,26 @@ public class JCRItemDao implements ItemDao<JCRItem> {
                 throw new DatabaseException(new Exception(expMessage.toString()));
             }
 
-            Node itemRootNode = null;
-            if(refNode.hasNode(JCRNodePropertyName.CHILD_LINK_VALUE)){
-                itemRootNode = refNode.getNode(JCRNodePropertyName.CHILD_LINK_VALUE);
+            Node childRootNode = null;
+            if (refNode.hasNode(JCRNodePropertyName.CHILD_LINK_VALUE)) {
+                childRootNode = refNode.getNode(JCRNodePropertyName.CHILD_LINK_VALUE);
             } else {
-                itemRootNode = refNode.addNode(JCRNodePropertyName.CHILD_LINK_VALUE);
+                childRootNode = refNode.addNode(JCRNodePropertyName.CHILD_LINK_VALUE);
             }
 
-
-            createdNodeItem = getItemNode(itemRootNode, toBeCreated.getIdentityForPath());
+            createdNodeItem = getItemNode(childRootNode, toBeCreated.getIdentityForPath());
 
         } else {
+            // creating in root.
+            Node itemRootNode = null;
+            String rootItemPath = JcrDaoUtils.getPrefixedName(JCRNodePropertyName.ITEM_LINK_NAME);
+            if (session.getRootNode().hasNode(rootItemPath)) {
+                itemRootNode = session.getRootNode().getNode(rootItemPath);
+            } else {
+                itemRootNode = session.getRootNode().addNode(rootItemPath);
+            }
             // This means that toBeCreated will be added as a link to root of jcr.
-            createdNodeItem = getItemNode(session.getRootNode(), toBeCreated.getIdentityForPath());
+            createdNodeItem = getItemNode(itemRootNode, toBeCreated.getIdentityForPath());
         }
 
         createNodeFromItem(toBeCreated, session, createdNodeItem);
@@ -319,7 +366,24 @@ public class JCRItemDao implements ItemDao<JCRItem> {
         // now we need to create associations...
         createAssociations(toBeCreated, createdNodeItem, session);
 
+        createChildrenOfNewlyCreated(toBeCreated, session);
+
         return toBeCreated;
+    }
+
+    /**
+     * recursively create item.
+     *
+     * @param toBeCreated
+     * @param session
+     */
+    private void createChildrenOfNewlyCreated(JCRItem toBeCreated, Session session) throws Exception {
+        for (JCRItem childItem : toBeCreated.getChildren()) {
+            // avoid the cycle.. very cheap cycle avoidance..
+            if (childItem.get__id() == null) {
+                createChildInSession(childItem, toBeCreated, session);
+            }
+        }
     }
 
     /**
@@ -346,12 +410,13 @@ public class JCRItemDao implements ItemDao<JCRItem> {
 
 
     /**
-     * Here createdItem is the node which has just created -- (possibly) -- and this method is trying to add associations
+     * Here createdItem is the node which has just created -- (possibly) -- and this method is trying to add
+     * associations
      * of this item. createdNodeItem is corresponding node item. Algorithm is as follow.
      * 1. We check or create association node with its name and one field node.
      * 2. With association node we create a link node which in turn contains all the properties of AssociationLink
      * 3. Then with link node we create another link with actual item.
-     * <p/>
+     * <p>
      * _____(field properties node)
      * ||
      * ||
@@ -375,10 +440,12 @@ public class JCRItemDao implements ItemDao<JCRItem> {
             } else {
                 associationNode = createdNodeItem.addNode(getPkgPrefixedName(association.getIdentityForPath()));
                 associationNode.setProperty(JCRNodePropertyName.NAME_LINK_NAME, association.getName());
-                associationNode.setProperty(JCRNodePropertyName.CREATED_AT_LINK_VALUE, JcrDaoUtils.createCalender(association.getCreateDate()));
+                associationNode.setProperty(JCRNodePropertyName.CREATED_AT_LINK_VALUE, JcrDaoUtils.createCalender
+                        (association.getCreateDate()));
 
                 Node associationFieldNode = associationNode.addNode(JCRNodePropertyName.FIELDS_LINK_NAME);
-                JcrDaoUtils.populateNodeFromItem(association.getProperties(), associationFieldNode, session, serialization);
+                JcrDaoUtils.populateNodeFromItem(association.getProperties(), associationFieldNode, session,
+                        serialization);
 
                 // TODO: for the time being not associating user. Please do it with perspective of jackrabbit.
                 // user who has created this node.
@@ -387,17 +454,20 @@ public class JCRItemDao implements ItemDao<JCRItem> {
             for (AssociationLink<JCRItem> associationLink : association.getAssociates()) {
                 JCRItem linkedItem = associationLink.getLinked();
                 if (associationNode.hasNode(getPkgPrefixedName(associationLink.getLinked().getIdentityForPath()))) {
-                    // This is the case when this item is already associated as association but as property .. not have to do anything
+                    // This is the case when this item is already associated as association but as property .. not
+                    // have to do anything
 
                 } else {
                     // we need to see whether this node is already created or not.
                     Node linkedNode = null, linkedItemNode = null, linkFieldNode = null;
 
-                    linkedNode = associationNode.addNode(getPkgPrefixedName(associationLink.getLinked().getIdentityForPath()));
+                    linkedNode = associationNode.addNode(getPkgPrefixedName(associationLink.getLinked()
+                            .getIdentityForPath()));
 
                     linkFieldNode = linkedNode.addNode(JCRNodePropertyName.FIELDS_LINK_NAME);
 
-                    JcrDaoUtils.populateNodeFromItem(associationLink.getProperties(), linkFieldNode, session, serialization);
+                    JcrDaoUtils.populateNodeFromItem(associationLink.getProperties(), linkFieldNode, session,
+                            serialization);
 
                     if (linkedItem.get__id() != null) {
                         linkedItemNode = session.getNode(linkedItem.get__id());
@@ -415,12 +485,12 @@ public class JCRItemDao implements ItemDao<JCRItem> {
                         linkedItemNode = session.getNode(linkedItem.get__id());
                     }
 
-                    linkedNode.setProperty(getGlobalPrefixedName(associationLink.getLinked().getIdentityForPath()), linkedItemNode);
+                    linkedNode.setProperty(getGlobalPrefixedName(associationLink.getLinked().getIdentityForPath()),
+                            linkedItemNode);
                 }
             }
         }
     }
-
 
 
     private void populateItemFromNode(Node itemNode, JCRItem item) throws Exception {

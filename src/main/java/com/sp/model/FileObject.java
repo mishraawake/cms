@@ -2,7 +2,6 @@ package com.sp.model;
 
 import org.apache.commons.io.IOUtils;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -21,7 +20,7 @@ public class FileObject implements BinaryData {
         return is;
     }
 
-    public void inputStream(InputStream stream){
+    public void inputStream(InputStream stream) {
         is = stream;
     }
 

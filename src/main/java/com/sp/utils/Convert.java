@@ -8,15 +8,14 @@ import java.util.List;
  */
 public class Convert {
 
-    public static <T> List<T> fromArrayToList(T[] array){
+    public static <T> List<T> fromArrayToList(T[] array) {
         List<T> lists = new ArrayList<T>();
 
-        for(T object : array){
+        for (T object : array) {
             lists.add(object);
         }
         return lists;
     }
-
 
 
 }

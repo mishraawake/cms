@@ -1,10 +1,10 @@
 package com.sp.dao.jcr;
 
 import com.sp.dao.jcr.model.JCRDefinition;
+import com.sp.helper.DefUtils;
 import com.sp.model.IDefinition;
 import com.sp.model.PojoFactory;
 import com.sp.service.StringSerialization;
-import com.sp.helper.DefUtils;
 import com.sp.utils.SpringInitializer;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
@@ -31,10 +31,10 @@ public class TestSerialization {
     PojoFactory pojoFactory;
 
     @Test
-    public void testSerialization(){
-        IDefinition definition = DefUtils.getDummyDefition(pojoFactory);
+    public void testSerialization() {
+        IDefinition definition = DefUtils.getDummyDefinition(pojoFactory);
         try {
-            IOUtils.write(serialization.serialize(definition) , new FileOutputStream("output/def.json"));
+            IOUtils.write(serialization.serialize(definition), new FileOutputStream("output/def.json"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -42,12 +42,12 @@ public class TestSerialization {
 
 
     @Test
-    public void testDeserialize(){
+    public void testDeserialize() {
         try {
             String str = IOUtils.toString(new FileInputStream("output/def.json"));
             JCRDefinition definition = serialization.deserialize(str, JCRDefinition.class);
 
-          //  System.out.println(definition);
+            //  System.out.println(definition);
         } catch (IOException e) {
             e.printStackTrace();
         }

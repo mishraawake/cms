@@ -8,7 +8,7 @@ import java.io.InputStream;
 /**
  * Created by pankajmishra on 07/08/16.
  */
-public class Image  implements BinaryData {
+public class Image implements BinaryData {
 
     private InputStream is;
 
@@ -20,12 +20,12 @@ public class Image  implements BinaryData {
         return is;
     }
 
-    public void inputStream(InputStream stream){
+    public void inputStream(InputStream stream) {
         is = stream;
     }
 
     @Override
-    public byte[] getBytes(){
+    public byte[] getBytes() {
 
         try {
             return IOUtils.toByteArray(is);

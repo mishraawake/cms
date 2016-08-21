@@ -2,25 +2,17 @@ package com.sp.dao.jcr;
 
 import com.google.common.collect.Lists;
 import com.sp.dao.api.DatabaseException;
-import com.sp.dao.api.DefinitionDao;
-import com.sp.dao.api.ItemDao;
 import com.sp.dao.api.UserDao;
-import com.sp.dao.jcr.model.JCRUser;
 import com.sp.helper.UserUtils;
-import com.sp.model.*;
+import com.sp.model.FieldValue;
+import com.sp.model.IUser;
+import com.sp.model.PojoFactory;
 import com.sp.utils.FieldUtils;
-import com.sp.utils.SpringInitializer;
 import org.apache.commons.lang.RandomStringUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -55,7 +47,8 @@ public class UserDaoTest extends BaseDaoTest {
                 first.getUserName().equals(second.getUserName())
         );
 
-        FieldUtils.verifyFieldLists(first.getProperties().toArray(new FieldValue[0]), second.getProperties().toArray(new FieldValue[0]));
+        FieldUtils.verifyFieldLists(first.getProperties().toArray(new FieldValue[0]), second.getProperties().toArray
+                (new FieldValue[0]));
     }
 
     @Test
@@ -73,7 +66,8 @@ public class UserDaoTest extends BaseDaoTest {
         IUser dbUser = userDao.get(iUser.getUserName());
         verifyUsers(iUser, dbUser);
         userDao.delete(iUser.getUserName());
-        Assert.assertFalse(String.format("user should be deleted %s", iUser.getUserName()), userDao.exists(iUser.getUserName()));
+        Assert.assertFalse(String.format("user should be deleted %s", iUser.getUserName()), userDao.exists(iUser
+                .getUserName()));
     }
 
     @Test

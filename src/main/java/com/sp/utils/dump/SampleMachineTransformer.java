@@ -16,24 +16,25 @@ import java.util.logging.Logger;
 
 public class SampleMachineTransformer implements DataTransformer {
 
-         private static final Logger log = Logger.getLogger("");
-         private final Random rand = new Random(System.currentTimeMillis());
+    private static final Logger log = Logger.getLogger("");
+    private final Random rand = new Random(System.currentTimeMillis());
 
-         /**
-          * The transform method for this DataTransformer
-          * @param cr a reference to DataPipe from which to read the current map
-          */
-         public void transform(DataPipe cr) {
-             for (Map.Entry<String, String> entry : cr.getDataMap().entrySet()) {
-                 String value = entry.getValue();
+    /**
+     * The transform method for this DataTransformer
+     *
+     * @param cr a reference to DataPipe from which to read the current map
+     */
+    public void transform(DataPipe cr) {
+        for (Map.Entry<String, String> entry : cr.getDataMap().entrySet()) {
+            String value = entry.getValue();
 
-                 if (value.equals("#{customplaceholder}")) {
-                     // Generate a random number
-                     int ran = rand.nextInt();
-                     entry.setValue(String.valueOf(ran));
-                 }
-             }
-         }
+            if (value.equals("#{customplaceholder}")) {
+                // Generate a random number
+                int ran = rand.nextInt();
+                entry.setValue(String.valueOf(ran));
+            }
+        }
+    }
 
     public static void main(String[] args) {
 
@@ -51,7 +52,8 @@ public class SampleMachineTransformer implements DataTransformer {
         DataConsumer consumer = new DataConsumer();
         consumer.addDataTransformer(new SampleMachineTransformer());
         consumer.addDataWriter(new DefaultWriter(System.out,
-                new String[]{"var_out_V1_1", "var_out_V1_2", "var_out_V1_3", "var_out_V2", "var_out_V3", "var_out_V4"}));
+                new String[]{"var_out_V1_1", "var_out_V1_2", "var_out_V1_3", "var_out_V2", "var_out_V3",
+                        "var_out_V4"}));
 
         //Prepare the distributor
         DefaultDistributor defaultDistributor = new DefaultDistributor();

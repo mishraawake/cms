@@ -12,9 +12,9 @@ import java.util.List;
 
 /**
  * Created by pankajmishra on 06/08/16.
- *
+ * <p>
  * Definition object is used to define characteristics of an entity.
- *
+ * <p>
  * For example suppose we have following item present in news cms. Article, Photo, Video
  * Now someone might want to create a new type <i>poll</i>. The structure of poll could be different than
  * any encountered type and we might have to create a new definition object called poll for that.
@@ -62,7 +62,7 @@ public class JCRDefinition implements JCRIdentifiable, IDefinition {
         this.fields = fields;
     }
 
-    public static JCRDefinition getDefinitionFromString(String json){
+    public static JCRDefinition getDefinitionFromString(String json) {
         return null;
     }
 
@@ -74,18 +74,18 @@ public class JCRDefinition implements JCRIdentifiable, IDefinition {
 
     @Override
     public Date getCreateDate() {
-        if(createdDate == null){
+        if (createdDate == null) {
             return null;
         }
-        return (Date)createdDate.clone();
+        return (Date) createdDate.clone();
     }
 
     @Override
     public void setCreateDate(Date createdDate) {
-        if(createdDate == null){
+        if (createdDate == null) {
             return;
         }
-        this.createdDate = (Date)createdDate.clone();
+        this.createdDate = (Date) createdDate.clone();
     }
 
     @Override

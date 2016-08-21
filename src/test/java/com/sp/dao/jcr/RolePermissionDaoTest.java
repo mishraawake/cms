@@ -5,12 +5,14 @@ import com.sp.helper.DefUtils;
 import com.sp.helper.ItemUtils;
 import com.sp.helper.PermissionUtils;
 import com.sp.helper.UserUtils;
-import com.sp.model.*;
+import com.sp.model.IDefinition;
+import com.sp.model.IItem;
+import com.sp.model.IUser;
+import com.sp.model.Role;
 import com.sp.service.impl.SimpleSubjectProvider;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,9 +44,9 @@ public class RolePermissionDaoTest extends BaseDaoTest {
     @Override
     protected void specificBeforeSetup() throws DatabaseException {
         // create few definition
-        sectionDefinition = DefUtils.getDummyDefition(pojoFactory);
-        pollDefinition = DefUtils.getDummyDefition(pojoFactory);
-        articleDefinition = DefUtils.getDummyDefition(pojoFactory);
+        sectionDefinition = DefUtils.getDummyDefinition(pojoFactory);
+        pollDefinition = DefUtils.getDummyDefinition(pojoFactory);
+        articleDefinition = DefUtils.getDummyDefinition(pojoFactory);
         sectionDefinition = definitionDao.create(sectionDefinition);
         pollDefinition = definitionDao.create(pollDefinition);
         articleDefinition = definitionDao.create(articleDefinition);
@@ -91,7 +93,6 @@ public class RolePermissionDaoTest extends BaseDaoTest {
 
         Assert.assertTrue("size should be 3", roles.size() >= 3);
     }
-
 
 
     @Test
@@ -145,7 +146,6 @@ public class RolePermissionDaoTest extends BaseDaoTest {
         permissionDao.defineRole(engineerRole);
 
 
-
         IUser director = UserUtils.getDummyUser(pojoFactory), vp = UserUtils.getDummyUser(pojoFactory),
                 engineer = UserUtils.getDummyUser(pojoFactory);
 
@@ -160,7 +160,6 @@ public class RolePermissionDaoTest extends BaseDaoTest {
         permissionDao.assignRole(vpRole, vp);
 
 
-
         engineer.setUserName("engineer");
         engineer = userDao.create(engineer);
 
@@ -170,11 +169,9 @@ public class RolePermissionDaoTest extends BaseDaoTest {
         runTimeContext.setValue(SimpleSubjectProvider.CURRENT_LOGGEDIN_USER, director);
 
 
-
         IItem<IItem, IDefinition> childSection3 = ItemUtils.getDummyItem(pojoFactory);
         childSection3.setDefinition(sectionDefinition);
         childSection3 = itemDao.createChild(childSection3, topSection);
-
 
 
         // director should not be able to read the properties of top section.
@@ -187,13 +184,14 @@ public class RolePermissionDaoTest extends BaseDaoTest {
 
         itemDao.createChild(gchildSection12, childSection1);
         try {
-             itemDao.createChild(gchildSection21, childSection2);
-        } catch (DatabaseException e){
+            itemDao.createChild(gchildSection21, childSection2);
+        } catch (DatabaseException e) {
 
         }
 
 
-        // vp should be able to add new child in childSection2 and not in childSection1 but can add item in gchildSection11
+        // vp should be able to add new child in childSection2 and not in childSection1 but can add item in
+        // gchildSection11
         runTimeContext.setValue(SimpleSubjectProvider.CURRENT_LOGGEDIN_USER, engineer);
 
 
@@ -202,7 +200,7 @@ public class RolePermissionDaoTest extends BaseDaoTest {
         itemDao.createChild(gchildSection12, childSection2);
         try {
             itemDao.createChild(gchildSection21, childSection1);
-        } catch (DatabaseException e){
+        } catch (DatabaseException e) {
         }
 
         IItem<IItem, IDefinition> ggchild111 = ItemUtils.getDummyItem(pojoFactory);
@@ -213,14 +211,8 @@ public class RolePermissionDaoTest extends BaseDaoTest {
         itemDao.createChild(ggchild111, gchildSection11);
 
 
-
-
-
-
         // engineer should be able to add new child in childSection2 and not in childSection1 but should be able to
         // update gchildSection11
-
-
 
 
         List<Role> roles = permissionDao.getAllRole();

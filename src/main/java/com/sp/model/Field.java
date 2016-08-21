@@ -55,8 +55,10 @@ public class Field {
         Field field = (Field) o;
 
         if (searchable != field.searchable) return false;
-        if (constraints != null ? !constraints.equals(field.constraints) : field.constraints != null) return false;
-        if (name != null ? !name.equals(field.name) : field.name != null) return false;
+        if (constraints != null ? !constraints.equals(field.constraints) : field.constraints != null)
+            return false;
+        if (name != null ? !name.equals(field.name) : field.name != null)
+            return false;
         if (valueType != field.valueType) return false;
 
         return true;

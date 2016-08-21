@@ -1,8 +1,5 @@
 package com.sp.dao.api;
 
-import com.sp.dao.api.DatabaseException;
-import com.sp.dao.api.IDao;
-import com.sp.dao.jcr.model.JCRItem;
 import com.sp.model.IDefinition;
 import com.sp.model.IItem;
 
@@ -15,7 +12,6 @@ import java.util.List;
 public interface ItemDao<T extends IItem> extends IDao<T> {
 
     /**
-     *
      * @param toBeCreated
      * @param parentItem
      * @return
@@ -24,7 +20,16 @@ public interface ItemDao<T extends IItem> extends IDao<T> {
     public T createChild(T toBeCreated, T parentItem) throws DatabaseException;
 
     /**
+     * Items present at root.
+     *
+     * @return
+     * @throws DatabaseException
+     */
+    public List<T> getRootItems() throws DatabaseException;
+
+    /**
      * Get all associations.
+     *
      * @param id
      * @return
      * @throws DatabaseException
@@ -32,7 +37,8 @@ public interface ItemDao<T extends IItem> extends IDao<T> {
     public T getItemWithAssociations(Serializable id) throws DatabaseException;
 
     /**
-     *get association with given name.
+     * get association with given name.
+     *
      * @param id
      * @param name
      * @return
@@ -43,13 +49,13 @@ public interface ItemDao<T extends IItem> extends IDao<T> {
 
     /**
      * Get all children of given node.
+     *
      * @param id
      * @return
      */
     public List<T> getChildItems(Serializable id) throws DatabaseException;
 
     /**
-     *
      * @param item
      * @param <R>
      * @return

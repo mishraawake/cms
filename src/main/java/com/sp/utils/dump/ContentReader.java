@@ -7,20 +7,17 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.SequenceFile;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.util.GenericOptionsParser;
-import org.apache.nutch.parse.ParseData;
 import org.apache.nutch.parse.ParseText;
-import org.apache.nutch.protocol.Content;
 import org.apache.nutch.util.NutchConfiguration;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 public class ContentReader {
     public static void main(String[] args) throws IOException, IOException {
         Configuration conf = NutchConfiguration.create();
         Options opts = new Options();
         GenericOptionsParser parser = new GenericOptionsParser(conf, opts, args);
-        String[] remainingArgs = parser.getRemainingArgs();     
+        String[] remainingArgs = parser.getRemainingArgs();
         FileSystem fs = FileSystem.get(conf);
         //String segment = remainingArgs[0];
         String segment = "/Users/pankajmishra/source/software/apache-nutch-1.12/YahooCrawl/segments/20160817121340";
@@ -32,8 +29,8 @@ public class ContentReader {
         int count = 0;
         while (reader.next(key, content)) {
             try {
-                System.out.println(key +"--"+(++count) );
-                System.out.println("Content ==== "+content.getText());
+                System.out.println(key + "--" + (++count));
+                System.out.println("Content ==== " + content.getText());
             } catch (Exception e) {
             }
         }

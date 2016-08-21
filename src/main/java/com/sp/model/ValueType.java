@@ -2,7 +2,7 @@ package com.sp.model;
 
 /**
  * Created by pankajmishra on 06/08/16.
- * <p/>
+ * <p>
  * This value type is more for the help of building form to get input from cms for the definition.
  */
 public enum ValueType {
@@ -84,7 +84,6 @@ public enum ValueType {
     public String toString() {
         return name();
     }
-
 
 
 }
