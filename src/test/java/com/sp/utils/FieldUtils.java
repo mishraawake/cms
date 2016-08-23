@@ -86,6 +86,16 @@ public class FieldUtils {
                             sourceBinaryData[binaryIndex].mimeType().equals(targetBinaryData[binaryIndex].mimeType()));
                 }
 
+            } else if(fieldValue.getValue() instanceof FieldValue[][]){
+                FieldValue targetFieldValue = getFieldValue(second, fieldValue.getField());
+                FieldValue[][] valueInSource = (FieldValue[][])fieldValue.getValue();
+                FieldValue[][] valueInTarget = (FieldValue[][])targetFieldValue.getValue();
+
+                for(int fieldIndex = 0; fieldIndex < valueInSource.length ; ++fieldIndex ){
+                    verifyFieldLists(valueInSource[fieldIndex],  valueInTarget[fieldIndex]  );
+                }
+
+
             } else if (fieldValue.getValue() instanceof Object[]) {
                 FieldValue targetFieldValue = getFieldValue(second, fieldValue.getField());
                 Assert.assertTrue(getFieldDetail(fieldValue, getFieldValue(second, fieldValue.getField())), (Arrays

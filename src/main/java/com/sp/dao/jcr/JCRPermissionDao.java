@@ -83,7 +83,7 @@ public class JCRPermissionDao implements PermissionDao<JCRUser> {
 
             ValueFactory valueFactory = session.getValueFactory();
 
-            // going to save every permission. Each permission has one target item id and privilege on that item.
+            // going to save every permission. Each permission has one target items id and privilege on that items.
             updateRolePermission(role, authorizable, valueFactory);
             UserDaoUtils.setProperty(authorizable, FixedNames.role(), valueFactory.createValue(true));
             session.save();

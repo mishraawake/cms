@@ -31,6 +31,6 @@ public interface IItem<T extends IItem, D extends IDefinition> extends Auditable
 
     public void setAssociations(List<Association<T>> associations);
 
-    public FieldValue getFieldValue(Field field);
+    public <F> FieldValue<F> getFieldValue(Field field);
 
 }

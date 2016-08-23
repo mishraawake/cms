@@ -4,6 +4,8 @@ import com.google.common.collect.Lists;
 import com.sp.dao.api.DatabaseException;
 import com.sp.dao.api.JCRIRepository;
 import com.sp.dao.api.UserDao;
+import com.sp.dao.api.exchange.ConsumerProviderSpToJcr;
+import com.sp.dao.api.exchange.ExchangeProviderJcrToSp;
 import com.sp.dao.jcr.model.JCRUser;
 import com.sp.dao.jcr.model.JcrNameFac;
 import com.sp.dao.jcr.utils.FixedNames;
@@ -37,6 +39,12 @@ public class JCRUserDao implements UserDao<JCRUser> {
 
     @Autowired
     JCRIRepository jcrIRepository;
+
+    @Autowired
+    ExchangeProviderJcrToSp<FieldValue> exchangeProviderJcrToSp;
+
+    @Autowired
+    ConsumerProviderSpToJcr<FieldValue> consumerProviderSpToJcr;
 
     /**
      * Because jcr in itself does not provide user management so we need to user jackrabbit API for this.
@@ -85,7 +93,7 @@ public class JCRUserDao implements UserDao<JCRUser> {
         Node userNode = null;
         userNode = JcrDaoUtils.createIfNotExist(session.getRootNode() , FixedNames.user() );
         Node fieldNode = JcrDaoUtils.addNode(userNode, JcrNameFac.getUserName(userName));
-        JcrDaoUtils.populateNodeFromItem(properties, fieldNode, session, serialization);
+        JcrDaoUtils.populateFieldsNodeFromItemFields(properties, fieldNode, serialization, consumerProviderSpToJcr );
         return fieldNode;
     }
 
@@ -130,7 +138,7 @@ public class JCRUserDao implements UserDao<JCRUser> {
         Value userFieldValue = UserDaoUtils.getProperty(user, FixedNames.fields())[0];
         String userFieldPath = userFieldValue.getString();
         Node userFieldNode = session.getNode(userFieldPath);
-        List<FieldValue> properties = JcrDaoUtils.getFieldsFromNode(userFieldNode, serialization);
+        List<FieldValue> properties = JcrDaoUtils.getFieldsFromNode(userFieldNode, serialization, exchangeProviderJcrToSp);
         userObj.setProperties(properties);
         return userObj;
     }

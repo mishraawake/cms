@@ -3,10 +3,10 @@ package com.sp.model;
 /**
  * Created by pankajmishra on 06/08/16.
  */
-public class FieldValue {
+public class FieldValue<T> {
 
     private Field field;
-    private Object value;
+    private T value;
 
     public Field getField() {
         return field;
@@ -16,11 +16,11 @@ public class FieldValue {
         this.field = field;
     }
 
-    public Object getValue() {
+    public T getValue() {
         return value;
     }
 
-    public void setValue(Object value) {
+    public void setValue(T value) {
         this.value = value;
     }
 

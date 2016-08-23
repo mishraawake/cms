@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  * Created by pankajmishra on 06/08/16.
- * Individual item that will be present in cms. It must have a definition object. An item can have
+ * Individual items that will be present in cms. It must have a definition object. An items can have
  * many kind of associations.
  */
 public class JCRItem implements JCRIdentifiable, IItem<JCRItem, JCRDefinition> {
@@ -87,8 +87,8 @@ public class JCRItem implements JCRIdentifiable, IItem<JCRItem, JCRDefinition> {
         this.associations = associations;
     }
 
-    public FieldValue getFieldValue(Field field) {
-        for (FieldValue fieldValue : fieldValues) {
+    public <F> FieldValue<F> getFieldValue(Field field) {
+        for (FieldValue<F> fieldValue : fieldValues) {
             if (fieldValue.getField().equals(field)) {
                 return fieldValue;
             }

@@ -32,7 +32,7 @@ public class TestSerialization {
     PojoFactory pojoFactory;
 
     private static final String outputFolder = "output";
-    private static final String defFile = outputFolder+"/def.json";
+    private static final String defFile = outputFolder+"/defs.json";
     private static final String permFile = outputFolder + "/perm.json";
 
 

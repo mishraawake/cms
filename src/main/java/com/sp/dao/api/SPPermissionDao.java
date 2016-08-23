@@ -14,7 +14,7 @@ import com.sp.model.Permission;
 public interface SPPermissionDao<U extends IUser> {
 
     /**
-     * Assign permission to the user on item.
+     * Assign permission to the user on items.
      *
      * @param permission
      * @param user
@@ -23,7 +23,7 @@ public interface SPPermissionDao<U extends IUser> {
     public void grant(Permission permission, U user) throws DatabaseException;
 
     /**
-     * Assign permission to the group on item.
+     * Assign permission to the group on items.
      *
      * @param permission
      * @param groupName

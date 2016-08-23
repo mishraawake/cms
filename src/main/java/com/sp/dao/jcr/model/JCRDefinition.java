@@ -15,7 +15,7 @@ import java.util.List;
  * <p>
  * Definition object is used to define characteristics of an entity.
  * <p>
- * For example suppose we have following item present in news cms. Article, Photo, Video
+ * For example suppose we have following items present in news cms. Article, Photo, Video
  * Now someone might want to create a new type <i>poll</i>. The structure of poll could be different than
  * any encountered type and we might have to create a new definition object called poll for that.
  * This definition object will be used to verify poll object that will be generated in cms and

@@ -44,9 +44,9 @@ public class ItemDaoTest extends BaseDaoTest {
     }
 
     private void verifyItems(IItem<IItem, IDefinition> sourceItem, IItem<IItem, IDefinition> targetItem) {
-        Assert.assertTrue(String.format("item name should be same %s, %s", sourceItem, targetItem), sourceItem
+        Assert.assertTrue(String.format("items name should be same %s, %s", sourceItem, targetItem), sourceItem
                 .getName().equals(targetItem.getName()));
-        Assert.assertTrue(String.format("item definition should be same %s, %s", sourceItem.getDefinition(),
+        Assert.assertTrue(String.format("items definition should be same %s, %s", sourceItem.getDefinition(),
                 targetItem.getDefinition()), sourceItem.getDefinition().get__id().equals(targetItem.getDefinition()
                 .get__id()));
         FieldUtils.verifyFieldLists(sourceItem.getFieldValues().toArray(new FieldValue[0]), targetItem.getFieldValues
@@ -67,7 +67,7 @@ public class ItemDaoTest extends BaseDaoTest {
 
         generateBunchOfAssociations(definition, item);
 
-        // save this item.. associated item should be saved.
+        // save this items.. associated items should be saved.
         item = itemDao.create(item);
 
         Serializable id = item.get__id();

@@ -128,7 +128,7 @@ public class ItemUtils {
             field.getConstraints().add(lengthThanConstraint);
             field.setSearchable(true);
             field.setValueType((ValueType.values()[i]));
-            FieldValue fieldValue = new FieldValue();
+            FieldValue fieldValue = new FieldValue<>();
             fieldValue.setField(field);
             Object dummyObj = DummyValueType.getDummyType(ValueType.values()[i], depth);
             if (dummyObj != null) {

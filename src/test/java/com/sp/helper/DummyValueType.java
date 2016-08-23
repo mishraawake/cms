@@ -5,7 +5,9 @@ import org.apache.commons.lang.RandomStringUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -24,10 +26,8 @@ public class DummyValueType {
                 return true;
             case ArrayOfByte:
                 return new byte[]{(byte) 10, (byte) 11};
-
             case Byte:
                 return (byte) 10;
-
             case ArrayOfChar:
                 return new char[]{'1', '2'};
             case Char:
@@ -66,7 +66,6 @@ public class DummyValueType {
                 return RandomStringUtils.randomAlphabetic(500);
             case ArrayOfRichText:
                 return new String[]{RandomStringUtils.randomAlphabetic(500), RandomStringUtils.randomAlphabetic(500)};
-
             case RichText:
                 return RandomStringUtils.randomAlphabetic(500);
             case ArrayOfRichMediaText:
@@ -106,6 +105,14 @@ public class DummyValueType {
             case Definition:
                 FieldValue[] fieldValueList = ItemUtils.getDummyFieldValueList(depth - 1).toArray(new FieldValue[0]);
                 return fieldValueList;
+
+            case ArrayOfDefinition:
+                List<FieldValue[]> listOfArray = new ArrayList<>();
+                fieldValueList = ItemUtils.getDummyFieldValueList(depth - 1).toArray(new FieldValue[0]);
+                listOfArray.add(fieldValueList);
+                fieldValueList = ItemUtils.getDummyFieldValueList(depth - 1).toArray(new FieldValue[0]);
+                listOfArray.add(fieldValueList);
+                return listOfArray.toArray(new FieldValue[0][0]);
         }
 
         return null;

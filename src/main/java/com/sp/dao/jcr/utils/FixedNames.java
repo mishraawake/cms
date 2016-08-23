@@ -15,9 +15,9 @@ public class FixedNames {
 
     private static final java.lang.String FIELDS_LINK_NAME = "fields";
     private static final java.lang.String FIELD_LINK_NAME = "field";
-    private static final java.lang.String DEF_LINK_NAME = "def";
+    private static final java.lang.String DEFS_LINK_NAME = "defs";
     private static final java.lang.String DEF_ARRAY_IDENTITY_NAME = "defa";
-    private static final java.lang.String ITEM_LINK_NAME = "item";
+    private static final java.lang.String ITEMS_LINK_NAME = "items";
     private static final java.lang.String NAME_LINK_NAME = "name";
     private static final java.lang.String DESC_LINK_NAME = "desc";
     private static final java.lang.String BINARIES_LINK_NAME = "binaries";
@@ -37,16 +37,16 @@ public class FixedNames {
         return JcrNameFac.getProjectName(FIELD_LINK_NAME);
     }
 
-    public static JcrName def(){
-        return JcrNameFac.getProjectName(DEF_LINK_NAME);
+    public static JcrName defs(){
+        return JcrNameFac.getProjectName(DEFS_LINK_NAME);
     }
 
     public static JcrName defSize(){
         return JcrNameFac.getProjectName(DEF_ARRAY_IDENTITY_NAME);
     }
 
-    public static JcrName item(){
-        return JcrNameFac.getProjectName(ITEM_LINK_NAME);
+    public static JcrName items(){
+        return JcrNameFac.getProjectName(ITEMS_LINK_NAME);
     }
 
     public static JcrName name(){

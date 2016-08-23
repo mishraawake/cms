@@ -190,7 +190,7 @@ public class RolePermissionDaoTest extends BaseDaoTest {
         }
 
 
-        // vp should be able to add new child in childSection2 and not in childSection1 but can add item in
+        // vp should be able to add new child in childSection2 and not in childSection1 but can add items in
         // gchildSection11
         runTimeContext.setValue(SimpleSubjectProvider.CURRENT_LOGGEDIN_USER, engineer);
 

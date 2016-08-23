@@ -40,9 +40,9 @@ public class JCRDefinitionDao implements DefinitionDao<JCRDefinition> {
         try {
 
             session = jcriRepository.getSession();
-            Node definitionNode = JcrDaoUtils.getNode(session.getRootNode(), FixedNames.def());
+            Node definitionNode = JcrDaoUtils.getNode(session.getRootNode(), FixedNames.defs());
             if(definitionNode == null ){
-                definitionNode = JcrDaoUtils.addNode(session.getRootNode(), FixedNames.def());
+                definitionNode = JcrDaoUtils.addNode(session.getRootNode(), FixedNames.defs());
             }
             Node childNode = JcrDaoUtils.addNode(definitionNode, JcrNameFac.getUserName(element.getIdentityForPath()));
             element.set__id(childNode.getPath());

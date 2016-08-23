@@ -25,40 +25,112 @@ public enum ValueType {
     ArrayOfFloat(true),
     Date,
     ArrayOfDate(true),
-    String,
-    ArrayOfString(true),
+    String {
+        public boolean isStringType(){
+            return true;
+        }
+    },
+    ArrayOfString(true){
+        public boolean isStringType(){
+            return true;
+        }
+    },
     /**
      * for one which will require a textbox
      */
-    BigString,
-    ArrayOfBigString(true),
+    BigString{
+        public boolean isStringType(){
+            return true;
+        }
+    },
+    ArrayOfBigString(true){
+        public boolean isStringType(){
+            return true;
+        }
+    },
     /**
      * For one which may contain rich text. html, anchor etc.
      */
-    RichText,
-    ArrayOfRichText(true),
+    RichText{
+        public boolean isStringType(){
+            return true;
+        }
+    },
+    ArrayOfRichText(true){
+        public boolean isStringType(){
+            return true;
+        }
+    },
     /**
      * It will contain all the html feature along with embedding the media element such as image, video etc.
      */
-    RichMediaText,
-    ArrayOfRichMediaText(true),
+    RichMediaText{
+        public boolean isStringType(){
+            return true;
+        }
+    },
+    ArrayOfRichMediaText(true){
+        public boolean isStringType(){
+            return true;
+        }
+    },
     /** **/
-    Image,
-    ArrayOfImage(true),
-    Video,
-    ArrayOfVideo(true),
-    File,
-    ArrayOfFile(true),
+    Image{
+        public boolean isBinaryType(){
+            return true;
+        }
+    },
+    ArrayOfImage(true){
+        public boolean isBinaryType(){
+            return true;
+        }
+    },
+    Video{
+        public boolean isBinaryType(){
+            return true;
+        }
+    },
+    ArrayOfVideo(true){
+        public boolean isBinaryType(){
+            return true;
+        }
+    },
+    File{
+        public boolean isBinaryType(){
+            return true;
+        }
+    },
+    ArrayOfFile(true){
+        public boolean isBinaryType(){
+            return true;
+        }
+    },
     Time,
     ArrayOfTime(true),
     Enum,
     ArrayOfEnum(true),
     Ref,
     ArrayOfRef(true),
-    Phone,
-    ArrayOfPhone(true),
-    Email,
-    ArrayOfEmail(true),
+    Phone{
+        public boolean isStringType(){
+            return true;
+        }
+    },
+    ArrayOfPhone(true){
+        public boolean isStringType(){
+            return true;
+        }
+    },
+    Email{
+        public boolean isStringType(){
+            return true;
+        }
+    },
+    ArrayOfEmail(true){
+        public boolean isStringType(){
+            return true;
+        }
+    },
     Definition,
     ArrayOfDefinition(true);
 
@@ -78,6 +150,14 @@ public enum ValueType {
 
     public boolean isDefinition(){
         return this.equals(Definition) || this.equals(ArrayOfDefinition);
+    }
+
+    public boolean isStringType(){
+        return false;
+    }
+
+    public boolean isBinaryType(){
+        return false;
     }
 
     @Override
