@@ -1,7 +1,6 @@
 package com.sp.model;
 
 import com.sp.dao.jcr.model.JCRIdentifiable;
-import com.sp.utils.NameUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -76,7 +75,7 @@ public class Association<T extends IItem> implements Auditable, JCRIdentifiable 
 
     @Override
     public String getIdentityForPath() {
-        return NameUtils.getJCRLikeName(name);
+        return name;
     }
 
     @Override

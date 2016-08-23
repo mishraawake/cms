@@ -9,7 +9,6 @@ import com.sp.service.RunTimeContext;
 import com.sp.service.impl.SimpleSubjectProvider;
 import com.sp.utils.SpringInitializer;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 

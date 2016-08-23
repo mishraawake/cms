@@ -76,7 +76,7 @@ public class GroupPermissionDaoTest extends BaseDaoTest {
         String groupName = RandomStringUtils.randomAlphabetic(20);
         userDao.createGroup(groupName);
 
-        Permission permission = new Permission(topSection, Privilege.Executive);
+        Permission permission = new Permission(topSection.get__id(), Privilege.Executive, true);
 
         spPermissionDao.grant(permission, groupName);
 
@@ -105,7 +105,7 @@ public class GroupPermissionDaoTest extends BaseDaoTest {
         String groupName = RandomStringUtils.randomAlphabetic(20);
         userDao.createGroup(groupName);
 
-        Permission permission = new Permission(topSection, Privilege.Executive);
+        Permission permission = new Permission(topSection.get__id(), Privilege.Executive, true);
 
         spPermissionDao.grant(permission, groupName);
 
@@ -151,7 +151,7 @@ public class GroupPermissionDaoTest extends BaseDaoTest {
         String groupName = RandomStringUtils.randomAlphabetic(20);
         userDao.createGroup(groupName);
 
-        Permission permission = new Permission(topSection, Privilege.Read);
+        Permission permission = new Permission(topSection.get__id(), Privilege.Read, true);
 
         spPermissionDao.grant(permission, groupName);
 
@@ -181,7 +181,7 @@ public class GroupPermissionDaoTest extends BaseDaoTest {
         String groupName = RandomStringUtils.randomAlphabetic(20);
         userDao.createGroup(groupName);
 
-        Permission permission = new Permission(topSection, Privilege.Read);
+        Permission permission = new Permission(topSection.get__id(), Privilege.Read, true);
 
         spPermissionDao.grant(permission, groupName);
 
@@ -218,7 +218,7 @@ public class GroupPermissionDaoTest extends BaseDaoTest {
 
         childSection1 = itemDao.create(childSection1);
 
-        Permission permission = new Permission(childSection1, Privilege.Read);
+        Permission permission = new Permission(childSection1.get__id(), Privilege.Read, true);
 
         spPermissionDao.grant(permission, groupName);
 

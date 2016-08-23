@@ -67,8 +67,25 @@ public class FieldUtils {
                 FieldValue targetFieldValue = getFieldValue(second, fieldValue.getField());
                 verifyFieldLists((FieldValue[]) fieldValue.getValue(), (FieldValue[]) targetFieldValue.getValue());
                 // System.out.println(fieldValue.equals(getFieldValue(second, fieldValue.getField())));
-            } else if (fieldValue.getValue() instanceof BinaryData || fieldValue.getValue() instanceof BinaryData[]) {
+            } else if (fieldValue.getValue() instanceof BinaryData ) {
+                FieldValue targetFieldValue = getFieldValue(second, fieldValue.getField());
+                Assert.assertTrue(getFieldDetail(fieldValue, getFieldValue(second, fieldValue.getField())),
+                        ((BinaryData) fieldValue.getValue()).mimeType() .equals(((BinaryData) targetFieldValue.getValue()
+                        ).mimeType()));
+                // fieldValue.equals(getFieldValue(second, fieldValue.getField())));
                 /// do nothing
+            } else if(fieldValue.getValue() instanceof BinaryData[]){
+
+                FieldValue targetFieldValue = getFieldValue(second, fieldValue.getField());
+
+                BinaryData[] targetBinaryData = (BinaryData[])targetFieldValue.getValue();
+                BinaryData[] sourceBinaryData = (BinaryData[])fieldValue.getValue();
+
+                for(int binaryIndex = 0; binaryIndex < sourceBinaryData.length; ++binaryIndex){
+                    Assert.assertTrue(getFieldDetail(fieldValue, getFieldValue(second, fieldValue.getField())),
+                            sourceBinaryData[binaryIndex].mimeType().equals(targetBinaryData[binaryIndex].mimeType()));
+                }
+
             } else if (fieldValue.getValue() instanceof Object[]) {
                 FieldValue targetFieldValue = getFieldValue(second, fieldValue.getField());
                 Assert.assertTrue(getFieldDetail(fieldValue, getFieldValue(second, fieldValue.getField())), (Arrays

@@ -59,7 +59,8 @@ public enum ValueType {
     ArrayOfPhone(true),
     Email,
     ArrayOfEmail(true),
-    GENERIC_TYPE;
+    Definition,
+    ArrayOfDefinition(true);
 
     private ValueType() {
     }
@@ -71,14 +72,13 @@ public enum ValueType {
 
     private boolean array = false;
 
-    public String value() {
-        return name();
-    }
-
-    public boolean array() {
+    public boolean isArray() {
         return array;
     }
 
+    public boolean isDefinition(){
+        return this.equals(Definition) || this.equals(ArrayOfDefinition);
+    }
 
     @Override
     public String toString() {

@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sp.model.Field;
 import com.sp.model.IDefinition;
 import com.sp.model.IUser;
-import com.sp.utils.NameUtils;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -23,18 +23,18 @@ import java.util.List;
  */
 public class JCRDefinition implements JCRIdentifiable, IDefinition {
 
-    private String __id;
+    private Serializable __id;
     private String name;
     private String description;
     private List<Field> fields = new ArrayList<Field>();
     private Date createdDate;
     private IUser createdBy;
 
-    public String get__id() {
+    public Serializable get__id() {
         return __id;
     }
 
-    public void set__id(String __id) {
+    public void set__id(Serializable __id) {
         this.__id = __id;
     }
 
@@ -62,6 +62,16 @@ public class JCRDefinition implements JCRIdentifiable, IDefinition {
         this.fields = fields;
     }
 
+    @Override
+    public Field getFieldByName(String name) {
+        for(Field field : fields){
+            if(field.getName().equals(name)){
+                return field;
+            }
+        }
+        return null;
+    }
+
     public static JCRDefinition getDefinitionFromString(String json) {
         return null;
     }
@@ -69,7 +79,7 @@ public class JCRDefinition implements JCRIdentifiable, IDefinition {
     @JsonIgnore
     @Override
     public String getIdentityForPath() {
-        return NameUtils.getJCRLikeName(name);
+        return name;
     }
 
     @Override

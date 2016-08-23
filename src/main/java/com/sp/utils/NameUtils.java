@@ -1,5 +1,6 @@
 package com.sp.utils;
 
+import com.sp.dao.api.JCRIRepository;
 import org.apache.jackrabbit.util.Text;
 
 /**
@@ -18,5 +19,69 @@ public class NameUtils {
      */
     public static String getJCRLikeName(String str) {
         return Text.escapeIllegalJcrChars(str.trim().replaceAll("\\s[\\s]*", "-"));
+    }
+
+    /**
+     *
+     * @param name
+     * @return
+     */
+    public static String getProjectPrefixedName(String name) {
+        return getPrefixedName(JCRIRepository.PROJECT_NAME_SPACE_PREFIX, getJCRLikeName(name));
+    }
+
+    /**
+     *
+     * @param name
+     * @return
+     */
+    public static String getUserDefinedPrefixedName(String name) {
+        return getPrefixedName(JCRIRepository.USER_DEFINED_NAME_SPACE_PREFIX, getJCRLikeName(name));
+    }
+
+    /**
+     *
+     * @param name
+     * @return
+     */
+    public static String getPackagePrefixedName(String name) {
+        return getPrefixedName(JCRIRepository.PACKAGE_NAME_SPACE_PREFIX , getJCRLikeName(name));
+    }
+
+    /**
+     *
+     * @param name
+     * @return
+     */
+    public static String getUserMgmtPrefixedName(String name) {
+        return getPrefixedName(JCRIRepository.USER_MGMT_SPACE_PREFIX , getJCRLikeName(name));
+    }
+
+    /**
+     *
+     * @param prefix
+     * @param name
+     * @return
+     */
+    private static String getPrefixedName(String prefix, String name) {
+        return  prefix.concat(":").concat(name);
+    }
+
+    /**
+     *
+     * @param name
+     * @return
+     */
+    public static String getRolePrefixedName(String name) {
+        return getPrefixedName(JCRIRepository.USER_ROLE_SPACE_PREFIX , getJCRLikeName(name));
+    }
+
+    /**
+     *
+     * @param name
+     * @return
+     */
+    public static String getGroupPrefixedName(String name) {
+        return getPrefixedName(JCRIRepository.GROUP_ROLE_SPACE_PREFIX , getJCRLikeName(name));
     }
 }

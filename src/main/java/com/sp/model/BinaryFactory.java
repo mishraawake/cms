@@ -8,9 +8,9 @@ public class BinaryFactory {
 
     public static final BinaryFactory IMAGE_FACTORY = new BinaryFactory("image");
 
-    public static final BinaryFactory VIDEO_FACTORY = new BinaryFactory("image");
+    public static final BinaryFactory VIDEO_FACTORY = new BinaryFactory("video");
 
-    public static final BinaryFactory FILE_FACTORY = new BinaryFactory("image");
+    public static final BinaryFactory FILE_FACTORY = new BinaryFactory("file");
 
     String type;
 

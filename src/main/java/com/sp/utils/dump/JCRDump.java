@@ -70,7 +70,6 @@ public class JCRDump {
         session.save();
 
         session = repository.login(new SimpleCredentials("pankaj", "pankaj".toCharArray()));
-        ;
 
         referee = session.getNode("/referee");
 
@@ -78,6 +77,13 @@ public class JCRDump {
 
         System.out.println(referee.getProperties("tempone").hasNext());
         System.out.println(tempNode.getReferences().hasNext());
+
+    }
+
+    private static void createAType() throws RepositoryException {
+        Repository repository = new Jcr(new Oak()).createRepository();
+        Session session = repository.login(new SimpleCredentials("admin", "admin".toCharArray()));
+
 
     }
 

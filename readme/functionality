@@ -1,13 +1,13 @@
 Security and authentication as a component.
 
 We have an application which is to be protected by security component. The installation of security component
-should be such a seemless process as to put certain files in some directories. It may be possible by osgi
+should be such a seamless process as to put certain files in some directories. It may be possible by osgi
 framework.
 
 
 Template.
 
-We may choose various templating agent. It should be highly configurable. Anyone is free to write in any language
+We may choose various template agent. It should be highly configurable. Anyone is free to write in any language
 they prefer. It could be possible by spring framework MCV model.
 
 Url rewriting framework.
@@ -35,7 +35,7 @@ in some base unit. Now a unit could be applicable for one kind of product but it
 other kind of product. For example, litre is applicable for liquid but not for solid.
 
 Type of measurements could be
-kilogram (and its variant like miligram etc ..), pound, etc ..
+kilogram (and its variant like milligram etc ..), pound, etc ..
 litre (..variant)
 length ( .. this is also different in different countries, )
 and then we also could have casual measurement .. one teaspoon, one spoon one cup etc..

@@ -1,8 +1,8 @@
 package com.sp.dao.api;
 
+import com.sp.dao.jcr.CloseableIterator;
 import com.sp.model.IUser;
 
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -40,7 +40,7 @@ public interface UserDao<T extends IUser> extends IDao<T> {
      * @return
      * @throws DatabaseException
      */
-    Iterator<T> getMemberOf(String groupName) throws DatabaseException;
+    CloseableIterator<T> getMemberOf(String groupName) throws DatabaseException;
 
     /**
      * Get all groupname of this user.

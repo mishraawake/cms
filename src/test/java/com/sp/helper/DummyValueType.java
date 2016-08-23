@@ -103,7 +103,7 @@ public class DummyValueType {
                 return new String[]{"mishraawake@gmail.com", "mishraawake@gmail1.com"};
             case Email:
                 return "mishraawake@gmail.com";
-            case GENERIC_TYPE:
+            case Definition:
                 FieldValue[] fieldValueList = ItemUtils.getDummyFieldValueList(depth - 1).toArray(new FieldValue[0]);
                 return fieldValueList;
         }

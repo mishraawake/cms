@@ -10,4 +10,5 @@ import java.io.Serializable;
  */
 public interface Identity {
     public Serializable get__id();
+    public void set__id(Serializable id);
 }

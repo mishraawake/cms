@@ -1,19 +1,22 @@
---- finished .. please see file named *modeling..Fix name space standarization and internal node hierarchy arrangement.
--- We have a problem when enabling permission. Some user can have permission for the hierachy of items but he/she
+--- finished .. please see file named *modeling..Fix name space standardization and internal node hierarchy arrangement.
+-- We have a problem when enabling permission. Some user can have permission for the hierarchy of items but he/she
 may not have permission for definition and hence he can not create item because for item creation , one must have
 access to definition. Either we have to club our permission in such a way that these things will be enabled together
 for the user ... solution required....
 
---- Please take care of threading while implementing runtimecontext where user is kept. We need to find
+--- Please take care of threading while implementing runtime context where user is kept. We need to find
 better mechanism.
 
 --- Need to handle cases where hierarchical definition required. For example in case of a poll , we need to create
-definition for the question and answer.
+definition for the question and answer. -- continuation.. we have defined hierarchy but we are not making measures
+for referring definition objects. This is of future scope that we will handle later.
 
 
-Should we loging with session for every operation?
+-- Association should be independent of item.. perhaps.
+
+Should we logging with session for every operation?
 ACL implementation.
-Versioning.
+Version implementation.
 Defence against abusing root name space by accident.
 Test and implement order of child.
 A real case implementation of system like toi uses.

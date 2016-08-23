@@ -1,11 +1,19 @@
 package com.sp.dao.jcr;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sp.dao.api.DatabaseException;
 import com.sp.dao.api.JCRIRepository;
 import com.sp.dao.api.PermissionDao;
 import com.sp.dao.jcr.model.JCRUser;
-import com.sp.dao.jcr.utils.JCRNodePropertyName;
-import com.sp.model.*;
+import com.sp.dao.jcr.model.JcrName;
+import com.sp.dao.jcr.model.JcrNameFac;
+import com.sp.dao.jcr.utils.FixedNames;
+import com.sp.dao.jcr.utils.UserDaoUtils;
+import com.sp.model.IUser;
+import com.sp.model.Permission;
+import com.sp.model.Privilege;
+import com.sp.model.Role;
+import com.sp.service.StringSerialization;
 import com.sp.utils.Convert;
 import org.apache.jackrabbit.api.JackrabbitSession;
 import org.apache.jackrabbit.api.security.JackrabbitAccessControlList;
@@ -13,19 +21,18 @@ import org.apache.jackrabbit.api.security.user.Authorizable;
 import org.apache.jackrabbit.api.security.user.Group;
 import org.apache.jackrabbit.api.security.user.Query;
 import org.apache.jackrabbit.api.security.user.QueryBuilder;
-import org.apache.jackrabbit.commons.SimpleValueFactory;
 import org.apache.jackrabbit.commons.jackrabbit.authorization.AccessControlUtils;
-import org.apache.jackrabbit.oak.spi.security.principal.PrincipalImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
+import javax.jcr.ValueFactory;
 import javax.jcr.security.AccessControlEntry;
 import javax.jcr.security.AccessControlList;
 import javax.jcr.security.AccessControlManager;
-import java.io.Serializable;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -38,30 +45,30 @@ public class JCRPermissionDao implements PermissionDao<JCRUser> {
 
 
     @Autowired
-    JCRUserDao jcrUserDao;
+    JCRIRepository JCRIRepository;
 
     @Autowired
-    JCRIRepository JCRIRepository;
+    StringSerialization stringSerialization;
 
 
     @Override
     public void grant(Permission permission, JCRUser userObj) throws DatabaseException {
-        grantPermissionToAuthorizable(permission, userObj.getUserName());
+        grantPermissionToAuthorizable(permission, JcrNameFac.getUserMgmtName(userObj.getUserName()));
     }
 
     @Override
     public void revoke(Permission permission, JCRUser userObj) throws DatabaseException {
-        revokePermissionToAuthorizable(permission, userObj.getUserName());
+        revokePermissionToAuthorizable(permission, JcrNameFac.getUserMgmtName(userObj.getUserName()));
     }
 
     @Override
     public void grant(Permission permission, String groupName) throws DatabaseException {
-        grantPermissionToAuthorizable(permission, groupName);
+        grantPermissionToAuthorizable(permission, JcrNameFac.getGroupName(groupName));
     }
 
     @Override
     public void revoke(Permission permission, String groupName) throws DatabaseException {
-        revokePermissionToAuthorizable(permission, groupName);
+        revokePermissionToAuthorizable(permission, JcrNameFac.getGroupName(groupName) );
     }
 
     @Override
@@ -70,38 +77,15 @@ public class JCRPermissionDao implements PermissionDao<JCRUser> {
         try {
             session = JCRIRepository.getSession();
             JackrabbitSession jackrabbitSession = (JackrabbitSession) session;
-            Authorizable authorizable = jackrabbitSession.getUserManager().
-                    createGroup(role.getName());
+            // here we are saving role as a group with the name space provided by JcrNameFac.getRoleName
+            Authorizable authorizable = UserDaoUtils.createGroup(jackrabbitSession, JcrNameFac.getRoleName(role
+                    .getName()));
 
-            SimpleValueFactory simpleValueFactory = new SimpleValueFactory();
-            for (Permission permission : role.getPermissions()) {
+            ValueFactory valueFactory = session.getValueFactory();
 
-
-                if (authorizable.hasProperty(permission.getPrivilege().name())) {
-                    Value[] alreadyContainedValues = authorizable.getProperty(permission.getPrivilege().name());
-                    boolean add = true;
-
-                    for (Value alreadyContainedValue : alreadyContainedValues) {
-                        if (alreadyContainedValue.getString().equals((String) permission.getTarget().get__id())) {
-                            add = false;
-                        }
-                    }
-
-                    if (add) {
-                        Value[] newArray = new Value[alreadyContainedValues.length + 1];
-                        System.arraycopy(alreadyContainedValues, 0, newArray, 0, alreadyContainedValues.length);
-                        newArray[alreadyContainedValues.length] = simpleValueFactory.
-                                createValue((String) permission.getTarget().get__id());
-                        authorizable.setProperty(permission.getPrivilege().name(), newArray);
-                    }
-
-                } else {
-                    authorizable.setProperty(permission.getPrivilege().name(), simpleValueFactory.
-                            createValue((String) permission.getTarget().get__id()));
-                }
-
-            }
-            authorizable.setProperty(JCRNodePropertyName.ROLE_LINK_NAME, simpleValueFactory.createValue(true));
+            // going to save every permission. Each permission has one target item id and privilege on that item.
+            updateRolePermission(role, authorizable, valueFactory);
+            UserDaoUtils.setProperty(authorizable, FixedNames.role(), valueFactory.createValue(true));
             session.save();
         } catch (Exception e) {
             throw new DatabaseException(e);
@@ -112,6 +96,43 @@ public class JCRPermissionDao implements PermissionDao<JCRUser> {
         }
     }
 
+    private void updateRolePermission(Role role, Authorizable roleAuthorizable, ValueFactory valueFactory) throws RepositoryException, IOException {
+        for (Permission permission : role.getPermissions()) {
+
+            Value[] alreadyContainedValues = UserDaoUtils.getProperty(roleAuthorizable,
+                    JcrNameFac.getRoleName(permission.getPrivilege().name()));
+
+
+            boolean add = true;
+            for (Value alreadyContainedValue : alreadyContainedValues) {
+                Permission dbPermission = getPermissionFromValue(alreadyContainedValue);
+                if(dbPermission.equals(permission)){
+                    add = false;
+                }
+            }
+
+            if (add) {
+                Value[] modifiedPermissions = new Value[alreadyContainedValues.length + 1];
+                System.arraycopy(alreadyContainedValues, 0, modifiedPermissions, 0, alreadyContainedValues.length);
+
+                modifiedPermissions[alreadyContainedValues.length] = valueFactory.
+                        createValue(stringSerialization.serialize(permission));
+
+                UserDaoUtils.setProperty(roleAuthorizable, JcrNameFac.getRoleName(permission.getPrivilege().name()),
+                        modifiedPermissions);
+            }
+        }
+    }
+
+
+    private Permission getPermissionFromValue(Value value) throws RepositoryException, IOException {
+        return stringSerialization.deserialize(value.getString(), Permission.class);
+    }
+
+    private Value getValueFromPermission(Permission value){
+        return null;
+    }
+
     //TODO : how do we make sure that this particular role is not defined to any user.
     @Override
     public void deleteRole(Role role) throws DatabaseException {
@@ -119,8 +140,8 @@ public class JCRPermissionDao implements PermissionDao<JCRUser> {
         try {
             session = JCRIRepository.getSession();
             JackrabbitSession jackrabbitSession = (JackrabbitSession) session;
-            Authorizable authorizable = jackrabbitSession.getUserManager().
-                    getAuthorizable(role.getName());
+            Authorizable authorizable = UserDaoUtils.
+                    getAuthorizable(jackrabbitSession, JcrNameFac.getGroupName(role.getName()));
             authorizable.remove();
             session.save();
         } catch (Exception e) {
@@ -134,24 +155,24 @@ public class JCRPermissionDao implements PermissionDao<JCRUser> {
 
     @Override
     public void assignRole(Role role, IUser userObj) throws DatabaseException {
-        assignRoleToAuthorizable(role, userObj.getUserName());
+        assignRoleToAuthorizable(role, JcrNameFac.getUserMgmtName(userObj.getUserName()));
     }
 
 
     @Override
     public void assignRole(Role role, String group) throws DatabaseException {
-        assignRoleToAuthorizable(role, group);
+        assignRoleToAuthorizable(role, JcrNameFac.getRoleName(group));
     }
 
     @Override
     public void revokeRole(Role role, IUser userObj) throws DatabaseException {
-        revokeRoleToAuthorizable(role, userObj.getUserName());
+        revokeRoleToAuthorizable(role, JcrNameFac.getUserMgmtName(userObj.getUserName()));
     }
 
 
     @Override
     public void revokeRole(Role role, String group) throws DatabaseException {
-        revokeRoleToAuthorizable(role, group);
+        revokeRoleToAuthorizable(role, JcrNameFac.getRoleName(group) );
     }
 
 
@@ -168,14 +189,14 @@ public class JCRPermissionDao implements PermissionDao<JCRUser> {
                     findAuthorizables(new Query() {
                         public <T> void build(QueryBuilder<T> builder) {
                             builder.setSelector(Group.class);
-                            builder.setCondition(builder.exists(JCRNodePropertyName.ROLE_LINK_NAME));
+                            builder.exists(FixedNames.role().name());
                         }
                     });
 
             List<Role> result = new ArrayList<Role>();
 
             while (dbRoles.hasNext()) {
-                Role role = getRole(dbRoles);
+                Role role = getRole(dbRoles.next());
                 result.add(role);
             }
             session.save();
@@ -190,35 +211,28 @@ public class JCRPermissionDao implements PermissionDao<JCRUser> {
         }
     }
 
-    private Role getRole(Iterator<Authorizable> dbRoles) throws RepositoryException {
+    private Role getRole(Authorizable dbRole) throws RepositoryException, IOException {
         Role role = new Role();
-
-        Authorizable dbRole = dbRoles.next();
 
         Iterator<String> propertyNames = dbRole.getPropertyNames();
 
         while (propertyNames.hasNext()) {
             String propertyName = propertyNames.next();
-            if (JCRNodePropertyName.ROLE_LINK_NAME.equals(propertyName)) {
+            // special sentinel properties for role group.
+            if (FixedNames.role().name().equals(propertyName)) {
                 continue;
-            }
-            Value[] values = dbRole.getProperty(propertyName);
-
-            for (Value value : values) {
-
-                String pathName = value.getString();
-                Permission permission = new Permission(new Identity() {
-                    @Override
-                    public Serializable get__id() {
-                        return pathName;
-                    }
-                }, Privilege.valueOf(propertyName));
-
-                role.getPermissions().add(permission);
+            } else if(FixedNames.name().name().equals(propertyName)){
+                role.setName(dbRole.getProperty(propertyName).toString());
+            } else {
+                Value[] values = dbRole.getProperty(propertyName);
+                for (Value value : values) {
+                    String permissionStr = value.getString();
+                    Permission permission = stringSerialization.deserialize(permissionStr, Permission.class);
+                    role.getPermissions().add(permission);
+                }
             }
         }
 
-        role.setName(dbRole.getID());
         return role;
     }
 
@@ -230,19 +244,10 @@ public class JCRPermissionDao implements PermissionDao<JCRUser> {
 
             session = JCRIRepository.getSession();
             JackrabbitSession jackrabbitSession = (JackrabbitSession) session;
-            Authorizable authorizable = jackrabbitSession.getUserManager().
-                    getAuthorizable(new PrincipalImpl(role.getName()));
-
-            SimpleValueFactory simpleValueFactory = new SimpleValueFactory();
-            for (Permission permission : role.getPermissions()) {
-                if (authorizable.hasProperty(permission.getPrivilege().name())) {
-                    authorizable.removeProperty(permission.getPrivilege().name());
-                } else {
-                    authorizable.setProperty(permission.getPrivilege().name(),
-                            simpleValueFactory.createValue((String) permission.getTarget().get__id()));
-                }
-            }
-
+            Authorizable roleAuthorizable = UserDaoUtils.getAuthorizable(jackrabbitSession,
+                    JcrNameFac.getRoleName(role.getName()) );
+            ValueFactory valueFactory = session.getValueFactory();
+            updateRolePermission(role, roleAuthorizable, valueFactory);
             session.save();
         } catch (Exception e) {
             throw new DatabaseException(e);
@@ -260,17 +265,16 @@ public class JCRPermissionDao implements PermissionDao<JCRUser> {
      * Its for both user and group
      *
      * @param permission
-     * @param authorizableId
      * @throws RepositoryException
      */
-    private void grantPermissionToAuthorizable(Permission permission, String authorizableId) throws DatabaseException {
+    private void grantPermissionToAuthorizable(Permission permission, JcrName name) throws DatabaseException {
 
         Session session = null;
         try {
             session = JCRIRepository.getSession();
             JackrabbitSession jackrabbitSession = (JackrabbitSession) session;
-            Authorizable authorizable = jackrabbitSession.getUserManager().getAuthorizable(authorizableId);
-            String targetIdPath = (String) permission.getTarget().get__id();
+            Authorizable authorizable = UserDaoUtils.getAuthorizable(jackrabbitSession, name);
+            String targetIdPath = (String) permission.getTargetId();
             AccessControlManager accessControlManager = jackrabbitSession.getAccessControlManager();
             AccessControlList accessControlList = addIntoAccessControlList(authorizable, accessControlManager,
                     targetIdPath,
@@ -290,17 +294,16 @@ public class JCRPermissionDao implements PermissionDao<JCRUser> {
      * Its for both user and group
      *
      * @param permission
-     * @param authorizableId
      * @throws RepositoryException
      */
-    private void revokePermissionToAuthorizable(Permission permission, String authorizableId) throws DatabaseException {
+    private void revokePermissionToAuthorizable(Permission permission,  JcrName name) throws DatabaseException {
 
         Session session = null;
         try {
             session = JCRIRepository.getSession();
             JackrabbitSession jackrabbitSession = (JackrabbitSession) session;
-            Authorizable authorizable = jackrabbitSession.getUserManager().getAuthorizable(authorizableId);
-            String id = (String) permission.getTarget().get__id();
+            Authorizable authorizable = UserDaoUtils.getAuthorizable(jackrabbitSession, name);
+            String id = (String) permission.getTargetId();
             AccessControlManager accessControlManager = jackrabbitSession.getAccessControlManager();
             AccessControlList accessControlList = removeFromAccessControlList(authorizable, accessControlManager, id,
                     permission.getPrivilege());
@@ -484,26 +487,24 @@ public class JCRPermissionDao implements PermissionDao<JCRUser> {
     }
 
 
-    private void assignRoleToAuthorizable(Role role, String authorizableId) throws DatabaseException {
+    private void assignRoleToAuthorizable(Role role, JcrName userName) throws DatabaseException {
         Session session = null;
         try {
             session = JCRIRepository.getSession();
             JackrabbitSession jackrabbitSession = (JackrabbitSession) session;
-            Authorizable authorizable = jackrabbitSession.getUserManager().
-                    getAuthorizable(role.getName());
+            Authorizable roleAuthorizable =
+                    UserDaoUtils.getAuthorizable(jackrabbitSession, JcrNameFac.getRoleName(role.getName()));
 
-            Iterator<String> propertyNames = authorizable.getPropertyNames();
+            Iterator<String> propertyNames = roleAuthorizable.getPropertyNames();
 
             while (propertyNames.hasNext()) {
-                List<Permission> permissions = getPermission(authorizable, propertyNames);
+                List<Permission> permissions = getPermission(roleAuthorizable, propertyNames);
                 if (permissions != null) {
                     for (Permission permission : permissions) {
-                        grantPermissionToAuthorizable(permission, authorizableId);
+                        grantPermissionToAuthorizable(permission, userName);
                     }
                 }
-
             }
-
             session.save();
         } catch (Exception e) {
             throw new DatabaseException(e);
@@ -514,46 +515,39 @@ public class JCRPermissionDao implements PermissionDao<JCRUser> {
         }
     }
 
-    private List<Permission> getPermission(Authorizable authorizable, Iterator<String> propertyNames) throws
-            RepositoryException {
+    private List<Permission> getPermission(Authorizable roleAuthorizable, Iterator<String> propertyNames) throws
+            RepositoryException, IOException {
 
         List<Permission> permissions = new ArrayList<>();
         String propertyName = propertyNames.next();
-        if (JCRNodePropertyName.ROLE_LINK_NAME.equals(propertyName)) {
+        if (FixedNames.role().name().equals(propertyName)) {
             return null;
         }
-        Value[] values = authorizable.getProperty(propertyName);
+
+        Value[] values = roleAuthorizable.getProperty(propertyName);
 
         for (Value value : values) {
-            final String pathName = value.getString();
-
-            permissions.add(new Permission(new Identity() {
-                @Override
-                public Serializable get__id() {
-                    return pathName;
-                }
-            }, Privilege.valueOf(propertyName)));
+            permissions.add(getPermissionFromValue(value));
         }
-
         return permissions;
     }
 
 
-    private void revokeRoleToAuthorizable(Role role, String authorizableId) throws DatabaseException {
+    private void revokeRoleToAuthorizable(Role role, JcrName jcrName) throws DatabaseException {
         Session session = null;
         try {
             session = JCRIRepository.getSession();
             JackrabbitSession jackrabbitSession = (JackrabbitSession) session;
-            Authorizable authorizable = jackrabbitSession.getUserManager().
-                    getAuthorizable(new PrincipalImpl(role.getName()));
+            Authorizable roleAuthorizable =
+                    UserDaoUtils.getAuthorizable(jackrabbitSession, JcrNameFac.getRoleName(role.getName()));
 
-            Iterator<String> propertyNames = authorizable.getPropertyNames();
+            Iterator<String> propertyNames = roleAuthorizable.getPropertyNames();
 
             while (propertyNames.hasNext()) {
-                List<Permission> permissions = getPermission(authorizable, propertyNames);
+                List<Permission> permissions = getPermission(roleAuthorizable, propertyNames);
                 if (permissions != null) {
                     for (Permission permission : permissions) {
-                        revokePermissionToAuthorizable(permission, authorizableId);
+                        revokePermissionToAuthorizable(permission, jcrName);
                     }
                 }
             }
@@ -566,6 +560,8 @@ public class JCRPermissionDao implements PermissionDao<JCRUser> {
             }
         }
     }
+
+
 
 
 }

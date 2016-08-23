@@ -169,19 +169,18 @@ public class ItemDaoTest extends BaseDaoTest {
     }
 
 
-    private void generateBibaries(FieldValue fieldValue) {
+    private void generateBibaries(FieldValue fieldValue) throws Exception {
         if (fieldValue.getField().getValueType().equals(ValueType.ArrayOfImage) || fieldValue.getField().getValueType
                 ().equals(ValueType.Image)) {
             //System.out.println();
             try {
-
                 if (fieldValue.getField().getValueType().equals(ValueType.ArrayOfImage)) {
                     FileOutputStream fileOutputStream = new FileOutputStream("output/image.jpg");
                     fileOutputStream.write(((Image) fieldValue.getValue()).getBytes());
                     fileOutputStream.close();
                 }
-
             } catch (Exception e) {
+                throw e;
             }
         } else if (fieldValue.getField().getValueType().equals(ValueType.ArrayOfVideo) || fieldValue.getField()
                 .getValueType().equals(ValueType.Video)) {
@@ -193,6 +192,7 @@ public class ItemDaoTest extends BaseDaoTest {
                     fileOutputStream.close();
                 }
             } catch (Exception e) {
+                throw e;
             }
         } else if (fieldValue.getField().getValueType().equals(ValueType.ArrayOfFile) || fieldValue.getField()
                 .getValueType().equals(ValueType.File)) {
@@ -204,6 +204,7 @@ public class ItemDaoTest extends BaseDaoTest {
                     fileOutputStream.close();
                 }
             } catch (Exception e) {
+                throw e;
             }
         } else {
 

@@ -2,20 +2,16 @@ package com.sp.dao.jcr;
 
 import com.google.common.collect.Lists;
 import com.sp.dao.api.DatabaseException;
-import com.sp.dao.api.UserDao;
 import com.sp.helper.UserUtils;
 import com.sp.model.FieldValue;
 import com.sp.model.IUser;
-import com.sp.model.PojoFactory;
 import com.sp.utils.FieldUtils;
 import org.apache.commons.lang.RandomStringUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -23,14 +19,9 @@ import java.util.List;
  */
 public class UserDaoTest extends BaseDaoTest {
 
-    UserDao<IUser> userDao;
-
-    @Autowired
-    PojoFactory pojoFactory;
 
     @Before
     public void prepareDependencies() {
-        userDao = applicationContext.getBean("userDao", UserDao.class);
     }
 
 
@@ -112,7 +103,7 @@ public class UserDaoTest extends BaseDaoTest {
         IUser dbUser2 = userDao.get(iUser2.getUserName());
         verifyUsers(iUser2, dbUser2);
 
-        Iterator<IUser> dbusers = userDao.getMemberOf(group);
+        CloseableIterator<IUser> dbusers = userDao.getMemberOf(group);
 
         int x = 0;
         while (dbusers.hasNext()) {
@@ -125,6 +116,7 @@ public class UserDaoTest extends BaseDaoTest {
             }
             ++x;
         }
+        dbusers.close();
     }
 
 
@@ -139,11 +131,18 @@ public class UserDaoTest extends BaseDaoTest {
         IUser dbUser2 = userDao.get(iUser2.getUserName());
         verifyUsers(iUser2, dbUser2);
 
+
+        int numberOFUsers = 10;
+        for(int userIndex =0 ; userIndex < numberOFUsers; ++userIndex){
+            iUser1 = UserUtils.getDummyUser(pojoFactory);
+            userDao.create(iUser1);
+        }
+
         Iterable<IUser> dbusers = userDao.list();
 
         List<IUser> lists = Lists.newArrayList(dbusers);
 
-        Assert.assertTrue(String.format("list size should be 2 instead it is %d", lists.size()), lists.size() >= 2);
+        Assert.assertTrue(String.format("list size should be 2 instead it is %d", lists.size()), lists.size() >= numberOFUsers);
     }
 
     @Override

@@ -13,8 +13,8 @@
    Item have several perspective and hence it has different model for different perspective. Before we go to define item
    data model, let us define a data model for values that an item can take.
 
-2.1  Below is datamodeling for values that an item can contain. Basically item node will have one one with the name
-   fields and that field node will have several properties with different kind (numerical, strign, binary, and array of
+2.1  Below is data modeling for values that an item can contain. Basically item node will have one one with the name
+   fields and that field node will have several properties with different kind (numerical, string, binary, and array of
    each such type etc..) and it may have another node that will be again of similar structure as field node. Hence it
    can contain any type of data and value can go into arbitrary depth. This allows item to have very flexible data set.
 

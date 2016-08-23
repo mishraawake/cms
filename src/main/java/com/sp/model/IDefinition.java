@@ -20,4 +20,6 @@ public interface IDefinition extends Auditable, Identity {
     public List<Field> getFields();
 
     public void setFields(List<Field> fields);
+
+    public Field getFieldByName(String name);
 }

@@ -72,7 +72,7 @@ public class UserPermissionDaoTest extends BaseDaoTest {
 
         topSection = itemDao.create(topSection);
 
-        Permission permission = new Permission(topSection, Privilege.Executive);
+        Permission permission = new Permission(topSection.get__id(), Privilege.Executive, true);
 
         spPermissionDao.grant(permission, adminitrator);
 
@@ -96,7 +96,7 @@ public class UserPermissionDaoTest extends BaseDaoTest {
 
         topSection = itemDao.create(topSection);
 
-        Permission permission = new Permission(topSection, Privilege.Executive);
+        Permission permission = new Permission(topSection.get__id(), Privilege.Executive, false);
 
         spPermissionDao.grant(permission, adminitrator);
 
@@ -136,7 +136,7 @@ public class UserPermissionDaoTest extends BaseDaoTest {
 
         topSection = itemDao.create(topSection);
 
-        Permission permission = new Permission(topSection, Privilege.Read);
+        Permission permission = new Permission(topSection.get__id(), Privilege.Read, false);
 
         spPermissionDao.grant(permission, user);
 
@@ -163,7 +163,7 @@ public class UserPermissionDaoTest extends BaseDaoTest {
 
 
         childSection1 = itemDao.create(childSection1);
-        Permission permission = new Permission(topSection, Privilege.Read);
+        Permission permission = new Permission(topSection.get__id(), Privilege.Read, true);
 
         spPermissionDao.grant(permission, user);
 
@@ -191,7 +191,7 @@ public class UserPermissionDaoTest extends BaseDaoTest {
 
         childSection1 = itemDao.create(childSection1);
 
-        Permission permission = new Permission(childSection1, Privilege.Read);
+        Permission permission = new Permission(childSection1.get__id(), Privilege.Read, false);
 
         spPermissionDao.grant(permission, user);
 

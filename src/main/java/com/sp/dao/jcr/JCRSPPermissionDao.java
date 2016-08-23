@@ -20,21 +20,25 @@ public class JCRSPPermissionDao implements SPPermissionDao<JCRUser> {
     @Autowired
     PermissionDao<JCRUser> jcrPermissionDao;
 
+    @Autowired
+    JCRItemDao jcrItemDao;
+
     @Override
     public void grant(Permission permission, JCRUser user) throws DatabaseException {
-        JCRItem item = (JCRItem) permission.getTarget();
+
+        JCRItem item = jcrItemDao.get(permission.getTargetId());
         jcrPermissionDao.grant(permission, user);
         JCRDefinition jcrDefinition = item.getDefinition();
-        Permission permission1 = new Permission(jcrDefinition, Privilege.Read);
+        Permission permission1 = new Permission(jcrDefinition.get__id(), Privilege.Read, true);
         jcrPermissionDao.grant(permission1, user);
     }
 
     @Override
     public void grant(Permission permission, String group) throws DatabaseException {
-        JCRItem item = (JCRItem) permission.getTarget();
+        JCRItem item = jcrItemDao.get(permission.getTargetId());
         jcrPermissionDao.grant(permission, group);
         JCRDefinition jcrDefinition = item.getDefinition();
-        Permission permission1 = new Permission(jcrDefinition, Privilege.Read);
+        Permission permission1 = new Permission(jcrDefinition.get__id(), Privilege.Read , true);
         jcrPermissionDao.grant(permission1, group);
     }
 

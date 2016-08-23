@@ -85,6 +85,11 @@ public enum Privilege {
         }
     };
 
+
     public abstract Privilege[] implied();
 
+    @Override
+    public String toString() {
+        return this.name();
+    }
 }

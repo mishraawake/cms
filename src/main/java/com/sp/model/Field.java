@@ -14,6 +14,7 @@ public class Field {
     private ValueType valueType;
     private boolean searchable;
     private List<Constraint> constraints = new ArrayList<Constraint>();
+    private int arraySize = -1;
 
     public String getName() {
         return name;
@@ -45,6 +46,14 @@ public class Field {
 
     public void setConstraints(List<Constraint> constraints) {
         this.constraints = constraints;
+    }
+
+    public int getArraySize() {
+        return arraySize;
+    }
+
+    public void setArraySize(int arraySize) {
+        this.arraySize = arraySize;
     }
 
     @Override

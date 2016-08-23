@@ -2,8 +2,8 @@ package com.sp.dao.jcr.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sp.model.*;
-import com.sp.utils.NameUtils;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.List;
 public class JCRItem implements JCRIdentifiable, IItem<JCRItem, JCRDefinition> {
 
     private JCRItem parentItem;
-    private String __id;
+    private Serializable __id;
     private String name;
     private JCRDefinition definition;
     private List<FieldValue> fieldValues = new ArrayList<FieldValue>();
@@ -25,10 +25,13 @@ public class JCRItem implements JCRIdentifiable, IItem<JCRItem, JCRDefinition> {
     private Date createdDate;
     private IUser createdBy;
 
-    public String get__id() {
+    public Serializable get__id() {
         return __id;
     }
 
+    public void set__id(Serializable __id){
+        this.__id = __id;
+    }
     @Override
     public JCRItem getParentItem() {
         return parentItem;
@@ -46,10 +49,6 @@ public class JCRItem implements JCRIdentifiable, IItem<JCRItem, JCRDefinition> {
 
     public void setParentItem(JCRItem item) {
         parentItem = item;
-    }
-
-    public void set__id(String __id) {
-        this.__id = __id;
     }
 
     public JCRDefinition getDefinition() {
@@ -100,7 +99,7 @@ public class JCRItem implements JCRIdentifiable, IItem<JCRItem, JCRDefinition> {
     @JsonIgnore
     @Override
     public String getIdentityForPath() {
-        return NameUtils.getJCRLikeName(name);
+        return name;
     }
 
     @Override
