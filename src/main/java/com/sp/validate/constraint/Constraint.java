@@ -13,9 +13,22 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @JsonSubTypes({
         @JsonSubTypes.Type(value = RangeConstraint.class, name = "RangeConstraint"),
         @JsonSubTypes.Type(value = LengthConstraint.class, name = "LengthConstraint"),
-        @JsonSubTypes.Type(value = LessThanConstraint.class, name = "LessThanContraint"),
+        @JsonSubTypes.Type(value = LessThanConstraint.class, name = "LessThanConstraint"),
         @JsonSubTypes.Type(value = GreaterThanConstraint.class, name = "GreaterThanConstraint"),
+        @JsonSubTypes.Type(value = ValueConstraint.class, name = "ValueConstraint"),
 })
 public interface Constraint<T> {
+
+        /**
+         * Whether this constraint passed or failed.
+         * @param value
+         * @return
+         */
     boolean pass(T value);
+
+        /**
+         * What is error message in case it failed.
+         * @return
+         */
+        String getErrorMessage();
 }

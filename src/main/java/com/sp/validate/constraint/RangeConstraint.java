@@ -1,5 +1,8 @@
 package com.sp.validate.constraint;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Created by pankajmishra on 06/08/16.
  */
@@ -13,16 +16,21 @@ public class RangeConstraint implements Constraint<Comparable> {
 
     boolean inen;
 
-    public RangeConstraint() {
+    private final String DEFAULT_ERROR_MESSAGE = "Supplied value should lie between %s, %s.. mind the inclusiveness " +
+            "boolean include start '%s' and include end '%s' !";
 
-    }
+    private String errorMessage;
 
-    public RangeConstraint(Comparable start, boolean inst, Comparable end, boolean inen) {
+    @JsonCreator
+    public RangeConstraint(@JsonProperty("start") Comparable start,@JsonProperty("inst") boolean inst, @JsonProperty
+            ("end") Comparable end, @JsonProperty("inen") boolean inen) {
         this.start = start;
         this.inst = inst;
         this.end = end;
         this.inen = inen;
+        errorMessage = String.format(DEFAULT_ERROR_MESSAGE, start, end, inst, inen);
     }
+
 
     @Override
     public boolean pass(Comparable value) {
@@ -72,6 +80,14 @@ public class RangeConstraint implements Constraint<Comparable> {
 
     public void setInen(boolean inen) {
         this.inen = inen;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 
     @Override

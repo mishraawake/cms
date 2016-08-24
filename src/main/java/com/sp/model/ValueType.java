@@ -107,8 +107,16 @@ public enum ValueType {
     },
     Time,
     ArrayOfTime(true),
-    Enum,
-    ArrayOfEnum(true),
+    Enum{
+        public boolean isStringType(){
+            return true;
+        }
+    },
+    ArrayOfEnum(true){
+        public boolean isStringType(){
+            return true;
+        }
+    },
     Ref,
     ArrayOfRef(true),
     Phone{

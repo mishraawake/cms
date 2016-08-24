@@ -15,6 +15,7 @@ public class Field {
     private boolean searchable;
     private List<Constraint> constraints = new ArrayList<Constraint>();
     private int arraySize = -1;
+    private boolean mandatory = true;
 
     public String getName() {
         return name;
@@ -54,6 +55,14 @@ public class Field {
 
     public void setArraySize(int arraySize) {
         this.arraySize = arraySize;
+    }
+
+    public boolean isMandatory() {
+        return mandatory;
+    }
+
+    public void setMandatory(boolean mandatory) {
+        this.mandatory = mandatory;
     }
 
     @Override

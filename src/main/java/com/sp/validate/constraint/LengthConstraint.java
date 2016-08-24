@@ -1,5 +1,8 @@
 package com.sp.validate.constraint;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Created by pankajmishra on 06/08/16.
  * <p>
@@ -11,12 +14,14 @@ public class LengthConstraint implements Constraint<String> {
 
     private int length;
 
-    public LengthConstraint() {
+    private String errorMessage;
 
-    }
+    private final String DEFAULT_ERROR_MESSAGE = "Supplied value Length should be %s";
 
-    public LengthConstraint(int length) {
+    @JsonCreator
+    public LengthConstraint(@JsonProperty("length") int length) {
         this.length = length;
+        errorMessage = String.format(DEFAULT_ERROR_MESSAGE, length);
     }
 
     @Override
@@ -33,6 +38,15 @@ public class LengthConstraint implements Constraint<String> {
 
     public void setLength(int length) {
         this.length = length;
+    }
+
+    @Override
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 
     @Override

@@ -1,5 +1,8 @@
 package com.sp.validate.constraint;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Created by pankajmishra on 06/08/16.
  */
@@ -9,20 +12,23 @@ public class LessThanConstraint implements Constraint<Comparable> {
 
     boolean eq;
 
-    public LessThanConstraint() {
+    private String errorMessage;
 
-    }
+    private final String DEFAULT_ERROR_MESSAGE = "Supplied value should less than %s.. mind the " +
+            "inclusiveness " +
+            "boolean eq = %s !";
 
-
-    public LessThanConstraint(Comparable from, boolean eq) {
+    @JsonCreator
+    public LessThanConstraint(@JsonProperty("from") Comparable from, @JsonProperty("eq") boolean eq) {
         this.from = from;
         this.eq = eq;
+        errorMessage = String.format(DEFAULT_ERROR_MESSAGE, from, eq);
     }
 
 
     @Override
     public boolean pass(Comparable value) {
-        return eq ? from.compareTo(value) <= 0 : from.compareTo(value) < 0;
+        return eq ? from.compareTo(value) >= 0 : from.compareTo(value) > 0;
     }
 
     public Comparable getFrom() {
@@ -39,6 +45,15 @@ public class LessThanConstraint implements Constraint<Comparable> {
 
     public void setEq(boolean eq) {
         this.eq = eq;
+    }
+
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 
     @Override

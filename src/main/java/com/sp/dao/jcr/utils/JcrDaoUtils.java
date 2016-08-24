@@ -198,6 +198,13 @@ public class JcrDaoUtils {
     }
 
 
+    /**
+     *
+     * @param valueFactory
+     * @param fieldValue
+     * @param propertyNode
+     * @throws RepositoryException
+     */
     public static void setStringProp(ValueFactory valueFactory, FieldValue fieldValue, Node
             propertyNode) throws RepositoryException {
         if (fieldValue.getValue() instanceof String[]) {
@@ -240,7 +247,8 @@ public class JcrDaoUtils {
     }
 
     /**
-     * This is different than fields in item.
+     * This is different than fields in item. This field is only present on definition which is nested and this field
+     * is json of field that represent the nested definition.
      *
      * @param node
      * @param serialization

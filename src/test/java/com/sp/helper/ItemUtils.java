@@ -118,14 +118,7 @@ public class ItemUtils {
         for (int i = 0; i < ValueType.values().length; ++i) {
             Field field = new Field();
             field.setName(ValueType.values()[i].toString() + "" + i);
-            GreaterThanConstraint greaterThanConstraint = new GreaterThanConstraint(5, true);
-            field.getConstraints().add(greaterThanConstraint);
-            LessThanConstraint lessThanConstraint = new LessThanConstraint(new Date(), true);
-            field.getConstraints().add(lessThanConstraint);
-            RangeConstraint rangeThanConstraint = new RangeConstraint(2l, true, 50.4, false);
-            field.getConstraints().add(rangeThanConstraint);
-            LengthConstraint lengthThanConstraint = new LengthConstraint(100);
-            field.getConstraints().add(lengthThanConstraint);
+            field.setConstraints(DummyValueType.getDummyConstraintBasedOnType(ValueType.values()[i]));
             field.setSearchable(true);
             field.setValueType((ValueType.values()[i]));
             FieldValue fieldValue = new FieldValue<>();
@@ -153,19 +146,8 @@ public class ItemUtils {
             int index = random.nextInt(ValueType.values().length - min);
             Field field = new Field();
             field.setName(ValueType.values()[index].toString() + "" + i);
-
-
-            GreaterThanConstraint greaterThanConstraint = new GreaterThanConstraint(5, true);
-            field.getConstraints().add(greaterThanConstraint);
-            LessThanConstraint lessThanConstraint = new LessThanConstraint(new Date(), true);
-            field.getConstraints().add(lessThanConstraint);
-            RangeConstraint rangeThanConstraint = new RangeConstraint(2l, true, 50.4, false);
-            field.getConstraints().add(rangeThanConstraint);
-            LengthConstraint lengthThanConstraint = new LengthConstraint(100);
-            field.getConstraints().add(lengthThanConstraint);
+            field.setConstraints(DummyValueType.getDummyConstraintBasedOnType(ValueType.values()[index]));
             field.setSearchable(true);
-
-
             field.setValueType((ValueType.values()[index]));
             FieldValue fieldValue = new FieldValue();
             fieldValue.setField(field);

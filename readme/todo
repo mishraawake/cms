@@ -14,6 +14,8 @@ for referring definition objects. This is of future scope that we will handle la
 
 -- Association should be independent of item.. perhaps.
 
+-- Exception framework needs to be work on.
+
 Should we logging with session for every operation?
 ACL implementation.
 Version implementation.

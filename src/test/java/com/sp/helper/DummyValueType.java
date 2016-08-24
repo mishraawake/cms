@@ -1,6 +1,10 @@
 package com.sp.helper;
 
 import com.sp.model.*;
+import com.sp.validate.constraint.Constraint;
+import com.sp.validate.constraint.GreaterThanConstraint;
+import com.sp.validate.constraint.LessThanConstraint;
+import com.sp.validate.constraint.RangeConstraint;
 import org.apache.commons.lang.RandomStringUtils;
 
 import java.io.File;
@@ -39,7 +43,7 @@ public class DummyValueType {
             case ArrayOfInteger:
                 return new int[]{11, 12};
             case Integer:
-                return random.nextInt();
+                return 20;
             case ArrayOfLong:
                 return new long[]{19l, 30l};
             case Long:
@@ -113,6 +117,114 @@ public class DummyValueType {
                 fieldValueList = ItemUtils.getDummyFieldValueList(depth - 1).toArray(new FieldValue[0]);
                 listOfArray.add(fieldValueList);
                 return listOfArray.toArray(new FieldValue[0][0]);
+        }
+
+        return null;
+    }
+
+
+
+
+
+    public static List<Constraint> getDummyConstraintBasedOnType(ValueType type) {
+
+        Random random = new Random();
+        switch (type) {
+            case ArrayOfBoolean:
+                return new ArrayList<>();
+            case Boolean:
+                return new ArrayList<>();
+            case ArrayOfByte:
+                return new ArrayList<>();
+            case Byte:
+                return new ArrayList<>();
+            case ArrayOfChar:
+                return new ArrayList<>();
+            case Char:
+                return new ArrayList<>();
+            case ArrayOfShort:
+                return new ArrayList<>();
+            case Short:
+                return new ArrayList<>();
+            case ArrayOfInteger:
+                return new ArrayList<>();
+            case Integer: {
+                List<Constraint> constraintList = new ArrayList<>();
+                Constraint constraint = new LessThanConstraint(20, true);
+                constraintList.add(constraint);
+                constraint = new GreaterThanConstraint(20, true);
+                constraintList.add(constraint);
+                constraint = new RangeConstraint(20, true, 100, false);
+                constraintList.add(constraint);
+                return constraintList;
+            }
+            case ArrayOfLong:
+                return new ArrayList<>();
+            case Long:
+                return new ArrayList<>();
+            case ArrayOfDouble:
+                return new ArrayList<>();
+            case Double:
+                return new ArrayList<>();
+            case ArrayOfFloat:
+                return new ArrayList<>();
+            case Float:
+                return new ArrayList<>();
+            case ArrayOfDate:
+                return new ArrayList<>();
+            case Date:
+                return new ArrayList<>();
+            case ArrayOfString:
+                return new ArrayList<>();
+            case String:
+                return new ArrayList<>();
+            case ArrayOfBigString:
+                return new ArrayList<>();
+            case BigString:
+                return new ArrayList<>();
+            case ArrayOfRichText:
+                return new ArrayList<>();
+            case RichText:
+                return new ArrayList<>();
+            case ArrayOfRichMediaText:
+                return new ArrayList<>();
+            case RichMediaText:
+                return new ArrayList<>();
+            case ArrayOfImage:
+                return new ArrayList<>();
+            case Image:
+                return new ArrayList<>();
+            case ArrayOfVideo:
+                return new ArrayList<>();
+            case Video:
+                return new ArrayList<>();
+            case ArrayOfFile:
+                return new ArrayList<>();
+            case File:
+                return new ArrayList<>();
+            case ArrayOfTime:
+                return new ArrayList<>();
+            case Time:
+                return new ArrayList<>();
+            case ArrayOfEnum:
+                return new ArrayList<>();
+            case Enum:
+                return new ArrayList<>();
+            case ArrayOfRef:
+                return null;
+            case ArrayOfPhone:
+                return new ArrayList<>();
+            case Phone:
+                return new ArrayList<>();
+            case ArrayOfEmail:
+                return new ArrayList<>();
+            case Email:
+                return new ArrayList<>();
+            case Definition:
+                return new ArrayList<>();
+
+            case ArrayOfDefinition:
+                return new ArrayList<>();
         }
 
         return null;
